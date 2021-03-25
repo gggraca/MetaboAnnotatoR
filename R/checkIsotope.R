@@ -8,7 +8,6 @@
 #' mztol: absolute tolerance for feature m/z search
 #' rttol: absolute tolerance for feature RT search
 #' Goncalo Graca and Yuheng Cai (Rene) (Imperial College London)
-#' g.gomes-da-graca@imperial.ac.uk
 #' @export
 
 checkIsotope <- function(fmz, frt, spec, rttol = 5, mztol = 0.01){

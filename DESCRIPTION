@@ -11,7 +11,7 @@ Authors@R:
            person(given = "Yuheng (Rene)",
            family = "Cai",
            role = c("aut", "cre"),
-           email = "rene_cai@live.cn"),
+           email = "rene.cai@unc.edu"),
            person(given = "Timothy",
            family = "Ebbels",
            role = c("aut", "cre"),

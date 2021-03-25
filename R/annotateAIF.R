@@ -18,13 +18,6 @@
 #' maxMZdiff: maximum m/z difference between candidate fragments and
 #' pseudo-MS/MS or AIF ions
 #' Goncalo Graca & Yuheng Cai (Imperial College London)
-#' g.gomes-da-graca@imperial.ac.uk
-#' changest old version of annotateAIF:
-#' filetype variable removed...all files to use are .mzML
-#' .mzML must contain no-collision and high-collision energy scans
-#' uses XCMS version 3 or higher
-#' "corrSpec" function replaced by "getPseudoMSMS" function
-#' variable name change "ppmtol" for "tolerance" and "MZerr" to "maxMZdiff"
 #' @export
 annotateAIF <- function(targetTable,
                         filetype = "mzML",
