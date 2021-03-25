@@ -1,0 +1,29 @@
+Package: MetaboAnnotatoR
+Title: Automated annotation of untargeted LC-MS metabolomics data using 
+all-ion fragmentation and fragment ion libraries
+Version: 0.0.1
+Authors@R: 
+    c(person(given = "Goncalo",
+           family = "Graca",
+           role = c("aut", "cre"),
+           email = "g.gomes-da-graca@imperial.ac.uk",
+           comment = c(ORCID = "0000-0002-0876-3876")),
+           person(given = "Yuheng (Rene)",
+           family = "Cai",
+           role = c("aut", "cre"),
+           email = "rene_cai@live.cn"),
+           person(given = "Timothy",
+           family = "Ebbels",
+           role = c("aut", "cre"),
+           email = "t.ebbels@imperial.ac.uk"))
+Maintainer: Goncalo Graca           
+Description: Performs feature annotations on LC-MS All-ion fragmentation 
+datasets using fragment ion libraries.
+Imports: 
+        xcms (>= 3.0), ggplot2, gridExtra, RAMClustR
+License: `use_gpl3_license()`
+URL: https://github.com/gggraca/MetaboAnnotatoR
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
