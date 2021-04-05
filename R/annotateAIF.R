@@ -1,29 +1,44 @@
-#' Function annotateAIF for raw LC-MS chromatogram
+#' Function to annotate features using LC-MS AIF raw chromatograms.
+#'
 #' Search possible matches of a feature in Lipid fragments and other small
-#' molecule libraries
-#' using 'raw' LC-MS single chromatogram information already loaded and
-#' peak-picked returns a ranked list of candidates for the feature annotation
-#' as .csv file
-#' Arguments:
-#' targetTable: a .csv file containing the list of features to annotate and the
-#' name of the files containing the raw data
-#' ESImode: ionization mode: 'POS' for positive (default) or 'NEG' for negative
-#' libs: fragments library: 'Lipids' (default) or 'Metabolites' for other
-#' small molecules
-#' RTfile: .csv file with Lipid/metabolites classes RT information (optional)
-#' corThresh: Pearson correlation coefficient for EIC correlation
-#' checkIsotope: whether or not to check the isotope type;
-#' default is to check (TRUE)
-#' tolerance: tolerance in ppm for the candidate search
-#' maxMZdiff: maximum m/z difference between candidate fragments and
-#' pseudo-MS/MS or AIF ions
-#' Goncalo Graca & Yuheng Cai (Imperial College London)
+#' molecule libraries, using 'raw' LC-MS single chromatogram information
+#' already loaded and peak-picked.
+#'
+#' @author Goncalo Graca (Imperial College London)
+#'
+#' @param targetTable A .csv file containing the list of features to annotate
+#' and the name of the files containing the raw data.
+#' @param ESImode Ionization mode: 'POS' for positive (default)
+#' or 'NEG' for negative ionisation modes
+#' @param libs Fragment libraries to use: 'Lipids' (default) or 'Metabolites'
+#' for other small molecules.
+#' @param RTfile Optional csv file with Lipid/metabolites classes Retention
+#' Times in seconds.
+#' @param nCE Number of Collision Energy levels depending on the MS system used
+#' Waters, Bruker (QToF) and Thermo Orbitrap = 1, Agilent (QToF) > 1, however,
+#' only the highest energy level will be considered
+#' @param corThresh Pearson correlation coefficient for EIC correlation.
+#' @param checkIsotope Whether or not to check the isotope type;
+#' default is set to TRUE
+#' @param tolerance Tolerance in ppm for the candidate search.
+#' @param maxMZdiff Maximum m/z difference between candidate fragments and
+#' pseudo-MS/MS or AIF ions in Da.
+#' @param matchWeight weight of the fragment matches to the final score;
+#' value between 0 and 1; the remaining fraction of the weight comes from the
+#' candidate m/z error.
+#' @param ncandidates Maximum number of candidates to plot and store.
+#' @return For each feature in the targeTable the will return a ranked list of
+#' annotations, a plot of EICs and pseudo-MS/MS spectrum for the matched ions,
+#' a plot of pseudo-MS/MS and pseudo-MS spectra for the each feature,
+#' a targeTable annotated with rank 1 annotations and a table with the options
+#' used for the function.
 #' @export
-annotateAIF <- function(targetTable,
+annotateAIF <- function(targetTable = NULL,
                         filetype = "mzML",
                         libs = "Lipids",
                         ESImode = "POS",
                         RTfile = "none",
+                        nCE = 1,
                         corThresh = 0.8,
 					              checkIsotope = TRUE,
 					              tolerance = 25,
@@ -31,11 +46,39 @@ annotateAIF <- function(targetTable,
 					              matchWeight = 0.5,
 					              ncandidates = 5){
 # Read XCMS peak-picking options
-xcmsOptions <- read.csv("XCMS_options.csv")
+if (file.exists("XCMS_options.csv")) {
+  xcmsOptions <- read.csv("XCMS_options.csv")
+} else {
+  message("No XCMS options file found in the working directory")
+  answer <- readline(prompt = "Use default options (Yes/No)? [y/n]")
+  if(answer == "y") {
+    xcmsOptionsPath <- system.file("XCMS_options.csv",
+                                   package = "MetaboAnnotatoR")
+    xcmsOptions <- read.csv(xcmsOptionsPath)
+  }
+  if(answer == "n"){
+    xcmsOptionsPath <- system.file("XCMS_options.csv",
+                                   package = "MetaboAnnotatoR")
+    xcmsOptions <- read.csv(xcmsOptionsPath)
+    write.csv(xcmsOptions, "XCMS_options.csv", row.names = FALSE)
+    message("Default  XCMS options file saved in the working directory")
+    stop("Please edit the file and re-run.")
+  }
+}
 
 # Read targets table
-targets <- read.csv(targetTable, header = TRUE)
-
+  if(is.null(targetTable)){
+    message("Targets table not found")
+    targetTablePath <- system.file("targetTable.csv",
+                                   package = "MetaboAnnotatoR")
+    targetTable <- read.csv(targetTablePath)
+    write.csv(targetTable, "targetTable.csv", row.names = FALSE)
+    message("Default targetTable file saved in the working directory.")
+    message("Please edit the file and replace it in the function argument.")
+    stop()
+    } else {
+  targets <- read.csv(targetTable)
+  }
 # create table to store global results
 global <- targets
 global[,c("metabolite", "feature.type", "ion.type", "isotope", "mz.metabolite",
@@ -60,11 +103,19 @@ dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
 DirPath <- paste(mainDir, "/", subDir, "/", sep = "")
 
 # load libraries --------------------
-message("Importing libraries...")
-libfiles <- list.files(path = paste("./Libraries/",libs,"/", ESImode, sep = ""),
-                       full.names = TRUE)
+if(file.exists("./Libraries/")){
+  message("Loading user-defined libraries...")
+  libfiles <- list.files(path = paste("./Libraries/",libs,"/",
+                                      ESImode, sep = ""), full.names = TRUE)
+} else {
+  message("Loading default libraries...")
+  defaultLibPath <- system.file(paste("/Libraries/",libs,"/",ESImode, sep = ""),
+                             package = "MetaboAnnotatoR")
+  libfiles <- list.files(defaultLibPath, full.names = TRUE)
+}
+
 # check.names=FALSE to use the original header names in the annotations:
-lib <- sapply(libfiles, read.csv, header = TRUE, sep=",", check.names = FALSE)
+lib <- lapply(libfiles, read.csv, header = TRUE, sep=",", check.names = FALSE)
 
 # evaluate if one or more samples are to be read-----------
 if(length(unique(targets[,3])) == 1){
@@ -72,17 +123,22 @@ if(length(unique(targets[,3])) == 1){
   if(filetype == "mzML"){
 	  data.path <- paste("./", targets[1,3], ".mzML", sep = "")
 	  # separate the two MS functions
-	  xcmsF1 <- xcms::readMSData(data.path, msLevel. = 1, mode = "onDisk")
-	  xcmsF2 <- xcms::readMSData(data.path, msLevel. = 2, mode = "onDisk")
-	  # this is necessary to enable xcms to read from MS2 scans
+	  xcmsF1 <- MSnbase::readMSData(data.path, msLevel. = 1, mode = "onDisk")
+	  xcmsF2 <- MSnbase::readMSData(data.path, msLevel. = 2, mode = "onDisk")
+	  if(nCE > 1){
+	    maxCE <- max(xcmsF2@featureData@data$collisionEnergy)
+	    highCEscans <- which(xcmsF2@featureData@data$collisionEnergy == maxCE)
+	    xcmsF2@featureData@data <- xcmsF2@featureData@data[highCEscans,]
+	  }
+	  # this is necessary to enable XCMS to read from MS2 scans
 	  xcmsF2@featureData@data$msLevel <- 1
 	}
   if(filetype == "CDF"){
 	  data.path <- paste("./", targets[1,3], "01.CDF", sep = "")
 	  data.path2 <- paste("./", targets[1,3], "02.CDF", sep = "")
 	  # read the two MS functions
-	  xcmsF1 <- xcms::readMSData(data.path, mode = "onDisk")
-	  xcmsF2 <- xcms::readMSData(data.path2, mode = "onDisk")
+	  xcmsF1 <- MSnbase::readMSData(data.path, mode = "onDisk")
+	  xcmsF2 <- MSnbase::readMSData(data.path2, mode = "onDisk")
 	}
   # try to use same centwave parameters for both no- and high-collision scans
   cwp <- xcms::CentWaveParam(snthresh = xcmsOptions[3,2],
@@ -103,16 +159,16 @@ for (i in 1:dim(targets)[1]){
 	  if(filetype == "mzML"){
 		  data.path <- paste("./", targets[i,3], ".mzML", sep = "")
 	  # separate the two MS functions
-		  xcmsF1 <- xcms::readMSData(data.path, msLevel. = 1, mode = "onDisk")
-		  xcmsF2 <- xcms::readMSData(data.path, msLevel. = 2, mode = "onDisk")
+		  xcmsF1 <- MSnbase::readMSData(data.path, msLevel. = 1, mode = "onDisk")
+		  xcmsF2 <- MSnbase::readMSData(data.path, msLevel. = 2, mode = "onDisk")
 		  xcmsF2@featureData@data$msLevel <- 1
 	}
 	if(filetype == "CDF"){
 		data.path <- paste("./", targets[i,3], "01.CDF", sep = "")
 		data.path2 <- paste("./", targets[i,3], "02.CDF", sep = "")
 	# read the two MS functions
-		xcmsF1 <- xcms::readMSData(data.path, mode = "onDisk")
-		xcmsF2 <- xcms::readMSData(data.path2, mode = "onDisk")
+		xcmsF1 <- MSnbase::readMSData(data.path, mode = "onDisk")
+		xcmsF2 <- MSnbase::readMSData(data.path2, mode = "onDisk")
 	}
 	  # try to use same centwave parameters for both no- and high-collision scans
 	  cwp <- xcms::CentWaveParam(snthresh = xcmsOptions[3,2],
@@ -138,7 +194,7 @@ for (i in 1:dim(targets)[1]){
 	message("Obtaining pseudo-MS/MS spectrum...")
 	try(
 	  specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
-	                         filetype = filetype, CE = 1, cthres1 = corThresh,
+	                         filetype = filetype, nCE = 1, cthres1 = corThresh,
 	                         cthres2 = corThresh, plotResults = TRUE, SpName,
 	                         DirPath)
 	)
@@ -177,13 +233,12 @@ for (i in 1:dim(targets)[1]){
 	   length(unlist(candidates)) == 0) {
 	  result <- NULL
 	} else {
-	message("Comparing pseudo MS/MS and high collision energy MS
-	        with candidate(s) fragments...")
+	message("Mathing candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
 	output <- mapply(compFrag,
 	                 candidates,
 	                 lapply(as.numeric(names(candidates)), function(x) lib[[x]]),
 	                 MoreArgs = list(fmz, frt, iso, highCESpec,
-	                                 pseudoSpec, tolerance = tolerance,
+	                                 pseudoSpec,
 	                                 maxMZdiff = maxMZdiff,
 	                                 matchWeight = matchWeight),
 	                 SIMPLIFY = FALSE)
@@ -295,5 +350,5 @@ for (i in 1:dim(targets)[1]){
 	write.csv(xcmsOptions,
 	          file = paste(mainDir, "/", subDir, "/", "XCMS_options",
 	                       ".csv", sep = ""), row.names = FALSE)
-message('Job done!')
+message("Job done!")
 }

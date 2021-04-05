@@ -1,15 +1,18 @@
-#' Function checkIsotope
-#' checks the type of isotope of the input feature
-#' returns the "tag" of the isotope from an isotopic series
-#' fmz: feature m/z
-#' frt: feature RT in seconds
-#' specObject: indicates if spObject contains XCMS peaks ("raw")
-#' or a RAMClustR pseudo-MS/MS spectrum ("cluster")
-#' mztol: absolute tolerance for feature m/z search
-#' rttol: absolute tolerance for feature RT search
-#' Goncalo Graca and Yuheng Cai (Rene) (Imperial College London)
+#' Isotopologue type check.
+#'
+#' Checks the type of isotope of the input feature.
+#'
+#' @author Goncalo Graca and Yuheng (Rene) Cai (Imperial College London)
+#'
+#' @param fmz Feature m/z.
+#' @param frt Feature RT in seconds.
+#' @param specObject Indicates if spObject contains XCMS peaks ("raw") or a
+#' RAMClustR pseudo-MS/MS spectrum ("cluster").
+#' @param mztol Absolute tolerance for feature m/z search in Da.
+#' @param rttol Absolute tolerance for feature RT search in seconds.
+#' @return A "tag" of the isotope from an isotopic series as 0, 1, 2 or 3 for
+#' M+0, M+1, M+2 and M+3, respectively.
 #' @export
-
 checkIsotope <- function(fmz, frt, spec, rttol = 5, mztol = 0.01){
   iso <- 0
   if(sum(abs(spec[,"mz"] - (fmz - 1.0034)) < mztol) > 0) {

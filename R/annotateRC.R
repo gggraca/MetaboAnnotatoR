@@ -1,23 +1,34 @@
-#' Function annotateRC for LC-MSE datasets processed using RAMClusteR
+#' Annotation of features using LC-MS AIF datasets processed using RAMClusteR.
+#'
 #' Search possible matches of a feature in Lipid fragments and other
-#' small molecule libraries
-#' returns a ranked list of candidates for the feature annotation as .csv file
-#' Arguments:
-#' targetTable: a .csv file containing the list of features to annotate and the
-#' name of the files containing the raw data
-#' ramclustObj: RAMClustR object with MSe recontructions (clusters)
-#' ESImode: ionization mode: 'POS' for positive (default) or 'NEG' for negative
-#' libs: fragments library: 'Lipids' (default) or
-#' Metabolites' for other small molecules
-#' RTfile: .csv file with Lipid/metabolites classes RT information (optional)
-#' checkIsotope: whether or not to check the isotope type
-#' default is to check (TRUE)
-#' tolerance: tolerance for the candidate search in ppm
-#' maxMZdiff: absolute m/z error for matching and search
-#' ncandidates: maximum number of candidates to plot
-#' Goncalo Graca & Yuheng Cai (Imperial College London)
+#' small molecule libraries.
+#'
+#' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
+#'
+#' @param targetTable A csv file containing the list of features to annotate.
+#' @param xcmsObject XCMS object containing the processed AIF datasets.
+#' @param ramclustObj RAMClustR object with parent-fragment reconstructions.
+#' (clusters).
+#' @param ESImode Ionization mode: 'POS' for positive (default) or 'NEG'
+#' for negative ionisation modes.
+#' @param libs Fragment library to use: 'Lipids' (default) or 'Metabolites'
+#' for other small molecules.
+#' @param RTfile optional csv file with Lipid/metabolites classes Retention
+#' Times in seconds
+#' @param checkIsotope Whether or not to check the isotope type;
+#' default is set to TRUE.
+#' @param tolerance Tolerance in ppm for the candidate search.
+#' @param maxMZdiff Maximum m/z difference between candidate fragments and
+#' pseudo-MS/MS or AIF ions in Da.
+#' @param matchWeight weight of the fragment matches to the final score;
+#' value between 0 and 1; the remaining fraction of the weight comes from the
+#' candidate m/z error.
+#' @param ncandidates Maximum number of candidates to plot and store.
+#' @return For each feature in the targeTable the will return a ranked list of
+#' annotations, a plot pseudo-MS/MS spectrum for the matched ions,
+#' a targeTable annotated with rank 1 annotations and a table with the options
+#' used for the function.
 #' @export
-
 annotateRC <- function(targetTable,
                        xcmsObject,
                        ramclustObj,
@@ -47,14 +58,6 @@ global[,c("metabolite", "feature.type", "ion.type", "isotope",
 		RTs <- read.csv(RTfile,header=TRUE)
 	}
 
-# load libraries --------------------
-message("Importing libraries...")
-libfiles <- list.files(
-  path = paste("./Libraries/", libs, "/", ESImode, sep = ""), full.names = TRUE)
-
-# check.names=FALSE to use the original header names in the annotations
-lib <- lapply(libfiles, read.csv, header = TRUE, sep = ",", check.names = FALSE)
-
 # Create directory to store the results
 mainDir <- "./Annotations"
 Date <- Sys.Date()
@@ -64,6 +67,21 @@ subDir <- paste(libs, "_", ESImode, "_", "RAMClustR", "_",
                 Date, "_", Time, sep = "")
 dir.create(file.path(mainDir), showWarnings = FALSE)
 dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
+
+# load libraries --------------------
+if(file.exists("./Libraries/")){
+  message("Loading user-defined libraries...")
+  libfiles <- list.files(path = paste("./Libraries/",libs,"/",
+                                      ESImode, sep = ""), full.names = TRUE)
+} else {
+  message("Loading default libraries...")
+  defaultLibPath <- system.file(paste("/Libraries/",libs,"/",ESImode, sep = ""),
+                                package = "MetaboAnnotatoR")
+  libfiles <- list.files(defaultLibPath, full.names = TRUE)
+}
+
+# check.names=FALSE to use the original header names in the annotations:
+lib <- lapply(libfiles, read.csv, header = TRUE, sep=",", check.names = FALSE)
 
 
 for (i in 1:dim(targets)[1]){
@@ -99,13 +117,13 @@ for (i in 1:dim(targets)[1]){
 	   length(unlist(candidates))== 0) {
 	  result <- NULL
 	} else {
-	message("Comparing pseudo MS/MS and high collision
-	        energy MS with candidate(s) fragments...")
+	message("Mathing candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
 	output <- mapply(compFrag, candidates,
 	                 lapply(as.numeric(names(candidates)),function(x) lib[[x]]),
 	                 MoreArgs = list(fmz, frt, iso, highCESpec, pseudoSpec,
-                                 tolerance = tolerance, maxMZdiff == maxMZdiff,
-                                 matchWeight = matchWeight), SIMPLIFY = FALSE)
+                                 maxMZdiff = maxMZdiff,
+                                 matchWeight = matchWeight),
+	                 SIMPLIFY = FALSE)
 
 	result <- do.call(rbind, lapply(output, "[[", 1))
 	specMatch <- unlist(lapply(output, "[[", 2), recursive = FALSE)
