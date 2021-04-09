@@ -1,6 +1,6 @@
 Package: MetaboAnnotatoR
 Title: Automated Annotation of All-Ion Fragmentation LC-MS Metabolomic Features
-Version: 0.1.0
+Version: 0.2.0
 Date: 2021-04-05
 Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
            email = "g.gomes-da-graca@imperial.ac.uk", comment = c(ORCID = "0000-0002-0876-3876")),
@@ -11,7 +11,6 @@ Depends:
   xcms (>= 3.0.0), 
   RAMClustR (>= 1.0.6)
 Imports:
-  mzR, 
   MSnbase (>= 2.16.1),
   ggplot2 (>= 3.3.3), 
   gridExtra (>= 2.3)
