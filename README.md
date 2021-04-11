@@ -33,7 +33,7 @@ The following function will place three example files as described above in the 
 ```
 getDemoData()
 ```
-The dataset used consists of a lipidomics dataset acquired in ESI positive mode. It contains lipids and lipid-like molecules.
+The dataset used consists of a lipidomics (reverse-phase chromatography) dataset acquired in ESI-MS positive mode. It contains both lipids and lipid-like molecules.
 
 The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules.
 
