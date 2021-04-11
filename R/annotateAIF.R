@@ -59,8 +59,7 @@ if (file.exists("XCMS_options.csv")) {
   if(answer == "n"){
     xcmsOptionsPath <- system.file("XCMS_options.csv",
                                    package = "MetaboAnnotatoR")
-    xcmsOptions <- read.csv(xcmsOptionsPath)
-    write.csv(xcmsOptions, "XCMS_options.csv", row.names = FALSE)
+    file.copy(from = xcmsOptionsPath, to = getwd())
     message("Default  XCMS options file saved in the working directory")
     stop("Please edit the file and re-run.")
   }
@@ -71,8 +70,7 @@ if (file.exists("XCMS_options.csv")) {
     message("Targets table not found")
     targetTablePath <- system.file("targetTable.csv",
                                    package = "MetaboAnnotatoR")
-    targetTable <- read.csv(targetTablePath)
-    write.csv(targetTable, "targetTable.csv", row.names = FALSE)
+    file.copy(from = targetTablePath, to = getwd())
     message("Default targetTable file saved in the working directory.")
     message("Please edit the file and replace it in the function argument.")
     stop()
