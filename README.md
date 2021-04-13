@@ -4,7 +4,7 @@
 This R package is designed to perform metabolite annotation of features from LC-MS All-ion fragmentation (AIF) datasets, using ion fragment databases.
 It requires raw LC-MS AIF chromatograms acquired/transformed in centroid mode or processed data outputs obtained using [RAMClustR](cbroeckl/RAMClustR/). 
 
-<h3> Instalation instructions </h3>
+<h3> Installation instructions </h3>
 
 To install via Github, run the following code in R console:
 ```
