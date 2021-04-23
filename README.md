@@ -40,7 +40,7 @@ The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids
 Let's start the annotation by searching the Lipid libraries:
 
 ```
-annotateAIF(targetTable = targetTable.csv, 
+annotateAIF(targetTable = "targetTable.csv", 
   filetype = "mzML", 
   libs = "Lipids",
   ESImode = "POS",
@@ -58,7 +58,7 @@ Some fetures will remain unannotated, which means that no matching compound was 
 We can now try to use the small molecule libraries to annotate :
 
 ```
-annotateAIF(targetTable = targetTable.csv, 
+annotateAIF(targetTable = "targetTable.csv", 
   filetype = "mzML", 
   libs = "Metabolites",
   ESImode = "POS",
