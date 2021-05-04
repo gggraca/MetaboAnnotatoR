@@ -49,7 +49,7 @@ annotateAIF(targetTable = "targetTable.csv",
   corThresh = 0.7,
   checkIsotope = TRUE)
 ```
-A new folder will be automatically created in the working directory called  'Annotation', were annotation results will be stored.
+A new folder will be automatically created in the working directory called  'Annotations', were annotation results will be stored.
 This folder contains several files. Annotation results are stored in .csv files for each feature. The annotated 'targetTable' 
 can be found in the 'Global_Results.csv' file. Graphical results are stored as .pdf files in the same folder.
 
