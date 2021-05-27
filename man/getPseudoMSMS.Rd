@@ -16,6 +16,7 @@ getPseudoMSMS(
   cthres1 = 0.9,
   cthres2 = 0.8,
   plotResults = TRUE,
+  savePseudoMSMS = TRUE,
   SpName = "LCMS",
   DirPath = paste(getwd(), "/", sep = "")
 )
@@ -46,6 +47,9 @@ ions related to the feature of interest.}
 
 \item{plotResults}{Logical argument indicate if the EICs and pseudo
 in-source MS spectrum plots should be saved to disk.}
+
+\item{savePseudoMSMS}{Logical argument indicate if the pseudo MS/MS should
+be saved to disk as .csv}
 
 \item{scanfreq}{MS scanning frequency in seconds calculated as a the
 difference between two consecutive low and high collision energy scans using
