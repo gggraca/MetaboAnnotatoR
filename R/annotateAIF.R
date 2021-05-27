@@ -193,8 +193,8 @@ for (i in 1:dim(targets)[1]){
 	try(
 	  specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	                         filetype = filetype, nCE = 1, cthres1 = corThresh,
-	                         cthres2 = corThresh, plotResults = TRUE, SpName,
-	                         DirPath)
+	                         cthres2 = corThresh, plotResults = TRUE, 
+	                         savePseudoMSMS = TRUE, SpName, DirPath)
 	)
 
 	if(exists("specs")){
