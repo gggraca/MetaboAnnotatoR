@@ -20,6 +20,8 @@
 #' ions related to the feature of interest.
 #' @param plotResults Logical argument indicate if the EICs and pseudo
 #' in-source MS spectrum plots should be saved to disk.
+#' @param savePseudoMSMS Logical argument indicate if the pseudo MS/MS should 
+#' be saved to disk as .csv
 #' @param scanfreq MS scanning frequency in seconds calculated as a the
 #' difference between two consecutive low and high collision energy scans using
 #' the information contained in xcmsF1 and xcmsF2 objects
@@ -32,7 +34,8 @@
 #' @export
 getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
                           filetype = filetype, nCE = 1, cthres1 = 0.9,
-                          cthres2 = 0.8, plotResults = TRUE, SpName = "LCMS",
+                          cthres2 = 0.8, plotResults = TRUE, 
+                          savePseudoMSMS = TRUE, SpName = "LCMS",
                           DirPath = paste(getwd(), "/", sep ="")){
   # create objects to store results from EIC correlations and peak-picking
   # improves object handling in other functions
@@ -253,6 +256,14 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
               "mz_", round(frt), "s", ".pdf", sep = ""), height = 8, width = 12)
     gridExtra::grid.arrange(p1, p2, p3, p4, nrow = 2)
     dev.off()
+    
+    if(savePseudoMSMS){
+      if(!is.null(aif)) {
+        write.csv(df4, paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
+                             round(fmz, 3), "mz_",round(frt),"s", 
+                             ".csv", sep = ""))
+      }
+    }
 
 	} else {
 
