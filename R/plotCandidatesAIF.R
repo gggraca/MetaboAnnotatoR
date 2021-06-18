@@ -51,8 +51,8 @@ if(nrow(specMatch) >= 1){
     ggplot2::geom_line() +
     ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)", colour = "fragments") +
     ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),"s,",
-                    "Rank", rnk, "result:", adductName, ", \u0394ppm =",
-                    MZerror, ", score =", round(score, 2))) +
+                    "Rank", rnk, "result:", adductName, ", mz.error =",
+                    MZerror, "ppm", ", score =", round(score, 2))) +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
   df2 <- as.data.frame(specMatch[,c("mz", "into")])
