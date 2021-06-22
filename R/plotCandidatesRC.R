@@ -38,7 +38,7 @@ p1 <- ggplot2::ggplot(df1,
   ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0), color="red", lwd=0.5) +
   ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
   ggplot2::ggtitle(paste("Feature ", round(fmz,4), "m/z", "_", round(frt,4),
-      "s ", ", Rank ", rnk, " result: ", adductName, ", mz.error =", MZerror,
+      "s ", ", Rank ", rnk, " result: ", adductName, ", mz.error = ", MZerror,
       " ppm, ", "score = ", round(score, 2), sep = "")) +
   ggplot2::theme_minimal() +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
