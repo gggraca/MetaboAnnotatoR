@@ -34,7 +34,7 @@ Times in seconds.}
 
 \item{nCE}{Number of Collision Energy levels depending on the MS system used
 Waters, Bruker (QToF) and Thermo Orbitrap = 1, Agilent (QToF) > 1, however,
-only the highest energy level will be considered}
+only the highest energy level will be considered.}
 
 \item{corThresh}{Pearson correlation coefficient for EIC correlation.}
 
