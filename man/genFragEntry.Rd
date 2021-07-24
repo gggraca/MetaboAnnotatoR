@@ -3,7 +3,7 @@
 \name{genFragEntry}
 \alias{genFragEntry}
 \title{Function to generate metabolite database entries from MS/MS spectra
-obtained from from public databases, stored as a .txt object containing
+obtained from from public databases, stored as a .txt file containing
 m/z and intensity values, and read imported into R as matrix}
 \usage{
 genFragEntry(
@@ -50,7 +50,7 @@ occurrence scores.
 }
 \description{
 Function to generate metabolite database entries from MS/MS spectra
-obtained from from public databases, stored as a .txt object containing
+obtained from from public databases, stored as a .txt file containing
 m/z and intensity values, and read imported into R as matrix
 }
 \author{
