@@ -16,7 +16,7 @@
 #' Times in seconds.
 #' @param nCE Number of Collision Energy levels depending on the MS system used
 #' Waters, Bruker (QToF) and Thermo Orbitrap = 1, Agilent (QToF) > 1, however,
-#' only the highest energy level will be considered
+#' only the highest energy level will be considered.
 #' @param corThresh Pearson correlation coefficient for EIC correlation.
 #' @param checkIsotope Whether or not to check the isotope type;
 #' default is set to TRUE
