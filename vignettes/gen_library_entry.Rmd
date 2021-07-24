@@ -1,0 +1,57 @@
+---
+title: "Generate Metabolite library entries for MetaboAnnotatoR package"
+author: "Gonçalo Graça"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{generate library entry}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## This vignette illustrates how to generate a metabolite library entry from an experiemntal MS/MS spectrum
+
+First load library and dependencies:
+
+```{r, eval = FALSE}
+library(MetaboAnnotatoR)
+```
+
+### Read the MS/MS spectrum
+
+First we read the spectrum saved as .txt into R. In this example we will use the MS/MS spectrum of D-Pantothenic Acid [M+H]+ adduct
+from MassBank (accession code: PR100295). This file has been included in as example data folder of MetaboAnnotatoR:
+
+```{r, eval = FALSE}
+spec <- system.file("/Data/Pantothenic_acid_pos.txt", package = "MetaboAnnotatoR")
+specObject <- read.table(spec, header=FALSE)
+```
+
+
+### Generate library entry
+
+We can then convert the spectra into a library entry by using function genFragEntry.
+This function will attribute occurrence scores to the peaks above 'mpeaksThres' threshold ("marker peaks") and above the noise level.
+Note that metabolite name, adduct name, accurate adduct m/z and output filename need to be explicitly defined.
+The peak-picking parameters 'noise' and 'mpeaksThres' and the occurrence scores used here are the default parameters.
+
+```{r, eval = FALSE}
+genFragEntry(specObject, 
+             "Pantothenic acid",
+             "[M+H]+",
+             220.1179,
+             "Pantothenic_acid_pos.csv",
+             noise = 0.005,
+             mpeaksScore = 0.9, 
+             mpeaksThres = 0.1,
+             mzTol = 0.01)
+```
+
+A .csv file named "Pantothenic_acid_pos.csv" will be generated in the working directory. This should be added to the local "Libraries" folder, under the path /Libraries/Metabolites/POS.

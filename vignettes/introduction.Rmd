@@ -1,0 +1,81 @@
+---
+title: "Introduction to MetaboAnnotatoR package"
+author: "Gonçalo Graça"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Example session
+
+An example of usage using one LC-MS AIF chromatogram is illustrated here.
+First load library and dependencies:
+
+```{r, eval = FALSE}
+library(MetaboAnnotatoR)
+```
+
+### Setting the files needed to run the LC-MS AIF annotations
+
+As an input the software requires three files, that should be present in the working directory:
+
+1. A .csv file containing the features to be annotated (targetTable.csv - the file name can be changed);
+1. A .csv file containing the XCMS peak-picking options (XCMS_options.csv);
+1. A a raw chromatogram file in .mzML format containing low and high (AIF) collision energy scans or two .netCDF files, 
+each one containing the low or high collision energy scans. 
+
+The following function will place three example files as described above in the user working directory:
+```{r, eval = FALSE}
+getDemoData()
+```
+
+The dataset used consists of a lipidomics (reverse-phase chromatography) dataset acquired in ESI-MS positive mode. It contains both lipids and lipid-like molecules.
+
+The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules.
+
+### Annotations using the Lipid libraries
+
+Let's start the annotation by searching the Lipid libraries:
+
+```{r, eval = FALSE}
+annotateAIF(targetTable = "targetTable.csv", 
+  filetype = "mzML", 
+  libs = "Lipids",
+  ESImode = "POS",
+  RTfile = "none",
+  nCE = 1,
+  corThresh = 0.7,
+  checkIsotope = TRUE)
+```
+A new folder will be automatically created in the working directory called  'Annotations', were annotation results will be stored.
+This folder contains several files. Annotation results are stored in .csv files for each feature. The annotated 'targetTable' 
+can be found in the 'Global_Results.csv' file. Graphical results are stored as .pdf files in the same folder.
+
+Some fetures will remain unannotated, which means that no matching compound was found in the lipids library. 
+
+### Annotations using the non-lipid Metabolites libraries
+
+We can now try to use the non-lipid molecule libraries to annotate :
+
+```{r, eval = FALSE}
+annotateAIF(targetTable = "targetTable.csv", 
+  filetype = "mzML", 
+  libs = "Metabolites",
+  ESImode = "POS",
+  RTfile = "none",
+  nCE = 1,
+  corThresh = 0.7,
+  checkIsotope = TRUE)
+```
+
+The libraries used in the example are the default 'Lipids' and 'Metabolites' libraries provided with the package.
