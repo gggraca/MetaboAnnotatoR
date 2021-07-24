@@ -15,56 +15,7 @@ library(devtools)
 install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE)
 ```
 
-<h3> Example session </h3>
-An example of usage using one LC-MS AIF chromatogram is provided below.
+<h3> Vignettes </h3>
+An example of usage using one LC-MS AIF chromatogram is provided in the [introductory vignette](/vignettes/introduction.html).
+An illustration of the generation of Metabolite database records for MetaboAnnotatoR is given [here](/vignettes/gen_library_entry.html).
 
-First load the package and dependencies:
-```
-library(MetaboAnnotatoR)
-```
-As an input the software requires three files, that should be present in the working directory:
-
-1. A .csv file containing the features to be annotated (targetTable.csv - the file name can be changed);
-2. A .csv file containing the XCMS peak-picking options (XCMS_options.csv);
-3. A a raw chromatogram file in .mzML format containing low and high (AIF) collision energy scans or two .netCDF files, 
-each one containing the low or high collision energy scans. 
-
-The following function will place three example files as described above in the user working directory:
-```
-getDemoData()
-```
-The dataset used consists of a lipidomics (reverse-phase chromatography) dataset acquired in ESI-MS positive mode. It contains both lipids and lipid-like molecules.
-
-The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules.
-
-Let's start the annotation by searching the Lipid libraries:
-
-```
-annotateAIF(targetTable = "targetTable.csv", 
-  filetype = "mzML", 
-  libs = "Lipids",
-  ESImode = "POS",
-  RTfile = "none",
-  nCE = 1,
-  corThresh = 0.7,
-  checkIsotope = TRUE)
-```
-A new folder will be automatically created in the working directory called  'Annotations', were annotation results will be stored.
-This folder contains several files. Annotation results are stored in .csv files for each feature. The annotated 'targetTable' 
-can be found in the 'Global_Results.csv' file. Graphical results are stored as .pdf files in the same folder.
-
-Some fetures will remain unannotated, which means that no matching compound was found in the lipids library. 
-
-We can now try to use the small molecule libraries to annotate :
-
-```
-annotateAIF(targetTable = "targetTable.csv", 
-  filetype = "mzML", 
-  libs = "Metabolites",
-  ESImode = "POS",
-  RTfile = "none",
-  nCE = 1,
-  corThresh = 0.7,
-  checkIsotope = TRUE)
-```
-The libraries used in the example are the default 'Lipids' and 'Metabolites' libraries provided with the package.
