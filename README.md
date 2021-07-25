@@ -16,5 +16,5 @@ install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE)
 ```
 
 ## Vignettes
-An example of usage using one LC-MS AIF chromatogram is provided in the [introductory vignette](/vignettes/introduction.html).
-An illustration of the generation of Metabolite database records for MetaboAnnotatoR is given [here](/vignettes/gen_library_entry.html).
+An example of usage using one LC-MS AIF chromatogram is provided in the [introductory vignette](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/introduction.html).
+An illustration of the generation of Metabolite database records for MetaboAnnotatoR is given [here](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/gen_library_entry.html).
