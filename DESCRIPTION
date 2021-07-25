@@ -1,9 +1,9 @@
 Package: MetaboAnnotatoR
 Title: Automated Annotation of All-Ion Fragmentation LC-MS Metabolomic Features
-Version: 0.6.0
-Date: 2021-07-24
+Version: 1.0.0
+Date: 2021-07-25
 Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
-           email = "g.gomes-da-graca@imperial.ac.uk", comment = c(ORCID = "0000-0002-0876-3876")),
+           email = "g.gomes-da-graca@imperial.ac.uk", comment = c(ORCID = "https://orcid.org/0000-0002-0876-3876")),
       person(given = "Yuheng (Rene)", family = "Cai", role = c("aut"), email = "rene.cai@unc.edu"),
       person(given = "Timothy", family = "Ebbels", role = c("aut"), email = "t.ebbels@imperial.ac.uk"))
 Description: Performs feature annotations on LC-MS All-ion fragmentation datasets using fragment ion libraries.
