@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## This vignette illustrates how to generate a metabolite library entry from an experiemntal MS/MS spectrum
+## This vignette illustrates how to generate a metabolite library entry from an experimental MS/MS spectrum
 
 First load library and dependencies:
 
