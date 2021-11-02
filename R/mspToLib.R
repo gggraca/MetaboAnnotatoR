@@ -60,5 +60,14 @@ getMSPdetails <- function(x){
 }
 
 libs <- lapply(1:length(n), function(x) getMSPdetails(x))
-
+               
+l <- lapply(1:length(libs), function(x) genFragEntry(specObject = libs[[x]]$MSMS,
+                                                     name = libs[[x]]$metabolite,
+                                                     adduct = libs[[x]]$type,
+                                                     tmz = libs[[x]]$precursor,
+                                                     filename = paste(libs[[x]]$metabolite, ".csv", spe = ""),
+                                                     noise = 0.005,
+                                                     mpeaksScore = 0.9, 
+                                                     mpeaksThres = 0.1,
+                                                     mzTol = 0.01))
 }
