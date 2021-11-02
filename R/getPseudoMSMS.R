@@ -262,6 +262,26 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
         write.csv(df4, paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
                              round(fmz, 3), "mz_",round(frt),"s", 
                              ".csv", sep = ""))
+	# save in .mgf format
+	# based on the definition from... 
+	# https://fiehnlab.ucdavis.edu/projects/lipidblast/mgf-files
+	# and
+	# http://www.matrixscience.com/help/data_file_help.html
+	mz <- c(189.48956,283.62076,301.22977,311.08008,399.99106)
+	int <- c(1.9,3.4,66.3,1.3,2.3)
+	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
+                             round(fmz, 3), "mz_",round(frt),"s", 
+                             ".mgf", sep = ""))
+	charge <- "1+" #need to check how to extract from xcmsF1 or xcmsF2
+	cat("BEGIN IONS",
+	    paste("PEPMASS=", fmz, sep = ""),
+	    paste("CHARGE=", charge, sep = ""),
+	    paste("TITLE=", "Pseudo-MS/MS from AIF at", frt, "seconds"),
+	    sep = "\n", file = fname)
+	for(i in 1:length(df4$mz)){
+		cat(paste(df4$mz[i], " ", df4$into[i], sep = ""), "\n", file = fname, append = TRUE)
+	}
+	cat("END IONS", "\n", file = fname, append = TRUE)
       }
     }
 
