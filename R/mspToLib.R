@@ -1,8 +1,8 @@
 # Function to get .msp to list and list to individual .csv
 # Read .msp first
 
-mspToLib <- function() {
-m <- readLines("MassBank_NIST.msp")
+mspToLib <- function(msp_file) {
+m <- readLines(msp_file)
 
 #get names of all metabolites
 n <- grep("Name:", m)
