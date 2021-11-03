@@ -1,6 +1,12 @@
-# Function to get .msp to list and list to individual .csv
-# Read .msp first
-
+#' Function to generate metabolite database entries from MS/MS spectra 
+#' obtained from from an .msp file
+#' 
+#' @author Goncalo Graca (Imperial College London)
+#' 
+#' @param msp_file an MS/MS spectral library for spectra from one or both polarities
+#' @return A .csv file containing fragment and parent m/z values and corresponding 
+#' occurrence scores.
+#' @export
 mspToLib <- function(msp_file) {
 m <- readLines(msp_file)
 
@@ -60,12 +66,14 @@ getMSPdetails <- function(x){
 }
 
 libs <- lapply(1:length(n), function(x) getMSPdetails(x))
-               
+
+# all records to the same folder...
+# needs changes sort records automatically...
 l <- lapply(1:length(libs), function(x) genFragEntry(specObject = libs[[x]]$MSMS,
                                                      name = libs[[x]]$metabolite,
                                                      adduct = libs[[x]]$type,
                                                      tmz = libs[[x]]$precursor,
-                                                     filename = paste(libs[[x]]$metabolite, ".csv", spe = ""),
+                                                     filename = paste(libs[[x]]$metabolite, ".csv", sep = ""),
                                                      noise = 0.005,
                                                      mpeaksScore = 0.9, 
                                                      mpeaksThres = 0.1,
