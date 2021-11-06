@@ -271,7 +271,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	int <- c(1.9,3.4,66.3,1.3,2.3)
 	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
                              round(fmz, 3), "mz_",round(frt),"s", 
-                             ".mgf", sep = ""))
+                             ".mgf", sep = "")
 	charge <- "1+" #need to check how to extract from xcmsF1 or xcmsF2
 	cat("BEGIN IONS",
 	    paste("PEPMASS=", fmz, sep = ""),
