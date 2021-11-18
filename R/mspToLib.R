@@ -7,75 +7,124 @@
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
 #' @export
-mspToLib <- function(msp_file) {
-m <- readLines(msp_file)
-
-#get names of all metabolites
-n <- grep("Name:", m)
-names <- unlist(lapply(n, function(x) substring(m[x], 7, nchar(m[x]))))
-
-# get number of peaks per MS/MS record
-np <- grep("Num Peaks:", m)
-names <- unlist(lapply(n, function(x) substring(m[x], 7, nchar(m[x]))))
-npeaks <- unlist(lapply(np, function(x) substring(m[x], 11, nchar(m[x]))))
-npeaks <- as.numeric(npeaks)
-
-# get all ion modes
-im <- grep("Ion_mode:", m)
-ion_modes <- unlist(lapply(im, function(x) substring(m[x], 11, nchar(m[x]))))
-
-getMSPdetails <- function(x){
-  # get block of text
-  c <- m[n[x]:np[x]]
+mspToLib <- function(msp_file,
+                     noise = 0.005,
+                     mpeaksScore = 0.9, 
+                     mpeaksThres = 0.1,
+                     mzTol = 0.01) {
+  m <- readLines(msp_file, warn = FALSE)
   
-  # get precursor m/z
-  pmz <- grep("PrecursorMZ:", c)
-  if(length(pmz) == 0) precursor_mz <- NA else {
-    precursor_mz <- substring(c[pmz], 14, nchar(c[pmz]))
-    precursor_mz <- as.numeric(precursor_mz)
+  #get names of all metabolites
+  n <- grep("Name:", m)
+  names <- unlist(lapply(n, function(x) substring(m[x], 7, nchar(m[x]))))
+  
+  # get number of peaks per MS/MS record
+  np <- grep("Num Peaks:", m)
+  npeaks <- unlist(lapply(np, function(x) substring(m[x], 11, nchar(m[x]))))
+  npeaks <- as.numeric(npeaks)
+  
+  # get all ion modes
+  im <- grep("Ion_mode:", m)
+  ion_modes <- unlist(lapply(im, function(x) substring(m[x], 11, nchar(m[x]))))
+  
+  getMSPdetails <- function(x){
+    # get block of text
+    c <- m[n[x]:np[x]]
+    
+    # get precursor m/z
+    pmz <- grep("PrecursorMZ:", c)
+    if(length(pmz) == 0) precursor_mz <- NA else {
+      precursor_mz <- substring(c[pmz], 14, nchar(c[pmz]))
+      precursor_mz <- as.numeric(precursor_mz)
+    }
+    
+    # get ion mode
+    im <- grep("Ion_mode:", c)
+    if(length(im) == 0) ion_mode <- NA else {
+      ion_mode <- substring(c[im], 11, nchar(c[im]))
+    }
+    
+    # get Precursor_type:
+    pt <- grep("Precursor_type:", c)
+    if(length(pt) == 0) ptype <- NA else {
+      ptype <- substring(c[pt], 17, nchar(c[pt]))
+    }
+    
+    # get MS/MS spectrum
+    # use different strategy...perhaps read line and split elements
+    s <- NULL
+    for(i in 1:npeaks[x]){
+      tmp <- strsplit(m[np[x]+i], split = " ")
+      s <- c(s, as.numeric(tmp[[1]]))
+    }
+    spec <- matrix(s, ncol = 2, byrow = TRUE)
+    # spec <- scan("MassBank_NIST.msp", skip = np[x], nlines = npeaks[x], quiet = TRUE)
+    
+    result <- list(metabolite = names[x],
+                   precursor = precursor_mz,
+                   type = ptype,
+                   ion_mode = ion_mode,
+                   MSMS = spec)
+    return(result)
   }
   
-  # get ion mode
-  im <- grep("Ion_mode:", c)
-  if(length(im) == 0) ion_mode <- NA else {
-    ion_mode <- substring(c[im], 11, nchar(c[im]))
-  }
+  libs <- lapply(1:length(n), function(x) getMSPdetails(x))
   
-  # get Precursor_type:
-  pt <- grep("Precursor_type:", c)
-  if(length(pt) == 0) ptype <- NA else {
-    ptype <- substring(c[pt], 17, nchar(c[pt]))
+  for(i in 1:length(libs)){
+    name <- libs[[i]]$metabolite
+    adduct <- libs[[i]]$type
+    tmz <- libs[[i]]$precursor
+    ion_mode <- libs[[i]]$ion_mode
+    filename <- paste(name,"_",ion_mode,".csv", sep = "")
+    specObject <- libs[[i]]$MSMS
+    
+    # sort and filter m/z values find maximum intensity peak for spectrum
+    if(nrow(specObject)>1){
+      specObject <- specObject[order(-specObject[,1]),]
+    } else NULL
+    
+    # normalisation and normalise spectrum
+    norm.specObject <- specObject
+    norm.specObject[,2] <- specObject[,2]/specObject[which.max(specObject[,2]),2]
+    # denoise spectrum
+    
+    if(nrow(specObject)>1){
+      denoised.spec <- norm.specObject[which(norm.specObject[,2] > noise),]
+    } else denoised.spec <- norm.specObject
+    
+    # locate if parent m/z is present in the list
+    p <- which.min(abs(denoised.spec[,1]-tmz))
+    if(length(p)==0) denoised.spec <- rbind(c(tmz,0),denoised.spec)
+    if(length(p)==1) denoised.spec[p,1] <- tmz
+    
+    # define marker peaks and attribute score
+    scores <- rep(0,nrow(denoised.spec))
+    idx <- which(denoised.spec[,2] >= mpeaksThres)
+    scores[idx] <- mpeaksScore/length(idx)
+    
+    # attribute scores to the remaining peaks
+    idx2 <- which(denoised.spec[,2] < mpeaksThres)
+    scores[idx2] <- (1-mpeaksScore)/length(idx2)
+    
+    # check if score adds to 1, if not recalculate scores
+    if(sum(scores) < 1){
+      scores[idx] <- 1/length(idx)
+    } else NULL
+    
+    # save entry as .csv
+    if(nrow(specObject)>1){
+      result <- rbind(denoised.spec[,1],scores)
+      frag <- rep(NA,(length(scores) - 1))
+      for (i in 1:length(scores)-1){
+        frag[i] <- paste('fragment',i,sep='')
+      }
+      colnames(result) <- c(adduct, frag)
+      rownames(result) <- c(name,'scores')
+    } else if(nrow(specObject) == 1) {
+    result <- rbind(specObject[,1],1)
+    colnames(result) <- adduct
+    rownames(result) <- c(name,'scores')
+  } else NULL
+  write.csv(result, paste(filename,'.csv', sep = ''), row.names = TRUE)
   }
-  
-  # get MS/MS spectrum
-  # use different strategy...perhaps read line and split elements
-  s <- NULL
-  for(i in 1:npeaks[x]){
-    tmp <- strsplit(m[np[x]+i], split = " ")
-    s <- c(s, as.numeric(tmp[[1]]))
-  }
-  spec <- matrix(s, ncol = 2, byrow = TRUE)
-  # spec <- scan("MassBank_NIST.msp", skip = np[x], nlines = npeaks[x], quiet = TRUE)
-  
-  result <- list(metabolite = names[x],
-                 precursor = precursor_mz,
-                 type = ptype,
-                 ion_mode = ion_mode,
-                 MSMS = spec)
-  return(result)
-}
-
-libs <- lapply(1:length(n), function(x) getMSPdetails(x))
-
-# all records to the same folder...
-# needs changes sort records automatically...
-l <- lapply(1:length(libs), function(x) genFragEntry(specObject = libs[[x]]$MSMS,
-                                                     name = libs[[x]]$metabolite,
-                                                     adduct = libs[[x]]$type,
-                                                     tmz = libs[[x]]$precursor,
-                                                     filename = paste(libs[[x]]$metabolite, ".csv", sep = ""),
-                                                     noise = 0.005,
-                                                     mpeaksScore = 0.9, 
-                                                     mpeaksThres = 0.1,
-                                                     mzTol = 0.01))
 }
