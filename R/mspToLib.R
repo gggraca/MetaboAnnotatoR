@@ -4,6 +4,19 @@
 #' @author Goncalo Graca (Imperial College London)
 #' 
 #' @param msp_file an MS/MS spectral library for spectra from one or both polarities
+#' @param noise Noise intensity threshold expressed as a ratio to the peak with
+#' the highest intensity.
+#' @param mpeaksScore The occurrence score to be attributed to the most intense 
+#' peaks of the MS/MS spectrum which should correspond to the most characteristic
+#' fragmentation ions from the metabolite (or 'marker' peaks). These will be the 
+#' peaks above 'mpeaksThres' value. This score is divided by the number of peaks 
+#' above 'mpeaksThres' threshold. By default this value is defined at 0.9, 
+#' which means that peaks below 'mpeaksThres' threshold will be given an 
+#' occurrence score of 0.1, so that the sum of all fragment occurrence scores is 1.
+#' @param mpeaksThres Intensity threshold to select peaks of the MS/MS spectrum 
+#' considered to be highest intensity, expressed as a ratio to the peak 
+#' with the highest intensity.
+#' @param mzTol Absolute tolerance for m/z search in Da.
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
 #' @export
