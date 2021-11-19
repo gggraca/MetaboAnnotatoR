@@ -4,6 +4,8 @@
 #' @author Goncalo Graca (Imperial College London)
 #' 
 #' @param msp_file an MS/MS spectral library for spectra from one or both polarities
+#' @param library_name Custom library name under which POS and NEG folders will be created 
+#' and where the respective libray entries will be stored 
 #' @param noise Noise intensity threshold expressed as a ratio to the peak with
 #' the highest intensity.
 #' @param mpeaksScore The occurrence score to be attributed to the most intense 
@@ -21,10 +23,23 @@
 #' occurrence scores.
 #' @export
 mspToLib <- function(msp_file,
+                     library_name = "Custom",
                      noise = 0.005,
                      mpeaksScore = 0.9, 
                      mpeaksThres = 0.1,
                      mzTol = 0.01) {
+  
+  # create folder to store library
+  if(dir.exists("./Libraries")){
+    dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
+    dirPath <- paste("./Libraries/",library_name, sep="")
+  } else {
+    dir.create("./Libraries/", showWarnings = FALSE)
+    dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
+    dirPath <- paste("./Libraries/",library_name, sep="")
+  }
+    
+  # read msp file
   m <- readLines(msp_file, warn = FALSE)
   
   #get names of all metabolites
@@ -88,7 +103,7 @@ mspToLib <- function(msp_file,
     adduct <- libs[[i]]$type
     tmz <- libs[[i]]$precursor
     ion_mode <- libs[[i]]$ion_mode
-    filename <- paste(name,"_",ion_mode,".csv", sep = "")
+    filename <- paste(name,".csv", sep = "")
     specObject <- libs[[i]]$MSMS
     
     # sort and filter m/z values find maximum intensity peak for spectrum
@@ -134,10 +149,17 @@ mspToLib <- function(msp_file,
       colnames(result) <- c(adduct, frag)
       rownames(result) <- c(name,'scores')
     } else if(nrow(specObject) == 1) {
-    result <- rbind(specObject[,1],1)
-    colnames(result) <- adduct
-    rownames(result) <- c(name,'scores')
-  } else NULL
-  write.csv(result, paste(filename,'.csv', sep = ''), row.names = TRUE)
+      result <- rbind(specObject[,1],1)
+      colnames(result) <- adduct
+      rownames(result) <- c(name,'scores')
+    } else NULL
+    if(ion_mode=="POSITIVE") {
+      dir.create(paste(dirPath,"/POS/",sep=""), showWarnings = FALSE)
+      targetPath <- paste(dirPath,"/POS/", filename,".csv", sep = "")
+    } else if(ion_mode=="NEGATIVE"){
+      dir.create(paste(dirPath,"/NEG/",sep=""), showWarnings = FALSE)
+      targetPath <- paste(dirPath,"/NEG/", filename,".csv", sep = "")
+    }
+    write.csv(result, targetPath, row.names = TRUE)
   }
 }
