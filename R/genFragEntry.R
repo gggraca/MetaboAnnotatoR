@@ -22,7 +22,7 @@
 #' @param mpeaksThres Intensity threshold to select peaks of the MS/MS spectrum 
 #' considered to be highest intensity, expressed as a ratio to the peak 
 #' with the highest intensity.
-#' @mzTol Absolute tolerance for feature m/z search in Da.
+#' @param mzTol Absolute tolerance for feature m/z search in Da.
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
 #' @export

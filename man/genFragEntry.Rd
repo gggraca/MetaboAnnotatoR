@@ -43,6 +43,8 @@ occurrence score of 0.1, so that the sum of all fragment occurrence scores is 1.
 \item{mpeaksThres}{Intensity threshold to select peaks of the MS/MS spectrum
 considered to be highest intensity, expressed as a ratio to the peak
 with the highest intensity.}
+
+\item{mzTol}{Absolute tolerance for feature m/z search in Da.}
 }
 \value{
 A .csv file containing fragment and parent m/z values and corresponding
