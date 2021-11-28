@@ -1,5 +1,5 @@
 ---
-title: "Import MS/MS spectra library from .msp file to MetaboAnnotatoR"
+title: "Import MS/MS spectra library from .msp files to MetaboAnnotatoR"
 author: "Gonçalo Graça"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
