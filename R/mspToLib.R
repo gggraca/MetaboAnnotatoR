@@ -21,13 +21,14 @@
 #' @param mzTol Absolute tolerance for m/z search in Da.
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
+#' @examples 
+#' mspToLib("MassBank_example.msp")
 #' @export
 mspToLib <- function(msp_file,
                      library_name = "Custom",
                      noise = 0.005,
                      mpeaksScore = 0.9, 
-                     mpeaksThres = 0.1,
-                     mzTol = 0.01) {
+                     mpeaksThres = 0.1) {
   
   # create folder to store library
   if(dir.exists("./Libraries")){
@@ -79,14 +80,12 @@ mspToLib <- function(msp_file,
     }
     
     # get MS/MS spectrum
-    # use different strategy...perhaps read line and split elements
     s <- NULL
     for(i in 1:npeaks[x]){
       tmp <- strsplit(m[np[x]+i], split = " ")
       s <- c(s, as.numeric(tmp[[1]]))
     }
     spec <- matrix(s, ncol = 2, byrow = TRUE)
-    # spec <- scan("MassBank_NIST.msp", skip = np[x], nlines = npeaks[x], quiet = TRUE)
     
     result <- list(metabolite = names[x],
                    precursor = precursor_mz,
@@ -100,9 +99,9 @@ mspToLib <- function(msp_file,
   
   for(i in 1:length(libs)){
     name <- libs[[i]]$metabolite
+    ion_mode <- libs[[i]]$ion_mode
     adduct <- libs[[i]]$type
     tmz <- libs[[i]]$precursor
-    ion_mode <- libs[[i]]$ion_mode
     filename <- paste(name,".csv", sep = "")
     specObject <- libs[[i]]$MSMS
     
@@ -111,17 +110,20 @@ mspToLib <- function(msp_file,
       specObject <- specObject[order(-specObject[,1]),]
     } else NULL
     
-    # normalisation and normalise spectrum
+    # normalise spectrum
     norm.specObject <- specObject
     norm.specObject[,2] <- specObject[,2]/specObject[which.max(specObject[,2]),2]
-    # denoise spectrum
     
+    # denoise spectrum
     if(nrow(specObject)>1){
       denoised.spec <- norm.specObject[which(norm.specObject[,2] > noise),]
     } else denoised.spec <- norm.specObject
     
+    if(is.vector(denoised.spec)) denoised.spec <- matrix(denoised.spec, nrow = 1)
+      
     # locate if parent m/z is present in the list
     p <- which.min(abs(denoised.spec[,1]-tmz))
+      
     if(length(p)==0) denoised.spec <- rbind(c(tmz,0),denoised.spec)
     if(length(p)==1) denoised.spec[p,1] <- tmz
     
@@ -155,10 +157,10 @@ mspToLib <- function(msp_file,
     } else NULL
     if(ion_mode=="POSITIVE") {
       dir.create(paste(dirPath,"/POS/",sep=""), showWarnings = FALSE)
-      targetPath <- paste(dirPath,"/POS/", filename,".csv", sep = "")
+      targetPath <- paste(dirPath,"/POS/", filename, sep = "")
     } else if(ion_mode=="NEGATIVE"){
       dir.create(paste(dirPath,"/NEG/",sep=""), showWarnings = FALSE)
-      targetPath <- paste(dirPath,"/NEG/", filename,".csv", sep = "")
+      targetPath <- paste(dirPath,"/NEG/", filename, sep = "")
     }
     write.csv(result, targetPath, row.names = TRUE)
   }

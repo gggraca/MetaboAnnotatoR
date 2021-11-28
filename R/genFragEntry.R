@@ -25,6 +25,11 @@
 #' @param mzTol Absolute tolerance for feature m/z search in Da.
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
+#' @examples 
+#' spec <- system.file("/Data/Pantothenic_acid_pos.txt", package = "MetaboAnnotatoR")
+#' specObject <- read.table(spec, header=FALSE)
+#' genFragEntry(specObject, "Pantothenic acid","[M+H]+",220.1179,"Pantothenic_acid_pos.csv",
+#' noise = 0.005, mpeaksScore = 0.9, mpeaksThres = 0.1, mzTol = 0.01)
 #' @export
 genFragEntry <- function(specObject,
                          name,

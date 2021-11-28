@@ -32,6 +32,12 @@
 #' a plot of pseudo-MS/MS and pseudo-MS spectra for the each feature,
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
+#' @examples
+#' # get the some example human serum LC-MS data and feaure list to annotate:
+#' getDemoData()
+#' # run the annotation using the lipid libraries:
+#' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", libs = "Lipids",
+#' ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7, checkIsotope = TRUE)
 #' @export
 annotateAIF <- function(targetTable = NULL,
                         filetype = "mzML",

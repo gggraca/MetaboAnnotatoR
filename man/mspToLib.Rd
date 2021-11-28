@@ -10,8 +10,7 @@ mspToLib(
   library_name = "Custom",
   noise = 0.005,
   mpeaksScore = 0.9,
-  mpeaksThres = 0.1,
-  mzTol = 0.01
+  mpeaksThres = 0.1
 )
 }
 \arguments{
@@ -44,6 +43,9 @@ occurrence scores.
 \description{
 Function to generate metabolite database entries from MS/MS spectra
 obtained from from an .msp file
+}
+\examples{
+mspToLib("MassBank_example.msp")
 }
 \author{
 Goncalo Graca (Imperial College London)

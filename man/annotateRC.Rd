@@ -59,6 +59,11 @@ used for the function.
 Search possible matches of a feature in Lipid fragments and other
 small molecule libraries.
 }
+\examples{
+# run annotation of lipid features for positive LC-MS data XCMS set (XSet) processed with RAMClustR:
+annotateRC(targetTable = "targetTable.csv", xcmsObject = XSet, ramclustObj = RC,
+libs = "Lipids", ESImode = "POS")
+}
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 }

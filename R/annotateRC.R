@@ -28,6 +28,10 @@
 #' annotations, a plot pseudo-MS/MS spectrum for the matched ions,
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
+#' @examples 
+#' # run annotation of lipid features for positive LC-MS data XCMS set (XSet) processed with RAMClustR:
+#' annotateRC(targetTable = "targetTable.csv", xcmsObject = XSet, ramclustObj = RC,
+#' libs = "Lipids", ESImode = "POS")
 #' @export
 annotateRC <- function(targetTable,
                        xcmsObject,
