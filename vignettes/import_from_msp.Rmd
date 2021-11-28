@@ -1,0 +1,48 @@
+---
+title: "Import MS/MS spectra library from .msp file to MetaboAnnotatoR"
+author: "Gonçalo Graça"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{generate library entry}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## This vignette illustrates how to convert MS/MS spectra libraries (.msp files) to MetaboAnnotatoR metabolite library entries 
+
+Load library and dependencies:
+
+```{r, eval = FALSE}
+library(MetaboAnnotatoR)
+```
+
+### Get the path to the example .msp MS/MS spectra library file
+
+Get the path to the example file containing the .msp library. For illustrative purposes, an .msp file containing some MS/MS spectra obtained from MassBank from both positive and negative ionisation modes was used: 
+
+```{r, eval = FALSE}
+msp_path <- system.file("/Data/MassBank_example.msp", package = "MetaboAnnotatoR")
+```
+
+
+### Generate library entry
+
+Use function 'mspToLib' to read and convert the spectra records from the .msp into library entries (.csv files), which will be stored in the 'Libraries' directory, with the name 'Custom'. Positive and Negative mode records will be saved into the respective directories of the new 'Custom' library directory.
+Similarly to the function 'genFragEntry' this function will attribute occurrence scores to the peaks above 'mpeaksThres' threshold ("marker peaks") and above the noise level.
+The peak-picking parameters 'noise' and 'mpeaksThres' and the occurrence scores used here are the default parameters.
+
+```{r, eval = FALSE}
+mspToLib(msp_path,
+         library_name = "Custom",
+         noise = 0.005,
+         mpeaksScore = 0.9,
+         mpeaksThres = 0.1)
+```
