@@ -23,6 +23,11 @@ In some environments, some errors might occur durring installation due to some o
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 ```
 
+For installation error of the type "ERROR: loading failed for 'i386' ", try to add the -- no-multiarch , --no- lock statements:
+```
+install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE, INSTALL_opts = c('--no-multiarch', '--no-lock'))
+```
+
 RAMClustR package may fail to install on newer versions of R. The best workaround is to install the package from the source repository [RAMClustR](https://github.com/cbroeckl/RAMClustR).
 
 ## Vignettes
