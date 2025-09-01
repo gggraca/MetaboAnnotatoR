@@ -23,6 +23,8 @@ In some environments, some errors might occur durring installation due to some o
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 ```
 
+RAMClustR package may fail to install on newer versions of R. The best workaround is to install the package from the source repository [RAMClustR](https://github.com/cbroeckl/RAMClustR).
+
 ## Vignettes
 An example of usage using one LC-MS AIF chromatogram is provided in the [introductory vignette](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/introduction.html).
 An illustration of the generation of Metabolite database records for MetaboAnnotatoR from text files is given [here](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/gen_library_entry.html). MS/MS spectra can also be imported from .msp files as exemplified [here](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/import_from_msp.html).
