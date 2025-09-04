@@ -68,73 +68,25 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	mzmin <- fpeak[i,"mzmin"]
 	mzmax <- fpeak[i,"mzmax"]
 
-	# determine scan frequency in seconds------------------
-	if(filetype == "mzML"){
-	  if(nCE == 1){
-	    spIdxF2 <- xcmsF2@featureData@data[1,"spIdx"]
-	    spIdxF1 <- spIdxF2-1
-	    idxF1 <- which(xcmsF1@featureData@data[,"spIdx"] == spIdxF1)
-	    scanfreq <- xcmsF2@featureData@data[1,"retentionTime"] -
-	      xcmsF1@featureData@data[idxF1,"retentionTime"]
-	  }
-	  if(nCE > 1) scanfreq <- xcmsF1@featureData@data[1,"retentionTime"] -
-	      xcmsF2@featureData@data[1,"retentionTime"]
-	 }
-	if(filetype == "CDF"){
-	  scanfreq <- xcmsF2@featureData@data[1,"retentionTime"] -
-	    xcmsF1@featureData@data[1,"retentionTime"]
-	}
-
-	# function to correlate ms1 and/or ms2 EICs-----------------------
-	eic_correlation <- function(a, b, scanfreq){
-		fmaxRT <- rtime(a)[which.max(intensity(a))]
-		tmaxRT <- rtime(b)[which.max(intensity(b))]
-		inta <- intensity(a)
-		intb <- intensity(b)
-		if(!is.numeric(intb) | !is.numeric(inta)) {
-		  c <- 0
-		} else if(length(tmaxRT) == 0 | length(fmaxRT) == 0) {
-		  c <- 0
-		} else if(abs(tmaxRT - fmaxRT) > scanfreq) {
-		  c <- 0
-		} else if(length(na.omit(intb)) < 3) {
-		  c <- 0
-		} else if(length(inta) == length(intb)) {
-		  c <- cor(inta, intb, use = "pairwise.complete.obs")
-		} else if(length(inta) < length(intb)) {
-		  len <- length(intb) - length(inta)
-		  c <- cor(inta, intb[-(1:len)], use = "pairwise.complete.obs")
-		} else if(length(inta) > length(intb)) {
-		  len <- length(inta) - length(intb)
-		   c <- cor(inta[-(1:len)], intb, use = "pairwise.complete.obs")
-		}
-    return(c)
-	}
-
 	# get in-source ions related with fmz----------------------------------------
 	ms1_peaks <- xcms::chromPeaks(peaksF1)
-	ms1_peaks <- ms1_peaks[which(ms1_peaks[,"rtmin"]<rt &
-	                               ms1_peaks[,"rtmax"]>rt),]
-	# to reduce the number of peaks and speed up the process...
-	# ms1_peaks <- ms1_peaks[which(ms1_peaks[,"mz"] < fmz + 50),]
-	# if (dim(ms1_peaks)[1] > 100)
-	# ms1_peaks <- ms1_peaks[which(ms1_peaks[,"mz"] > fmz - 50),]
+	ms1_peaks <- ms1_peaks[which(ms1_peaks[,"rtmin"] < rt &
+	                               ms1_peaks[,"rtmax"] > rt),]
 	npeaks <- dim(ms1_peaks)[1]
 
-	# calculate EICs for all aparently coeluting peaks
-	eic_ms1 <- lapply(1:npeaks,
-	                  function(x) xcms::chromatogram(xcmsF1,
-	                                           mz = c(ms1_peaks[x,"mz"] - 0.01,
-	                                                  ms1_peaks[x,"mz"] + 0.01),
-	                                           rt = c(rtmin - 1, rtmax + 1)))
-
+	# get EIC of the feature of interest
 	feic <- xcms::chromatogram(xcmsF1,
-	                           mz = c(fmz - 0.01, fmz + 0.01),
-	                           rt = c(rtmin - 1, rtmax + 1))
+	                           mz = fpeak[i,c("mzmin","mzmax")],
+	                           rt = fpeak[i,c("rtmin","rtmax")])
+	
+	# calculate EICs for all apparently co-eluting peaks
+	eic_ms1 <- xcms::chromatogram(xcmsF1, mz = ms1_peaks[,c("mzmin", "mzmax")],
+	                                           rt = ms1_peaks[,c("rtmin","rtmax")])
 
-	c <- lapply(1:npeaks,
-	            function(x) eic_correlation(feic[1,1],
-	                                        eic_ms1[[x]][1,1], scanfreq))
+  # correlate feature EIC with co-eluting peak EICs
+	c <- compareChromatograms(eic_ms1,
+	                          feic,
+	                          ALIGNFUNARGS = list(method = "approx"))
 
 	insource <- ms1_peaks[which(c > cthres1),]
 	if (length(insource) > 12){
@@ -148,22 +100,16 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	# then narrow down the selection to rtmin and rtmax of MS1 feature:
 	ms2_peaks <- ms2_peaks[which(ms2_peaks[,"rtmin"] < rt &
 	                               ms2_peaks[,"rtmax"] > rt),]
-	mpeaks <- dim(ms2_peaks)[1]
-	# if (mpeaks > 100) {
-	# ms2_peaks <- ms2_peaks[which(ms2_peaks[,"mz"] < fmz + 50),]
-	# } else NULL
-	# to use at a later after matching peaks against the databases
-	mz_ms2 <- ms2_peaks[,"mz"]
-	mpeaks <- dim(ms2_peaks)[1]
 
-	eic_aif <- lapply(1:mpeaks,
-	                  function(x) xcms::chromatogram(
-	                    xcmsF2, mz = c(ms2_peaks[x,"mz"]-0.01,
-	                                   ms2_peaks[x,"mz"]+0.01),
-	                    rt = c(rtmin-1,rtmax+1)))
-	c2 <- lapply(1:mpeaks,
-	             function(x) eic_correlation(feic[1,1],
-	                                         eic_aif[[x]][1,1], scanfreq))
+	mz_ms2 <- ms2_peaks[,"mz"]
+	mpeaks <- nrow(ms2_peaks)
+
+	eic_aif <- xcms::chromatogram(xcmsF2, 
+	                              mz = ms2_peaks[,c("mzmin","mzmax")],
+	                              rt = ms2_peaks[,c("rtmin","rtmax")])
+	c2 <- compareChromatograms(eic_aif,
+	                           feic,
+	                           ALIGNFUNARGS = list(method = "approx"))
 
 	aif <- ms2_peaks[which(c2 > cthres2),]
 
@@ -264,8 +210,6 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	# https://fiehnlab.ucdavis.edu/projects/lipidblast/mgf-files
 	# and
 	# http://www.matrixscience.com/help/data_file_help.html
-	mz <- c(189.48956,283.62076,301.22977,311.08008,399.99106)
-	int <- c(1.9,3.4,66.3,1.3,2.3)
 	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
                              round(fmz, 3), "mz_",round(frt),"s", 
                              ".mgf", sep = "")
