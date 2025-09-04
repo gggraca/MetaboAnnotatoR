@@ -22,9 +22,6 @@
 #' in-source MS spectrum plots should be saved to disk.
 #' @param savePseudoMSMS Logical argument indicate if the pseudo MS/MS should 
 #' be saved to disk as .csv
-#' @param scanfreq MS scanning frequency in seconds calculated as a the
-#' difference between two consecutive low and high collision energy scans using
-#' the information contained in xcmsF1 and xcmsF2 objects
 #' @return A list containing several objects: insource, all MS1 peaks related to
 #' the feature of interest; aif, all MS2 peaks related to the feature;
 #' ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
