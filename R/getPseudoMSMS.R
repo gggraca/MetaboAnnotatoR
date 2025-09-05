@@ -18,7 +18,7 @@
 #' related to the feature of interest.
 #' @param cthres2 Correlation threshold for the selection of all-ion fragment
 #' ions related to the feature of interest.
-#' @param plotResults Logical argument indicate if the EICs and pseudo
+#' @param savePlotResults Logical argument indicate if the EICs and pseudo
 #' in-source MS spectrum plots should be saved to disk.
 #' @param savePseudoMSMS Logical argument indicate if the pseudo MS/MS should 
 #' be saved to disk as .csv
@@ -31,7 +31,7 @@
 #' @export
 getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
                           filetype = filetype, nCE = 1, cthres1 = 0.9,
-                          cthres2 = 0.8, plotResults = TRUE, 
+                          cthres2 = 0.8, savePlotResults = TRUE, 
                           savePseudoMSMS = TRUE, SpName = "LCMS",
                           DirPath = paste(getwd(), "/", sep ="")){
   # create objects to store results from EIC correlations and peak-picking
