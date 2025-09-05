@@ -134,8 +134,6 @@ if(length(unique(targets[,3])) == 1){
 	    highCEscans <- which(xcmsF2@featureData@data$collisionEnergy == maxCE)
 	    xcmsF2@featureData@data <- xcmsF2@featureData@data[highCEscans,]
 	  }
-	  # this is necessary to enable XCMS to read from MS2 scans
-	  xcmsF2@featureData@data$msLevel <- 1
 	}
   if(filetype == "CDF"){
 	  data.path <- paste("./", targets[1,3], "01.CDF", sep = "")
@@ -150,8 +148,8 @@ if(length(unique(targets[,3])) == 1){
                         ppm = xcmsOptions[1,2],
                         peakwidth = as.numeric(xcmsOptions[4,2:3]),
                         prefilter = as.numeric(xcmsOptions[5,2:3]))
-  peaksF1 <- xcms::findChromPeaks(xcmsF1, param = cwp)
-  peaksF2 <- xcms::findChromPeaks(xcmsF2, param = cwp)
+  peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
+  peaksF2 <- xcms::findChromPeaks(xcmsF2, msLevel = 2L, param = cwp)
 } else NULL
 
 
@@ -165,7 +163,6 @@ for (i in 1:dim(targets)[1]){
 	  # separate the two MS functions
 		  xcmsF1 <- MSnbase::readMSData(data.path, msLevel. = 1, mode = "onDisk")
 		  xcmsF2 <- MSnbase::readMSData(data.path, msLevel. = 2, mode = "onDisk")
-		  xcmsF2@featureData@data$msLevel <- 1
 	}
 	if(filetype == "CDF"){
 		data.path <- paste("./", targets[i,3], "01.CDF", sep = "")
@@ -180,8 +177,8 @@ for (i in 1:dim(targets)[1]){
 	                       ppm = xcmsOptions[1,2],
 	                       peakwidth=as.numeric(xcmsOptions[4,2:3]),
 	                       prefilter=as.numeric(xcmsOptions[5,2:3]))
-	  peaksF1 <- xcms::findChromPeaks(xcmsF1, param = cwp)
-	  peaksF2 <- xcms::findChromPeaks(xcmsF2, param = cwp)
+	  peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
+	  peaksF2 <- xcms::findChromPeaks(xcmsF2, msLevel = 2L, param = cwp)
 	} else NULL
 
 	fmz <- targets[i,1]
@@ -199,7 +196,7 @@ for (i in 1:dim(targets)[1]){
 	try(
 	  specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	                         filetype = filetype, nCE = 1, cthres1 = corThresh,
-	                         cthres2 = corThresh, plotResults = TRUE, 
+	                         cthres2 = corThresh, savePlotResults = TRUE, 
 	                         savePseudoMSMS = TRUE, SpName, DirPath)
 	)
 
