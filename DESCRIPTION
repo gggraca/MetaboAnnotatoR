@@ -9,7 +9,7 @@ Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
 Description: Performs feature annotations on LC-MS All-ion fragmentation datasets using fragment ion libraries.
 Depends: 
   xcms (>= 3.0.0), 
-  RAMClustR (>= 1.0.6)
+  RAMClustR (>= 1.0.6),
   MSnbase (>= 2.16.1)
 Imports:
   ggplot2 (>= 3.3.3), 
