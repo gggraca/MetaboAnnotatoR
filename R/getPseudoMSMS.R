@@ -116,7 +116,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 
 	# plot EICs and pseudo-MS using ggplot2 and gridExtra-------------------------
 
- 	if(plotResults & !is.null(aif)) {
+ 	if(savePlotResults & !is.null(aif)) {
  		if (length(insource) > 12){
 			is_ions <- match(insource[,"mz"], ms1_peaks[,"mz"])
  		} else is_ions <- match(insource["mz"], ms1_peaks[,"mz"])
