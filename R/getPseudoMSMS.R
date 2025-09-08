@@ -81,7 +81,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	                                           rt = ms1_peaks[,c("rtmin","rtmax")])
 
   # correlate feature EIC with co-eluting peak EICs
-	c <- compareChromatograms(eic_ms1,
+	c <- MSnbase::compareChromatograms(eic_ms1,
 	                          feic,
 	                          ALIGNFUNARGS = list(method = "closest"))
 
@@ -106,7 +106,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	                              rt = ms2_peaks[,c("rtmin","rtmax")],
 	                              msLevel = 2)
 	
-	c2 <- compareChromatograms(eic_aif,
+	c2 <- MSnbase::compareChromatograms(eic_aif,
 	                           feic,
 	                           ALIGNFUNARGS = list(method = "approx"))
 
