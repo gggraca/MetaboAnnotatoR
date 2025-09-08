@@ -40,7 +40,7 @@ if(nrow(specMatch) >= 1){
 # plotting part
   mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
   df1 <- lapply(mz_idx, function(x) data.frame(
-    intensity = intensity([x,1]),
+    intensity = intensity(ms2eic[x,1]),
     rt = rtime(ms2eic[x,1]),
     mz = as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
     df1 <- do.call("rbind", df1)
