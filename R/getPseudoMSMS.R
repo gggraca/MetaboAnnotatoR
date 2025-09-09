@@ -113,6 +113,12 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	aif <- ms2_peaks[which(c2 > cthres2),]
 
 	if(length(aif) == 0) aif <- NULL
+	
+	# remove ions which are much greater than fmz by 50 amu
+	if(!is.null(aif) & length(insource) > 12){
+	  insource <- insource[which(insource[,"mz"] < fmz+50),]
+	  aif <- aif[which(aif[,"mz"] < fmz+50),]
+	}
 
 	# plot EICs and pseudo-MS using ggplot2 and gridExtra-------------------------
 
