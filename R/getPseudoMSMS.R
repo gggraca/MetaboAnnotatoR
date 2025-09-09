@@ -108,7 +108,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	
 	c2 <- MSnbase::compareChromatograms(eic_aif,
 	                           feic,
-	                           ALIGNFUNARGS = list(method = "approx"))
+	                           ALIGNFUNARGS = list(method = "closest"))
 
 	aif <- ms2_peaks[which(c2 > cthres2),]
 
