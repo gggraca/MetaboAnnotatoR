@@ -218,7 +218,13 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
  	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
                               round(fmz, 3), "mz_",round(frt),"s", 
                               ".mgf", sep = "")
- 	charge <- "1+" #need to check how to extract from xcmsF1 or xcmsF2
+ 	# get charge from polarity
+ 	charge <- polarity(xcmsF1)
+ 	charge <- unique(charge)
+ 	if(charge == 1) {
+ 	  charge <- "1+"
+ 	} else if(charge == 0) charge <- "1-"
+ 	
  	cat("BEGIN IONS",
  	    paste("PEPMASS=", fmz, sep = ""),
  	    paste("CHARGE=", charge, sep = ""),
