@@ -16,6 +16,11 @@ library(devtools)
 
 install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE)
 ```
+
+The dependency package RAMClustR can be installed directly from the Github repository:
+```
+install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE)
+```
 ## Installation issues
 
 In some environments, some errors might occur durring installation due to some of the package dependencies, being the most common "mzR has been built against a different Rcpp version". This issue can be easily fixed as suggested [here](https://support.bioconductor.org/p/134630/). The following environment variable can be changed before installing using install_github:
@@ -27,8 +32,6 @@ For installation error of the type "ERROR: loading failed for 'i386' ", try to a
 ```
 install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE, INSTALL_opts = c('--no-multiarch', '--no-lock'))
 ```
-
-RAMClustR package may fail to install on newer versions of R. The best workaround is to install the package from the source repository [RAMClustR](https://github.com/cbroeckl/RAMClustR).
 
 ## Vignettes
 An example of usage using one LC-MS AIF chromatogram is provided in the [introductory vignette](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/introduction.html).
