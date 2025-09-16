@@ -234,7 +234,7 @@ for (i in 1:dim(targets)[1]){
 	   length(unlist(candidates)) == 0) {
 	  result <- NULL
 	} else {
-	message("Mathing candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
+	message("Matching candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
 	output <- mapply(compFrag,
 	                 candidates,
 	                 lapply(as.numeric(names(candidates)), function(x) lib[[x]]),
