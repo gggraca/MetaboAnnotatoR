@@ -18,13 +18,10 @@
 #' related to the feature of interest.
 #' @param cthres2 Correlation threshold for the selection of all-ion fragment
 #' ions related to the feature of interest.
-#' @param plotResults Logical argument indicate if the EICs and pseudo
+#' @param savePlotResults Logical argument indicate if the EICs and pseudo
 #' in-source MS spectrum plots should be saved to disk.
 #' @param savePseudoMSMS Logical argument indicate if the pseudo MS/MS should 
 #' be saved to disk as .csv
-#' @param scanfreq MS scanning frequency in seconds calculated as a the
-#' difference between two consecutive low and high collision energy scans using
-#' the information contained in xcmsF1 and xcmsF2 objects
 #' @return A list containing several objects: insource, all MS1 peaks related to
 #' the feature of interest; aif, all MS2 peaks related to the feature;
 #' ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
@@ -34,7 +31,7 @@
 #' @export
 getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
                           filetype = filetype, nCE = 1, cthres1 = 0.9,
-                          cthres2 = 0.8, plotResults = TRUE, 
+                          cthres2 = 0.8, savePlotResults = TRUE, 
                           savePseudoMSMS = TRUE, SpName = "LCMS",
                           DirPath = paste(getwd(), "/", sep ="")){
   # create objects to store results from EIC correlations and peak-picking
@@ -63,81 +60,30 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
   } else {
 	if (dim(fpeak)[1]==1) i <- 1
 	if (dim(fpeak)[1]>1) i <- which.min(abs(frt-fpeak[,"rt"]))
+  }
 
 	# get rt, rtmin and rtmax
 	rt <- fpeak[i,"rt"]
-	rtmin <- fpeak[i,"rtmin"]
-	rtmax <- fpeak[i,"rtmax"]
-	mzmin <- fpeak[i,"mzmin"]
-	mzmax <- fpeak[i,"mzmax"]
-
-	# determine scan frequency in seconds------------------
-	if(filetype == "mzML"){
-	  if(nCE == 1){
-	    spIdxF2 <- xcmsF2@featureData@data[1,"spIdx"]
-	    spIdxF1 <- spIdxF2-1
-	    idxF1 <- which(xcmsF1@featureData@data[,"spIdx"] == spIdxF1)
-	    scanfreq <- xcmsF2@featureData@data[1,"retentionTime"] -
-	      xcmsF1@featureData@data[idxF1,"retentionTime"]
-	  }
-	  if(nCE > 1) scanfreq <- xcmsF1@featureData@data[1,"retentionTime"] -
-	      xcmsF2@featureData@data[1,"retentionTime"]
-	 }
-	if(filetype == "CDF"){
-	  scanfreq <- xcmsF2@featureData@data[1,"retentionTime"] -
-	    xcmsF1@featureData@data[1,"retentionTime"]
-	}
-
-	# function to correlate ms1 and/or ms2 EICs-----------------------
-	eic_correlation <- function(a, b, scanfreq){
-		fmaxRT <- rtime(a)[which.max(intensity(a))]
-		tmaxRT <- rtime(b)[which.max(intensity(b))]
-		inta <- intensity(a)
-		intb <- intensity(b)
-		if(!is.numeric(intb) | !is.numeric(inta)) {
-		  c <- 0
-		} else if(length(tmaxRT) == 0 | length(fmaxRT) == 0) {
-		  c <- 0
-		} else if(abs(tmaxRT - fmaxRT) > scanfreq) {
-		  c <- 0
-		} else if(length(na.omit(intb)) < 3) {
-		  c <- 0
-		} else if(length(inta) == length(intb)) {
-		  c <- cor(inta, intb, use = "pairwise.complete.obs")
-		} else if(length(inta) < length(intb)) {
-		  len <- length(intb) - length(inta)
-		  c <- cor(inta, intb[-(1:len)], use = "pairwise.complete.obs")
-		} else if(length(inta) > length(intb)) {
-		  len <- length(inta) - length(intb)
-		   c <- cor(inta[-(1:len)], intb, use = "pairwise.complete.obs")
-		}
-    return(c)
-	}
 
 	# get in-source ions related with fmz----------------------------------------
 	ms1_peaks <- xcms::chromPeaks(peaksF1)
-	ms1_peaks <- ms1_peaks[which(ms1_peaks[,"rtmin"]<rt &
-	                               ms1_peaks[,"rtmax"]>rt),]
-	# to reduce the number of peaks and speed up the process...
-	# ms1_peaks <- ms1_peaks[which(ms1_peaks[,"mz"] < fmz + 50),]
-	# if (dim(ms1_peaks)[1] > 100)
-	# ms1_peaks <- ms1_peaks[which(ms1_peaks[,"mz"] > fmz - 50),]
+	ms1_peaks <- ms1_peaks[which(ms1_peaks[,"rtmin"] < rt &
+	                               ms1_peaks[,"rtmax"] > rt),]
 	npeaks <- dim(ms1_peaks)[1]
 
-	# calculate EICs for all aparently coeluting peaks
-	eic_ms1 <- lapply(1:npeaks,
-	                  function(x) xcms::chromatogram(xcmsF1,
-	                                           mz = c(ms1_peaks[x,"mz"] - 0.01,
-	                                                  ms1_peaks[x,"mz"] + 0.01),
-	                                           rt = c(rtmin - 1, rtmax + 1)))
-
+	# get EIC of the feature of interest
 	feic <- xcms::chromatogram(xcmsF1,
-	                           mz = c(fmz - 0.01, fmz + 0.01),
-	                           rt = c(rtmin - 1, rtmax + 1))
+	                           mz = fpeak[i,c("mzmin","mzmax")],
+	                           rt = fpeak[i,c("rtmin","rtmax")])
+	
+	# calculate EICs for all apparently co-eluting peaks
+	eic_ms1 <- xcms::chromatogram(xcmsF1, mz = ms1_peaks[,c("mzmin", "mzmax")],
+	                                           rt = ms1_peaks[,c("rtmin","rtmax")])
 
-	c <- lapply(1:npeaks,
-	            function(x) eic_correlation(feic[1,1],
-	                                        eic_ms1[[x]][1,1], scanfreq))
+  # correlate feature EIC with co-eluting peak EICs
+	c <- MSnbase::compareChromatograms(eic_ms1,
+	                          feic,
+	                          ALIGNFUNARGS = list(method = "closest"))
 
 	insource <- ms1_peaks[which(c > cthres1),]
 	if (length(insource) > 12){
@@ -151,187 +97,193 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	# then narrow down the selection to rtmin and rtmax of MS1 feature:
 	ms2_peaks <- ms2_peaks[which(ms2_peaks[,"rtmin"] < rt &
 	                               ms2_peaks[,"rtmax"] > rt),]
-	mpeaks <- dim(ms2_peaks)[1]
-	# if (mpeaks > 100) {
-	# ms2_peaks <- ms2_peaks[which(ms2_peaks[,"mz"] < fmz + 50),]
-	# } else NULL
-	# to use at a later after matching peaks against the databases
-	mz_ms2 <- ms2_peaks[,"mz"]
-	mpeaks <- dim(ms2_peaks)[1]
 
-	eic_aif <- lapply(1:mpeaks,
-	                  function(x) xcms::chromatogram(
-	                    xcmsF2, mz = c(ms2_peaks[x,"mz"]-0.01,
-	                                   ms2_peaks[x,"mz"]+0.01),
-	                    rt = c(rtmin-1,rtmax+1)))
-	c2 <- lapply(1:mpeaks,
-	             function(x) eic_correlation(feic[1,1],
-	                                         eic_aif[[x]][1,1], scanfreq))
+	mz_ms2 <- ms2_peaks[,"mz"]
+	mpeaks <- nrow(ms2_peaks)
+
+	eic_aif <- xcms::chromatogram(xcmsF2, 
+	                              mz = ms2_peaks[,c("mzmin","mzmax")],
+	                              rt = ms2_peaks[,c("rtmin","rtmax")],
+	                              msLevel = 2)
+	
+	c2 <- MSnbase::compareChromatograms(eic_aif,
+	                           feic,
+	                           ALIGNFUNARGS = list(method = "closest"))
 
 	aif <- ms2_peaks[which(c2 > cthres2),]
 
 	if(length(aif) == 0) aif <- NULL
+	
+	# remove ions which are much greater than fmz by 5 amu
+	if(!is.null(aif) & length(insource) > 12){
+	  insource <- insource[which(insource[,"mz"] < fmz + 5),]
+	  aif <- aif[which(aif[,"mz"] < fmz + 5),]
+	}
 
 	# plot EICs and pseudo-MS using ggplot2 and gridExtra-------------------------
 
-	if(plotResults & !is.null(aif)) {
-		if (length(insource) > 12){
+ 	if(savePlotResults & !is.null(aif)) {
+ 		if (length(insource) > 12){
 			is_ions <- match(insource[,"mz"], ms1_peaks[,"mz"])
-		} else is_ions <- match(insource["mz"], ms1_peaks[,"mz"])
+ 		} else is_ions <- match(insource["mz"], ms1_peaks[,"mz"])
+ 
+     df1 <- lapply(is_ions,
+                   function(x) data.frame(
+                     intensity = intensity(eic_ms1[x,1]),
+                     rt = rtime(eic_ms1[x,1]), mz = as.character(
+                       rep(paste(round(ms1_peaks[x,"mz"],3),"m/z")))))
+     df1 <- do.call("rbind", df1)
 
-    df1 <- lapply(is_ions,
-                  function(x) data.frame(
-                    intensity = xcms::intensity(eic_ms1[[x]][1,1]),
-                    rt = xcms::rtime(eic_ms1[[x]][1,1]), mz = as.character(
-                      rep(paste(round(ms1_peaks[x,"mz"],3),"m/z")))))
-    df1 <- do.call("rbind", df1)
+     p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
+                           ggplot2::aes(x = rt,
+                                        y = intensity, colour = as.factor(mz))) +
+       ggplot2::geom_point() +
+       ggplot2::geom_line() +
+       ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)",
+                     colour = paste("Correlation >", cthres1)) +
+       ggplot2::ggtitle(paste("Correlated EICs:", round(fmz,3),
+                              "m/z",round(frt),"s")) +
+       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+     
+     if (length(insource) > 12){
+        df2 <- as.data.frame(insource[,c("mz", "into")])
+     } else df2 <- data.frame(mz = insource["mz"], into = insource["into"])
 
-    p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
-                          ggplot2::aes(x = rt,
-                                       y = intensity, colour = as.factor(mz))) +
-      ggplot2::geom_point() +
-      ggplot2::geom_line() +
-      ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)",
-                    colour = paste("Correlation >", cthres1)) +
-      ggplot2::ggtitle(paste("Correlated EICs:", round(fmz,3),
-                             "m/z",round(frt),"s")) +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-    if (length(insource) > 12){
-      df2 <- as.data.frame(insource[,c("mz", "into")])
-    } else df2 <- data.frame(mz = insource["mz"], into = insource["into"])
-
-    p2 <- ggplot2::ggplot(df2,
-                          ggplot2::aes(x = mz, y = into,
-                                       label = round(mz, 3))) +
-      ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
-                            color="red", lwd=0.5) +
-      ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
-      ggplot2::theme_minimal() +
-      ggplot2::ggtitle(paste("Pseudo-MS:", round(fmz,3),"m/z",round(frt),"s")) +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-      ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
-      ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
-      ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
-
-    if (length(aif) > 12){
-      aif_ions <- match(aif[,"mz"], ms2_peaks[,"mz"])
-    } else aif_ions <- match(aif["mz"], ms2_peaks[,"mz"])
-
-    df3 <- lapply(aif_ions,
-                  function(x) data.frame(
-                    intensity = xcms::intensity(eic_aif[[x]][1,1]),
-                    rt = xcms::rtime(eic_aif[[x]][1,1]), mz = as.character(
+     p2 <- ggplot2::ggplot(df2,
+                           ggplot2::aes(x = mz, y = into,
+                                        label = round(mz, 3))) +
+       ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
+                             color="red", lwd=0.5) +
+       ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+       ggplot2::theme_minimal() +
+       ggplot2::ggtitle(paste("Pseudo-MS:", round(fmz,3),"m/z",round(frt),"s")) +
+       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+       ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
+       ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
+       ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+ 
+     if (length(aif) > 12){
+       aif_ions <- match(aif[,"mz"], ms2_peaks[,"mz"])
+     } else aif_ions <- match(aif["mz"], ms2_peaks[,"mz"])
+ 
+     df3 <- lapply(aif_ions,
+                   function(x) data.frame(
+                     intensity = intensity(eic_aif[x,1]),
+                     rt = xcms::rtime(eic_aif[x,1]), mz = as.character(
                       rep(paste(round(ms2_peaks[x,"mz"],3),"m/z")))))
-    df3 <- do.call("rbind", df3)
-
-    p3 <- ggplot2::ggplot(df3[!is.na(df3$intensity),],
-                          ggplot2::aes(x = rt, y = intensity, colour = mz)) +
-      ggplot2::geom_point() +
-      ggplot2::geom_line() +
-      ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)",
-           colour = paste("Correlation >", cthres2)) +
-      ggplot2::ggtitle(paste("Fragments EICs:", round(fmz,3),
-                             "m/z",round(frt),"s")) +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-    if (length(aif) > 12){
-      df4 <- as.data.frame(aif[,c("mz", "into")])
-    } else df4 <- data.frame(mz = aif["mz"], into = aif["into"])
-
-    p4 <- ggplot2::ggplot(df4,
-                          ggplot2::aes(x=mz, y=into, label = round(mz, 3))) +
-      ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
-                            color="red", lwd=0.5) +
-      ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+     df3 <- do.call("rbind", df3)
+ 
+     p3 <- ggplot2::ggplot(df3[!is.na(df3$intensity),],
+                           ggplot2::aes(x = rt, y = intensity, colour = mz)) +
+       ggplot2::geom_point() +
+       ggplot2::geom_line() +
+       ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)",
+            colour = paste("Correlation >", cthres2)) +
+       ggplot2::ggtitle(paste("Fragments EICs:", round(fmz,3),
+                              "m/z",round(frt),"s")) +
+       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+ 
+     if (length(aif) > 12){
+       df4 <- as.data.frame(aif[,c("mz", "into")])
+     } else df4 <- data.frame(mz = aif["mz"], into = aif["into"])
+ 
+     p4 <- ggplot2::ggplot(df4,
+                           ggplot2::aes(x=mz, y=into, label = round(mz, 3))) +
+       ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
+                             color="red", lwd=0.5) +
+       ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
       ggplot2::ggtitle(paste("Pseudo-MS/MS:", round(fmz,3),
-                             "m/z",round(frt),"s")) +
-      ggplot2::theme_minimal() +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-      ggplot2::ylim(0, max(df4[,2]) + 0.1*max(df4[,2])) +
-      ggplot2::xlim(min(df4[,1])-50, max(df4[,1])+50) +
-      ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+                              "m/z",round(frt),"s")) +
+       ggplot2::theme_minimal() +
+       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+       ggplot2::ylim(0, max(df4[,2]) + 0.1*max(df4[,2])) +
+       ggplot2::xlim(min(df4[,1])-50, max(df4[,1])+50) +
+       ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+ 
+     pdf(paste(DirPath, SpName, "_", "pseudoMS_AIF_", round(fmz,3),
+               "mz_", round(frt), "s", ".pdf", sep = ""), height = 8, width = 12)
+     gridExtra::grid.arrange(p1, p2, p3, p4, nrow = 2)
+     dev.off()
+     
+     if(savePseudoMSMS){
+       if(!is.null(aif)) {
+         write.csv(df4, paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
+                              round(fmz, 3), "mz_",round(frt),"s", 
+                              ".csv", sep = ""))
+ 	# save in .mgf format
+ 	# based on the definition from... 
+ 	# https://fiehnlab.ucdavis.edu/projects/lipidblast/mgf-files
+ 	# and
+ 	# http://www.matrixscience.com/help/data_file_help.html
+ 	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
+                              round(fmz, 3), "mz_",round(frt),"s", 
+                              ".mgf", sep = "")
+ 	# get charge from polarity
+ 	charge <- polarity(xcmsF1)
+ 	charge <- unique(charge)
+ 	if(charge == 1) {
+ 	  charge <- "1+"
+ 	} else if(charge == 0) charge <- "1-"
+ 	
+ 	cat("BEGIN IONS",
+ 	    paste("PEPMASS=", fmz, sep = ""),
+ 	    paste("CHARGE=", charge, sep = ""),
+ 	    paste("TITLE=", "Pseudo-MS/MS from AIF at", frt, "seconds"),
+ 	    sep = "\n", file = fname)
+ 	for(i in 1:length(df4$mz)){
+ 		cat(paste(df4$mz[i], " ", df4$into[i], sep = ""), "\n", file = fname, append = TRUE)
+ 	}
+ 	cat("END IONS", "\n", file = fname, append = TRUE)
+       }
+     }
+ 
+ 	} else {
+ 
+     if (length(insource) > 12){
+ 		   is_ions <- match(insource[,"mz"], ms1_peaks[,"mz"])
+     } else is_ions <- match(insource["mz"], ms1_peaks[,"mz"])
+ 
+     df1 <- lapply(is_ions,
+                   function(x) data.frame(
+                     intensity = intensity(eic_ms1[x,1]),
+                     rt = xcms::rtime(eic_ms1[x,1]),
+                     mz = as.character(
+                       rep(paste(round(ms1_peaks[x,"mz"],3),"m/z")))))
+     df1 <- do.call("rbind", df1)
+ 
+     p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
+                           ggplot2::aes(x = rt, y = intensity,
+                                        colour = as.factor(mz))) +
+       ggplot2::geom_point() +
+       ggplot2::geom_line() +
+       ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)",
+            colour = paste("Correlation >", cthres1)) +
+       ggplot2::ggtitle(paste("Correlated EICs:",
+                              round(fmz,3),"m/z",round(frt),"s")) +
+       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+ 
+ 	if (length(insource) > 12){
+       df2 <- as.data.frame(insource[,c("mz", "into")])
+     } else df2 <- data.frame(mz = insource["mz"], into = insource["into"])
+ 
+     p2 <- ggplot2::ggplot(df2,
+                           ggplot2::aes(x = mz, y = into, label = round(mz,3))) +
+       ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
+                             color="red", lwd=0.5) +
+       ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+       ggplot2::theme_minimal() +
+       ggplot2::ggtitle(paste("Pseudo-MS:", round(fmz,3),"m/z",round(frt),"s")) +
+       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+       ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
+       ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
+       ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+ 
+     pdf(paste(DirPath, SpName, "_", "in-source_", round(fmz, 3),
+               "mz_",round(frt),"s",".pdf", sep = ""), height = 8, width = 12)
+     gridExtra::grid.arrange(p1, p2, nrow = 1)
+     dev.off()
+ 	}
 
-    pdf(paste(DirPath, SpName, "_", "pseudoMS_AIF_", round(fmz,3),
-              "mz_", round(frt), "s", ".pdf", sep = ""), height = 8, width = 12)
-    gridExtra::grid.arrange(p1, p2, p3, p4, nrow = 2)
-    dev.off()
-    
-    if(savePseudoMSMS){
-      if(!is.null(aif)) {
-        write.csv(df4, paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
-                             round(fmz, 3), "mz_",round(frt),"s", 
-                             ".csv", sep = ""))
-	# save in .mgf format
-	# based on the definition from... 
-	# https://fiehnlab.ucdavis.edu/projects/lipidblast/mgf-files
-	# and
-	# http://www.matrixscience.com/help/data_file_help.html
-	mz <- c(189.48956,283.62076,301.22977,311.08008,399.99106)
-	int <- c(1.9,3.4,66.3,1.3,2.3)
-	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
-                             round(fmz, 3), "mz_",round(frt),"s", 
-                             ".mgf", sep = "")
-	charge <- "1+" #need to check how to extract from xcmsF1 or xcmsF2
-	cat("BEGIN IONS",
-	    paste("PEPMASS=", fmz, sep = ""),
-	    paste("CHARGE=", charge, sep = ""),
-	    paste("TITLE=", "Pseudo-MS/MS from AIF at", frt, "seconds"),
-	    sep = "\n", file = fname)
-	for(i in 1:length(df4$mz)){
-		cat(paste(df4$mz[i], " ", df4$into[i], sep = ""), "\n", file = fname, append = TRUE)
-	}
-	cat("END IONS", "\n", file = fname, append = TRUE)
-      }
-    }
-
-	} else {
-
-    if (length(insource) > 12){
-		is_ions <- match(insource[,"mz"], ms1_peaks[,"mz"])
-    } else is_ions <- match(insource["mz"], ms1_peaks[,"mz"])
-
-    df1 <- lapply(is_ions,
-                  function(x) data.frame(
-                    intensity = xcms::intensity(eic_ms1[[x]][1,1]),
-                    rt = xcms::rtime(eic_ms1[[x]][1,1]),
-                    mz = as.character(
-                      rep(paste(round(ms1_peaks[x,"mz"],3),"m/z")))))
-    df1 <- do.call("rbind", df1)
-
-    p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
-                          ggplot2::aes(x = rt, y = intensity,
-                                       colour = as.factor(mz))) +
-      ggplot2::geom_point() +
-      ggplot2::geom_line() +
-      ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)",
-           colour = paste("Correlation >", cthres1)) +
-      ggplot2::ggtitle(paste("Correlated EICs:",
-                             round(fmz,3),"m/z",round(frt),"s")) +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-	if (length(insource) > 12){
-      df2 <- as.data.frame(insource[,c("mz", "into")])
-    } else df2 <- data.frame(mz = insource["mz"], into = insource["into"])
-
-    p2 <- ggplot2::ggplot(df2,
-                          ggplot2::aes(x = mz, y = into, label = round(mz,3))) +
-      ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
-                            color="red", lwd=0.5) +
-      ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
-      ggplot2::theme_minimal() +
-      ggplot2::ggtitle(paste("Pseudo-MS:", round(fmz,3),"m/z",round(frt),"s")) +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-      ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
-      ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
-      ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
-
-    pdf(paste(DirPath, SpName, "_", "in-source_", round(fmz, 3),
-              "mz_",round(frt),"s",".pdf", sep = ""), height = 8, width = 12)
-    gridExtra::grid.arrange(p1, p2, nrow = 1)
-    dev.off()
-	}
-  }
   result <- list(insource = insource,
                  aif = aif,
                  ms1 = ms1_peaks,
