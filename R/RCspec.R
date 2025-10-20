@@ -27,10 +27,10 @@ RCspec <- function(fmz, frt, ramclustObj){
       # check if the matched cluster is cluster 0
       if (nclus > 0){
         # extract pseudo spectra
-        inclus <- which(RC$featclus == nclus)
-        pseudoSpec <- data.frame("mz" = RC$fmz[inclus],
-                                 "into" = RC$msint[inclus],
-                                 "rt" = RC$frt[inclus])
+        inclus <- which(ramclustObj$featclus == nclus)
+        pseudoSpec <- data.frame("mz" = ramclustObj$fmz[inclus],
+                                 "into" = ramclustObj$msint[inclus],
+                                 "rt" = ramclustObj$frt[inclus])
       }
     }
   }
