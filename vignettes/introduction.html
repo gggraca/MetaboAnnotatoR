@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gonçalo Graça" />
 
-<meta name="date" content="2021-07-24" />
+<meta name="date" content="2025-10-21" />
 
 <title>Introduction to MetaboAnnotatoR package</title>
 
@@ -26,6 +26,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 <style type="text/css">
@@ -109,13 +110,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -141,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Introduction to MetaboAnnotatoR package</h1>
 <h4 class="author">Gonçalo Graça</h4>
-<h4 class="date">2021-07-24</h4>
+<h4 class="date">2025-10-21</h4>
 
 
 
@@ -157,9 +165,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>A .csv file containing the XCMS peak-picking options (XCMS_options.csv);</li>
 <li>A a raw chromatogram file in .mzML format containing low and high (AIF) collision energy scans or two .netCDF files, each one containing the low or high collision energy scans.</li>
 </ol>
-<p>The following function will place three example files as described above in the user working directory:</p>
+<p>The following function will place the example ‘targetTable.csv’ and ‘XCMS_options.csv’ files as described above in the user working directory:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getDemoData</span>()</span></code></pre></div>
-<p>The dataset used consists of a lipidomics (reverse-phase chromatography) dataset acquired in ESI-MS positive mode. It contains both lipids and lipid-like molecules.</p>
+<p>An example dataset used consisting of a lipidomics dataset (reverse-phase chromatography, containing both lipids and lipid-like molecules) acquired in ESI-MS positive mode should be downloaded from <a href="https://zenodo.org/records/17408169">zenodo repository</a> and placed in the working directory.</p>
 <p>The ‘targetTable.csv’ file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules.</p>
 </div>
 <div id="annotations-using-the-lipid-libraries" class="section level3">
