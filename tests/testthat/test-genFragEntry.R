@@ -20,6 +20,8 @@ test_that("library entry correctly generated", {
                         mpeaksThres = 0.1, 
                         mzTol = 0.01)
   
+  expect_true(file.exists("Pantothenic_acid_pos.csv"))
+  
   entry <- read.csv("Pantothenic_acid_pos.csv", check.names = FALSE)
   
   expect_equal(entry, expected)
