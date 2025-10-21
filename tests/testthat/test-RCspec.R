@@ -1,4 +1,3 @@
-context('RCspec()')
 # read test data
 RC <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
 expected <- data.frame(
