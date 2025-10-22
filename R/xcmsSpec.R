@@ -11,7 +11,8 @@
 #'
 #' @param fmz The m/z for the feature of interest.
 #' @param frt Retention time in seconds for the feature of interest.
-#' @param xcmsObject Variable containing the XCMS processing object.
+#' @param xcmsObject An "xcmsSet" object resulting from the processing of one 
+#' or multiple samples in XCMS.
 #' @param mztol Absolute tolerance for feature m/z search in Da.
 #' @param rttol Tolerance for feature RT search in seconds.
 #' The default (5 s) only applies to UPLC/UHPLC data.
