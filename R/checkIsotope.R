@@ -6,7 +6,7 @@
 #'
 #' @param fmz Feature m/z.
 #' @param frt Feature RT in seconds.
-#' @param spec Indicates if spObject contains XCMS peaks ("raw") or a
+#' @param spec A data frame containing XCMS peaks ("raw") or a
 #' RAMClustR pseudo-MS/MS spectrum ("cluster").
 #' @param mztol Absolute tolerance for feature m/z search in Da.
 #' @return A "tag" of the isotope from an isotopic series as 0, 1, 2 or 3 for
