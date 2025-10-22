@@ -7,7 +7,6 @@
 #'
 #' @param fmz The m/z for the feature of interest.
 #' @param frt Retention time in seconds for the feature of interest.
-#' @param iso Isotope "tag" to add to the results.
 #' @param highCESpec MS2 peaks at the RT window of the feature of interest.
 #' @param ms2_eic Object containing the EICs for the AIF features in the RT
 #' window of the feature of interest;
