@@ -7,12 +7,11 @@
 getDemoData()
 }
 \value{
-Files: Lipid_Positive_QC.mzML, targetTable.csv, XCMS_options.csv
+Files: targetTable.csv, XCMS_options.csv
 }
 \description{
-Places example raw chromatogram (mzML), XCMS_options and target features
-files into the working directory to test automated AIF annotation using
-annotateAIF function.
+Places XCMS_options and target features files into the working directory
+to test automated AIF annotation using annotateAIF function.
 }
 \author{
 Goncalo Graca (Imperial College London)

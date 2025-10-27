@@ -11,7 +11,7 @@ checkIsotope(fmz, frt, spec, rttol = 5, mztol = 0.01)
 
 \item{frt}{Feature RT in seconds.}
 
-\item{spec}{Indicates if spObject contains XCMS peaks ("raw") or a
+\item{spec}{A data frame containing XCMS peaks ("raw") or a
 RAMClustR pseudo-MS/MS spectrum ("cluster").}
 
 \item{mztol}{Absolute tolerance for feature m/z search in Da.}

@@ -12,7 +12,8 @@ xcmsSpec(fmz, frt, xcmsObject, mztol = 0.01, rttol = 5, highCE = TRUE)
 
 \item{frt}{Retention time in seconds for the feature of interest.}
 
-\item{xcmsObject}{Variable containing the XCMS processing object.}
+\item{xcmsObject}{An "xcmsSet" object resulting from the processing of one
+or multiple samples in XCMS.}
 
 \item{mztol}{Absolute tolerance for feature m/z search in Da.}
 

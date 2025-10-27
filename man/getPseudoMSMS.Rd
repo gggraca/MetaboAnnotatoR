@@ -15,7 +15,7 @@ getPseudoMSMS(
   nCE = 1,
   cthres1 = 0.9,
   cthres2 = 0.8,
-  plotResults = TRUE,
+  savePlotResults = TRUE,
   savePseudoMSMS = TRUE,
   SpName = "LCMS",
   DirPath = paste(getwd(), "/", sep = "")
@@ -45,15 +45,11 @@ related to the feature of interest.}
 \item{cthres2}{Correlation threshold for the selection of all-ion fragment
 ions related to the feature of interest.}
 
-\item{plotResults}{Logical argument indicate if the EICs and pseudo
+\item{savePlotResults}{Logical argument indicate if the EICs and pseudo
 in-source MS spectrum plots should be saved to disk.}
 
 \item{savePseudoMSMS}{Logical argument indicate if the pseudo MS/MS should
 be saved to disk as .csv}
-
-\item{scanfreq}{MS scanning frequency in seconds calculated as a the
-difference between two consecutive low and high collision energy scans using
-the information contained in xcmsF1 and xcmsF2 objects}
 }
 \value{
 A list containing several objects: insource, all MS1 peaks related to

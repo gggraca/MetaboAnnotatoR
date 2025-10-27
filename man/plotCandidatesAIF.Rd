@@ -30,8 +30,6 @@ plotCandidatesAIF(
 
 \item{DirPath}{Path to the folder where the plots will be saved.}
 
-\item{iso}{Isotope "tag" to add to the results.}
-
 \item{ms2_eic}{Object containing the EICs for the AIF features in the RT
 window of the feature of interest;}
 }
