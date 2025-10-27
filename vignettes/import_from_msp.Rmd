@@ -4,7 +4,7 @@ author: "Gonçalo Graça"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{generate library entry}
+  %\VignetteIndexEntry{Import MS/MS spectra library from .msp files to MetaboAnnotatoR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

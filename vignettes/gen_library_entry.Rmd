@@ -4,7 +4,7 @@ author: "Gonçalo Graça"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{generate library entry}
+  %\VignetteIndexEntry{Generate Metabolite library entries for MetaboAnnotatoR package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
