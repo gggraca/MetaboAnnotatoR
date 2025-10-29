@@ -10,7 +10,7 @@
 #' @param highCESpec MS2 peaks at the RT window of the feature of interest.
 #' @param DatasetName Name of the data set processed using RAMClustR.
 #' @param rankedCandidates List containing the ranked candidate annotations.
-#' @param candidate Number of candidate annotations to plot.
+#' @param candidate Number of the candidate annotation to plot.
 #' @param DirPath Path to the folder where the plots will be saved.
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot pseudo-MS/MS spectrum for the matched ions.

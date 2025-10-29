@@ -13,7 +13,7 @@
 #' for negative ionisation modes.
 #' @param libs Fragment library to use: 'Lipids' (default) or 'Metabolites'
 #' for other small molecules.
-#' @param RTfile optional csv file with Lipid/metabolites classes Retention
+#' @param RTfile optional csv file with Lipid/metabolite classes Retention
 #' Times in seconds
 #' @param checkIsotope Whether or not to check the isotope type;
 #' default is set to TRUE.

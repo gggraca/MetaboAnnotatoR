@@ -5,9 +5,10 @@
 #'
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'
-#' @param candidate Database entry containing the candidate fragments.
+#' @param candidate Library entry containing the candidate fragments.
 #' @param fmz The m/z for the feature of interest.
 #' @param frt Retention time in seconds for the feature of interest.
+#' @param lib A list containing the metabolite library to use. 
 #' @param iso Isotope "tag" to add to the results.
 #' @param highCESpec MS2 peaks at the RT window of the feature of interest.
 #' @param pseudoSpec MS2 peaks related to the feature of interest.
@@ -25,8 +26,8 @@
 #' candidate fragments and the MS2 peaks at the RT window of the feature of
 #' interest.
 #' @return A list containing one data frame with the summary result of the
-#' matching of a pseudo-MS/MS and fragments of a candidate and a matrix with the
-#' pseudo-MS/MS spectrum of matched ion fragments.
+#' matching of a pseudo-MS/MS and fragments of a candidate and a data frame with 
+#' the pseudo-MS/MS spectrum of matched ion fragments.
 #' @export
 compFrag <- function(candidate,
                      lib,
