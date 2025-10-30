@@ -21,7 +21,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests:
-    msdata (>= 0.48.0)
+    msdata (>= 0.48.0),
     rmarkdown,
     knitr,
     testthat (>= 3.0.0)
