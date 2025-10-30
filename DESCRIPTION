@@ -7,7 +7,8 @@ Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
       person(given = "Yuheng (Rene)", family = "Cai", role = c("aut"), email = "rene.cai@unc.edu"),
       person(given = "Timothy", family = "Ebbels", role = c("aut"), email = "t.ebbels@imperial.ac.uk"))
 Description: Performs feature annotations on LC-MS All-ion fragmentation datasets using fragment ion libraries.
-Depends: 
+Depends:
+    R (>= 3.5.0),
     xcms (>= 3.0.0), 
     RAMClustR (>= 1.0.6),
     MSnbase (>= 2.16.1)
