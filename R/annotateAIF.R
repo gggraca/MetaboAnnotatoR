@@ -8,6 +8,8 @@
 #'
 #' @param targetTable A .csv file containing the list of features to annotate
 #' and the name of the files containing the raw data.
+#' @param filetype LC-MS chromatogram file extension ("mzML" or "CDF"). 
+#' The default is "mzML".
 #' @param ESImode Ionization mode: 'POS' for positive (default)
 #' or 'NEG' for negative ionisation modes
 #' @param libs Fragment libraries to use: 'Lipids' (default) or 'Metabolites'
@@ -38,6 +40,8 @@
 #' # run the annotation using the lipid libraries:
 #' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", libs = "Lipids",
 #' ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7, checkIsotope = TRUE)
+#' @importFrom utils read.csv write.csv
+#' @importFrom grDevices dev.off pdf
 #' @export
 annotateAIF <- function(targetTable = NULL,
                         filetype = "mzML",
@@ -197,7 +201,7 @@ for (i in 1:dim(targets)[1]){
 	  specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	                         filetype = filetype, nCE = 1, cthres1 = corThresh,
 	                         cthres2 = corThresh, savePlotResults = TRUE, 
-	                         savePseudoMSMS = TRUE, SpName, DirPath)
+	                         savePseudoMSMS = TRUE, ExpName, DirPath)
 	)
 
 	if(exists("specs")){

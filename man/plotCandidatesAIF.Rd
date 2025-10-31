@@ -22,6 +22,9 @@ plotCandidatesAIF(
 
 \item{highCESpec}{MS2 peaks at the RT window of the feature of interest.}
 
+\item{ms2eic}{Object containing the EICs for the AIF features in the RT
+window of the feature of interest;}
+
 \item{SpName}{Sample name label.}
 
 \item{rankedCandidates}{List containing the ranked candidate annotations.}
@@ -29,9 +32,6 @@ plotCandidatesAIF(
 \item{candidate}{Number of candidate annotations to plot.}
 
 \item{DirPath}{Path to the folder where the plots will be saved.}
-
-\item{ms2_eic}{Object containing the EICs for the AIF features in the RT
-window of the feature of interest;}
 }
 \value{
 Saves the plots of the candidate annotations as one pdf file:

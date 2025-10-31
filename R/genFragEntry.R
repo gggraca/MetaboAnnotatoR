@@ -8,8 +8,10 @@
 #' arranged in two columns: 'mz' and  'intensity'. Intensity can be given in 
 #' absolute or relative scale.
 #' @param name Metabolite name.
-#' @param adduct Type of adduct fragmented.
-#' @param tmz Adduct m/z.
+#' @param adduct Type of adduct of the parent ion.
+#' @param tmz m/z value of the parent ion.
+#' @param filename The name of the .txt file containing the MS/MS spectrum used
+#' to generate the library entry.
 #' @param noise Noise intensity threshold expressed as a ratio to the peak with
 #' the highest intensity.
 #' @param mpeaksScore The occurrence score to be attributed to the most intense 

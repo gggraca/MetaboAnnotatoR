@@ -32,7 +32,7 @@ for other small molecules.}
 \item{ESImode}{Ionization mode: 'POS' for positive (default) or 'NEG'
 for negative ionisation modes.}
 
-\item{RTfile}{optional csv file with Lipid/metabolites classes Retention
+\item{RTfile}{optional csv file with Lipid/metabolite classes Retention
 Times in seconds}
 
 \item{checkIsotope}{Whether or not to check the isotope type;
@@ -60,9 +60,10 @@ Search possible matches of a feature in Lipid fragments and other
 small molecule libraries.
 }
 \examples{
-# run annotation of lipid features for positive LC-MS data XCMS set (XSet) processed with RAMClustR:
-annotateRC(targetTable = "targetTable.csv", xcmsObject = XSet, ramclustObj = RC,
-libs = "Lipids", ESImode = "POS")
+Run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
+processed with RAMClustR:
+annotateRC(targetTable="targetTable.csv", xcmsObject=XSet, ramclustObj=RC, 
+libs="Lipids", ESImode="POS")
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)

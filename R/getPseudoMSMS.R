@@ -21,19 +21,26 @@
 #' @param savePlotResults Logical argument indicate if the EICs and pseudo
 #' in-source MS spectrum plots should be saved to disk.
 #' @param savePseudoMSMS Logical argument indicate if the pseudo MS/MS should 
-#' be saved to disk as .csv
+#' be saved to disk as .csv.
+#' @param ExpName Name of the experimental technique, commonly LC-MS (default). 
+#' Other names are possible, e.g. CE-MS, LC-AIF-MS, etc..
+#' @param DirPath Path to the folder where plots will be saved. 
+#' The default folder is the working directory.
 #' @return A list containing several objects: insource, all MS1 peaks related to
 #' the feature of interest; aif, all MS2 peaks related to the feature;
 #' ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
 #' feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
 #' feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the
 #' RT window of the feature of interest; feic, EIC of the feature of interest.
+#' @importFrom xcms chromPeaks chromatogram 
+#' @importFrom MSnbase compareChromatograms
+#' @importFrom ProtGenerics intensity rtime
 #' @export
 getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
-                          filetype = filetype, nCE = 1, cthres1 = 0.9,
-                          cthres2 = 0.8, savePlotResults = TRUE, 
-                          savePseudoMSMS = TRUE, SpName = "LCMS",
-                          DirPath = paste(getwd(), "/", sep ="")){
+                          filetype=filetype, nCE=1, cthres1=0.9,
+                          cthres2=0.8, savePlotResults=TRUE, 
+                          savePseudoMSMS=TRUE, ExpName="LCMS",
+                          DirPath=paste(getwd(), "/", sep ="")){
   # create objects to store results from EIC correlations and peak-picking
   # improves object handling in other functions
   insource <- NULL
@@ -200,14 +207,14 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
        ggplot2::xlim(min(df4[,1])-50, max(df4[,1])+50) +
        ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
  
-     pdf(paste(DirPath, SpName, "_", "pseudoMS_AIF_", round(fmz,3),
+     pdf(paste(DirPath, ExpName, "_", "pseudoMS_AIF_", round(fmz,3),
                "mz_", round(frt), "s", ".pdf", sep = ""), height = 8, width = 12)
      gridExtra::grid.arrange(p1, p2, p3, p4, nrow = 2)
      dev.off()
      
      if(savePseudoMSMS){
        if(!is.null(aif)) {
-         write.csv(df4, paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
+         write.csv(df4, paste(DirPath, ExpName, "_", "pseudoMS_AIF_", 
                               round(fmz, 3), "mz_",round(frt),"s", 
                               ".csv", sep = ""))
  	# save in .mgf format
@@ -215,7 +222,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
  	# https://fiehnlab.ucdavis.edu/projects/lipidblast/mgf-files
  	# and
  	# http://www.matrixscience.com/help/data_file_help.html
- 	fname <- paste(DirPath, SpName, "_", "pseudoMS_AIF_", 
+ 	fname <- paste(DirPath, ExpName, "_", "pseudoMS_AIF_", 
                               round(fmz, 3), "mz_",round(frt),"s", 
                               ".mgf", sep = "")
  	# get charge from polarity
@@ -278,7 +285,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
        ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
        ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
  
-     pdf(paste(DirPath, SpName, "_", "in-source_", round(fmz, 3),
+     pdf(paste(DirPath, ExpName, "_", "in-source_", round(fmz, 3),
                "mz_",round(frt),"s",".pdf", sep = ""), height = 8, width = 12)
      gridExtra::grid.arrange(p1, p2, nrow = 1)
      dev.off()

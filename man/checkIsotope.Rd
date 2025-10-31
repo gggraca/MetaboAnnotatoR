@@ -4,7 +4,7 @@
 \alias{checkIsotope}
 \title{Isotopologue type check.}
 \usage{
-checkIsotope(fmz, frt, spec, rttol = 5, mztol = 0.01)
+checkIsotope(fmz, frt, spec, mztol = 0.01)
 }
 \arguments{
 \item{fmz}{Feature m/z.}

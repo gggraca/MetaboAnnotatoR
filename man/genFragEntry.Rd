@@ -25,9 +25,12 @@ absolute or relative scale.}
 
 \item{name}{Metabolite name.}
 
-\item{adduct}{Type of adduct fragmented.}
+\item{adduct}{Type of adduct of the parent ion.}
 
-\item{tmz}{Adduct m/z.}
+\item{tmz}{m/z value of the parent ion.}
+
+\item{filename}{The name of the .txt file containing the MS/MS spectrum used
+to generate the library entry.}
 
 \item{noise}{Noise intensity threshold expressed as a ratio to the peak with
 the highest intensity.}

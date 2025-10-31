@@ -17,7 +17,7 @@ getPseudoMSMS(
   cthres2 = 0.8,
   savePlotResults = TRUE,
   savePseudoMSMS = TRUE,
-  SpName = "LCMS",
+  ExpName = "LCMS",
   DirPath = paste(getwd(), "/", sep = "")
 )
 }
@@ -49,7 +49,13 @@ ions related to the feature of interest.}
 in-source MS spectrum plots should be saved to disk.}
 
 \item{savePseudoMSMS}{Logical argument indicate if the pseudo MS/MS should
-be saved to disk as .csv}
+be saved to disk as .csv.}
+
+\item{ExpName}{Name of the experimental technique, commonly LC-MS (default).
+Other names are possible, e.g. CE-MS, LC-AIF-MS, etc..}
+
+\item{DirPath}{Path to the folder where plots will be saved.
+The default folder is the working directory.}
 }
 \value{
 A list containing several objects: insource, all MS1 peaks related to

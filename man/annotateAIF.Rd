@@ -23,6 +23,9 @@ annotateAIF(
 \item{targetTable}{A .csv file containing the list of features to annotate
 and the name of the files containing the raw data.}
 
+\item{filetype}{LC-MS chromatogram file extension ("mzML" or "CDF").
+The default is "mzML".}
+
 \item{libs}{Fragment libraries to use: 'Lipids' (default) or 'Metabolites'
 for other small molecules.}
 

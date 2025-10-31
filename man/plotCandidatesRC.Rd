@@ -25,7 +25,7 @@ plotCandidatesRC(
 
 \item{rankedCandidates}{List containing the ranked candidate annotations.}
 
-\item{candidate}{Number of candidate annotations to plot.}
+\item{candidate}{Number of the candidate annotation to plot.}
 
 \item{DirPath}{Path to the folder where the plots will be saved.}
 }

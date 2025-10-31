@@ -21,6 +21,7 @@
 #' @returns A data frame with ions (m/z and intensity) from the
 #' high collision-energy or low collision-energy features found at the same
 #' RT window as the feature of interest.
+#' @importFrom xcms peaks
 #' @export
 xcmsSpec <- function(fmz,
                      frt,

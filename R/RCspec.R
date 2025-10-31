@@ -9,6 +9,7 @@
 #' @param frt Retention time in seconds for the feature of interest.
 #' @param ramclustObj RAMClustR object with parent-fragment reconstructions
 #' @return Pseudo-MS/MS spectrum for the feature of interest.
+#' @importFrom RAMClustR findmass
 #' @export
 RCspec <- function(fmz, frt, ramclustObj){
   # find a given feature in RAMClust by mass

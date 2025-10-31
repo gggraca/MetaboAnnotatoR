@@ -14,7 +14,7 @@
 #' @examples 
 #' iso <- checkIsotope(286.1442, 40.77, spec = spObject)
 #' @export
-checkIsotope <- function(fmz, frt, spec, rttol = 5, mztol = 0.01){
+checkIsotope <- function(fmz, frt, spec, mztol = 0.01){
   iso <- 0
   if(sum(abs(spec[,"mz"] - (fmz - 1.0034)) < mztol) > 0) {
     if(spec[,"into"][which.min(abs(spec[,"mz"] - (fmz-1.0034)))] >

@@ -8,7 +8,7 @@
 #' @param fmz The m/z for the feature of interest.
 #' @param frt Retention time in seconds for the feature of interest.
 #' @param highCESpec MS2 peaks at the RT window of the feature of interest.
-#' @param ms2_eic Object containing the EICs for the AIF features in the RT
+#' @param ms2eic Object containing the EICs for the AIF features in the RT
 #' window of the feature of interest;
 #' @param SpName Sample name label.
 #' @param rankedCandidates List containing the ranked candidate annotations.
@@ -16,6 +16,7 @@
 #' @param DirPath Path to the folder where the plots will be saved.
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot of EICs and pseudo-MS/MS spectrum for the matched ions.
+#' @importFrom ProtGenerics intensity rtime
 #' @export
 plotCandidatesAIF <- function(fmz,
                               frt,
