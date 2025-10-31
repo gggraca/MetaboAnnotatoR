@@ -29,10 +29,13 @@
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples 
-#' # run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
+#' Run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
 #' processed with RAMClustR:
 #' annotateRC(targetTable="targetTable.csv", xcmsObject=XSet, ramclustObj=RC, 
 #' libs="Lipids", ESImode="POS")
+#' @importFrom utils read.csv write.csv
+#' @importFrom grDevices dev.off pdf
+#' @importFrom graphics text
 #' @export
 annotateRC <- function(targetTable,
                        xcmsObject,
@@ -46,52 +49,23 @@ annotateRC <- function(targetTable,
                        matchWeight=0.5,
                        ncandidates=5){
   
-## Read targets table--------------------
+## Read targets table-------------------------------
 targets <- read.csv(targetTable, header=TRUE)
 
-## create table to store global results
-global <- targets
-global[,c("metabolite", "feature.type", "ion.type", "isotope",
-          "mz.metabolite", "matched.mz", "mz.error",
-          "pseudoMSMS", "fraction", "score")] <- NA
+## Initialize results object------------------------
+results <- initializeResults(targets, libs, ESImode)
 
-## Get RTs from file --------------------
-	if(RTfile=="none") {
-		message("No RT information provided...")
-		RTs <- "none"
-		} else {
-		message("Reading RT information...")
-		RTs <- read.csv(RTfile,header=TRUE)
-	}
+## Get RTs intervals from file --------------------
+RTs <- RTsFromFile(RTfile)
 
-## Create directory to store the results
-mainDir <- "./Annotations"
-Date <- Sys.Date()
-Time <- format(Sys.time(), "%X")
-Time <- gsub(":", "_", Time)
-subDir <- paste(libs, "_", ESImode, "_", "RAMClustR", "_",
-                Date, "_", Time, sep = "")
-dir.create(file.path(mainDir), showWarnings = FALSE)
-dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
+## load libraries ---------------------------------
+libraries <- loadLibs(libs, ESImode)
+libfiles <- libraries$libfiles
+lib <- libraries$lib
 
-## load libraries --------------------
-if(file.exists("./Libraries/")){
-  message("Loading user-defined libraries...")
-  libfiles <- list.files(path = paste("./Libraries/",libs,"/",
-                                      ESImode, sep = ""), full.names = TRUE)
-} else {
-  message("Loading default libraries...")
-  defaultLibPath <- system.file(paste("/Libraries/",libs,"/",ESImode, sep = ""),
-                                package = "MetaboAnnotatoR")
-  libfiles <- list.files(defaultLibPath, full.names = TRUE)
-}
-
-# check.names=FALSE to use the original header names in the annotations:
-lib <- lapply(libfiles, read.csv, header = TRUE, sep=",", check.names = FALSE)
-
-
+## process each feature from the targets table------
 for(i in seq_len(nrow(targets))){
-    message(paste("####### Processing feature", i, "of", nrow(targets))," ########")
+    message(paste("##### Processing feature", i, "of", nrow(targets))," ######")
     
     fmz <- targets[i,1]
     frt <- targets[i,2]
@@ -108,26 +82,26 @@ for(i in seq_len(nrow(targets))){
       iso <- checkIsotope(fmz, frt, inSourceSpec)
       }
 
-	  # Search Libraries --------------------
+	# Search Libraries --------------------
     if(is.null(pseudoSpec) & is.null(highCESpec)) { next
     } else {
     message("Searching candidates...")
     candidates <- searchLib(lib, libfiles, fmz - iso * 1.0034, frt,
-	                        tolerance = tolerance, RTs, inSourceSpec)
+	                        tolerance=tolerance, RTs, inSourceSpec)
     }
 
     # Compare fragments between Library candidates and high-collision-energy /
     # pseudo-MS/MS spectra --------------------
     if(is.null(pseudoSpec) & is.null(highCESpec) |
-    length(unlist(candidates))== 0) {
+    length(unlist(candidates)) == 0) {
     result <- NULL
     } else {
     message("Matching candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
     output <- mapply(compFrag, candidates,
                      lapply(as.numeric(names(candidates)),function(x) lib[[x]]),
-                     MoreArgs = list(fmz, frt, iso, highCESpec, pseudoSpec,
-                                     maxMZdiff = maxMZdiff,
-                                     matchWeight = matchWeight), SIMPLIFY=FALSE)
+                     MoreArgs=list(fmz, frt, iso, highCESpec, pseudoSpec,
+                                     maxMZdiff=maxMZdiff,
+                                     matchWeight=matchWeight), SIMPLIFY=FALSE)
 
     result <- do.call(rbind, lapply(output, "[[", 1))
     specMatch <- unlist(lapply(output, "[[", 2), recursive = FALSE)
@@ -141,7 +115,7 @@ for(i in seq_len(nrow(targets))){
                    "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
                    "fraction", "score")] <- NA
       # type of ion isotope
-      if (iso == 0) {
+      if(iso == 0) {
         rankedResult$isotope <- "M+0"
         } else if (iso == 1) {
           rankedResult$isotope <- "M+1"
@@ -151,118 +125,206 @@ for(i in seq_len(nrow(targets))){
           rankedResult$isotope <- "M+3"
         }
     # pseudoMSMS flag
-		if (is.null(pseudoSpec)) {
-      rankedResult$pseudoMSMS <- "FALSE"
-    } else { rankedResult$pseudoMSMS <- "TRUE"
-    }
+		if(is.null(pseudoSpec)) {
+           rankedResult$pseudoMSMS <- "FALSE"
+        } else { rankedResult$pseudoMSMS <- "TRUE"
+      }
     } else {
       output <- rankScore(result, specMatch)
       rankedResult <- output$rankedResult
       rankedSpec <- output$rankedSpecMatch
     }
-
+    
     ## Save output of ranked annotations -------
-    # message("Saving results in '/Annotations' folder...")
-    # set dataset name
-    DatasetName <- paste(libs, "_", ESImode, "_", "RAMClustR", sep = "")
-    write.csv(rankedResult[rankedResult$rank <= ncandidates,],
-	          file = paste(mainDir, "/", subDir, "/", DatasetName, "_",
-	                       round(fmz,3), "mz_", round(frt,3), "s_",
-	                       "ranked_candidates.csv" , sep = ""), row.names = FALSE)
+    if(exists("rankedResult")){
+        saveRanked(fmz, frt, ncandidates, rankedResult, 
+                   DatasetName=results$DatasetName, 
+                   resultsDir=results$resultsDir)
+    }
 
-    # store result for high rank candidate
-    if(exists('rankedResult') & !is.null(rankedResult)){
-      global[i,"isotope"] <- as.character(rankedResult[1,"isotope"])
-      global[i,"metabolite"] <- as.character(rankedResult[1,"metabolite"])
-      global[i,"mz.metabolite"] <- rankedResult[1,"mz.metabolite"]
-      global[i,"matched.mz"] <- rankedResult[1,"matched.mz"]
-      global[i,"mz.error"] <- rankedResult[1,"mz.error"]
-      global[i,"ion.type"] <- as.character(rankedResult[1,"ion.type"])
-      global[i,"feature.type"] <- as.character(rankedResult[1,"feature.type"])
-      global[i,"pseudoMSMS"] <- rankedResult[1,"pseudoMSMS"]
-      global[i,"fraction"] <- as.character(rankedResult[1,"fraction"])
-      global[i,"score"] <- rankedResult[1,"score"]
-      } else {
-      global[i,c("metabolite", "feature.type", "ion.type", "isotope",
-	             "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
-	             "fraction", "score")] <- NA
-      }
-
-    ## save image with matched spectra
-    if(exists("rankedSpec") & !is.null(result)){
-      if(length(rankedSpec) == 1) {
-        plotCandidatesRC(fmz, frt, highCESpec, DatasetName, output, 1,
-	                   DirPath = paste(mainDir,"/",subDir, "/", sep = ""))
-        }
-      if(length(rankedSpec) <= ncandidates) {
-        plots <- lapply(seq_len(length(rankedSpec)),
-	                      function(x) plotCandidatesRC(fmz,
-	                                                   frt,
-	                                                   highCESpec,
-	                                                   DatasetName,
-	                                                   output, x,
-	                                                   DirPath = paste(mainDir,
-	                                                                   "/",
-	                                                                   subDir,
-	                                                                   "/",
-	                                                                   sep = "")))
-      }
-      if(length(rankedSpec) > ncandidates) {
-        plots <- lapply(seq_len(length(rankedSpec[1:ncandidates])),
-	                    function(x) plotCandidatesRC(fmz,
-	                                                 frt,
-	                                                 highCESpec,
-	                                                 DatasetName,
-	                                                 output,
-	                                                 x,
-	                                                 DirPath = paste(mainDir,
-	                                                                 "/",
-	                                                                 subDir,
-	                                                                 "/",
-	                                                                 sep = "")))
-      }
-    }	else NULL
-
-    ## save pseudo-MS/MS spectrum per feature
-    if(exists("pseudoSpec") & !is.null(pseudoSpec) & length(pseudoSpec) > 0){
-      if (is.vector(pseudoSpec)) pseudoSpec <- as.data.frame(t(pseudoSpec))
-      pdf(file = paste(mainDir, "/", subDir, "/", "pseudoMSMS_",
-                       DatasetName, "_", round(fmz,3), "mz_", round(frt,3),
-	                     "s", ".pdf", sep=""), width = 8, height = 5)
-      
-      plot(pseudoSpec[,1], pseudoSpec[,2], type = 'h',
-           xlim = c(50, max(pseudoSpec[,1]) + 100),
-           ylim = c(0, max(pseudoSpec[,2]) + max(pseudoSpec[,2])/1.5),
-           xlab = "m/z", ylab = "intensity (a.u.)", col = "black", lwd = 1,
-           main = paste("Pseudo-MS/MS Feature:", fmz, "m/z,", frt, "s"),
-           cex.main = 0.95, bty = "L", xaxs = "i", yaxs = "i")
-      text(pseudoSpec[,1] - 10, pseudoSpec[,2],
-           as.character(round(pseudoSpec[,1],3)), pos = 4, cex = 0.8, srt = 45)
-      dev.off()
-    write.csv(pseudoSpec, file = paste(mainDir, "/", subDir, "/", "pseudoMSMS_",
-	                           DatasetName, "_", round(fmz,3), "mz_",
-	                           round(frt,3), "s", ".csv", sep = ""), row.names = FALSE
-              )
-    } else NULL
- }
+    ## Store highest rank annotation in global results------
+    if(!exists("rankedResult")) rankedResult <- NULL
+    results$global[i,] <- storeAnnotation(global=results$global[i,], 
+                                          rankedResult[1,])
+    
+    ## save plot of matched spectra for the top n candidates
+    if(exists("rankedSpec")){
+        saveMatched(fmz, frt, highCESpec, output, ncandidates,
+                    rankedSpec, DatasetName=results$DatasetName,
+                    resultsDir=results$resultsDir)
+    }
+    ## Save pseudo-MS/MS spectrum per target feature
+    if(exists("pseudoSpec")){
+        savePseudoMSMS(fmz, frt, pseudoSpec, 
+                       DatasetName=results$DatasetName, 
+                       resultsDir=results$resultsDir)
+    }
+}
 
 ## save global results table
-    write.csv(global,
-              file = paste(mainDir, "/", subDir, "/", "Global_Results", ".csv", sep = ""),
-              row.names = FALSE)
-    # save general options
-    df <- data.frame(targetsTable_file = targetTable,
-	                 RAMClusterObject = as.character(substitute(ramclustObj)),
-	                 libraries = libs,
-	                 ESImode = ESImode,
-	                 RTfile = RTfile,
-	                 checkIsotope = checkIsotope,
-	                 matchWeight = matchWeight,
-	                 tolerance = paste(tolerance, "ppm"),
-	                 maxMZdiff = paste(maxMZdiff, "Da"),
-	                 row.names = "Option")
-    df <- as.data.frame(t(df))
-    write.csv(df,
-              file = paste(mainDir, "/", subDir, "/", "General_options", ".csv", sep = ""))
+write.csv(results$global, 
+          file=paste(results$resultsDir, "Global_Results", ".csv", sep=""),
+          row.names=FALSE)
+## save general options
+df <- data.frame(targetsTable_file=targetTable,
+                 RAMClusterObject=as.character(substitute(ramclustObj)),
+	             libraries=libs,
+	             ESImode=ESImode,
+	             RTfile=RTfile,
+	             checkIsotope=checkIsotope,
+	             matchWeight=matchWeight,
+	             tolerance=paste(tolerance, "ppm"),
+	             maxMZdiff=paste(maxMZdiff, "Da"),
+	             row.names="Option")
+df <- as.data.frame(t(df))
+write.csv(df, file=paste(results$resultsDir, "General_options", ".csv", sep=""))
 message('Job done!')
+
+}
+
+
+## Helper functions-------------------------------------------------------------
+
+## Initialization of results folder and global results table
+initializeResults <- function(targets, libs, ESImode){
+    # Create directory to store the results
+    mainDir <- "./Annotations"
+    Date <- Sys.Date()
+    Time <- format(Sys.time(), "%X")
+    Time <- gsub(":", "_", Time)
+    subDir <- paste(libs, "_", ESImode, "_", "RAMClustR", "_",
+                    Date, "_", Time, sep = "")
+    dir.create(file.path(mainDir), showWarnings = FALSE)
+    dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
+    resultsDir <- paste(mainDir, "/", subDir, "/", sep="")
+    # create table to store global results
+    global <- targets
+    global[,c("metabolite", "feature.type", "ion.type", "isotope",
+              "mz.metabolite", "matched.mz", "mz.error",
+              "pseudoMSMS", "fraction", "score")] <- NA
+    # create dataset name
+    DatasetName <- paste(libs, "_", ESImode, "_", "RAMClustR", sep = "")
+    # return global results table and results path as list
+    results <- list(global=global, resultsDir=resultsDir, 
+                    DatasetName=DatasetName)
+    return(results)
+}
+
+## Get RTs intervals from file --------------------
+RTsFromFile <- function(RTfile){
+    if(RTfile == "none") {
+        message("No RT information provided...")
+        RTs <- "none"
+    } else {
+        message("Reading RT information...")
+        RTs <- read.csv(RTfile,header=TRUE)
+    }
+    return(RTs)
+}
+
+## Load libraries and get libraries filepaths---------------
+loadLibs <- function(libs, ESImode){
+    if(file.exists("./Libraries/")){
+        message("Loading user-defined libraries...")
+        libfiles <- list.files(path=paste("./Libraries/",libs,"/",
+                                            ESImode, sep=""), 
+                               full.names=TRUE)
+    } else {
+        message("Loading default libraries...")
+        defaultLibPath <- system.file(paste("/Libraries/",libs,"/", ESImode, 
+                                            sep=""),
+                                      package="MetaboAnnotatoR")
+        libfiles <- list.files(defaultLibPath, full.names = TRUE)
+    }
+    
+    # check.names=FALSE to use the original header names in the annotations:
+    lib <- lapply(libfiles, read.csv, header=TRUE, sep=",", check.names=FALSE)
+    libraries <- list(lib=lib, libfiles=libfiles)
+    return(libraries)
+}
+
+## Save output of ranked annotations ------------------
+saveRanked <- function(fmz, frt, ncandidates, rankedResult, 
+                       DatasetName, resultsDir){
+    write.csv(rankedResult[rankedResult$rank <= ncandidates,],
+              file=paste(resultsDir, DatasetName, "_", round(fmz,3), "mz_", 
+                           round(frt,3), "s_", "ranked_candidates.csv", 
+                           sep=""), row.names=FALSE)
+}
+
+## Store result for high rank candidate on global results table
+storeAnnotation <- function(global, rankedResult){
+    if(!is.null(rankedResult)){
+        global$isotope <- as.character(rankedResult$isotope)
+        global$metabolite <- as.character(rankedResult$metabolite)
+        global$mz.metabolite <- rankedResult$mz.metabolite
+        global$matched.mz <- rankedResult$matched.mz
+        global$mz.error <- rankedResult$mz.error
+        global$ion.type <- as.character(rankedResult$ion.type)
+        global$feature.type <- as.character(rankedResult$feature.type)
+        global$pseudoMSMS <- rankedResult$pseudoMSMS
+        global$fraction <- as.character(rankedResult$fraction)
+        global$score <- rankedResult$score
+    } else {
+        global[,c("metabolite", "feature.type", "ion.type", "isotope",
+                   "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
+                   "fraction", "score")] <- NA
+    }
+    return(global)
+}
+
+## Save plot of matched spectra for the top n candidates
+saveMatched <- function(fmz, frt, 
+                        highCESpec, 
+                        output, 
+                        ncandidates,
+                        rankedSpec, 
+                        DatasetName, 
+                        resultsDir){
+    if(!is.null(result)){
+        if(length(rankedSpec) == 1) {
+            plotCandidatesRC(fmz, frt, highCESpec, DatasetName, output, 1,
+                             DirPath=paste(mainDir, "/",subDir, "/", sep=""))
+        }
+        if(length(rankedSpec) <= ncandidates) {
+            plots <- lapply(seq_len(length(rankedSpec)),
+                            function(x) plotCandidatesRC(fmz,frt,
+                                                         highCESpec,
+                                                         DatasetName,
+                                                         output, x,
+                                                         resultsDir))
+        }
+        if(length(rankedSpec) > ncandidates) {
+            plots <- lapply(seq_len(length(rankedSpec[1:ncandidates])),
+                            function(x) plotCandidatesRC(fmz,frt,
+                                                         highCESpec,
+                                                         DatasetName,
+                                                         output,x,
+                                                         resultsDir))
+        }
+    }	else NULL
+}
+
+## Save pseudo-MS/MS spectrum per feature
+savePseudoMSMS <- function(fmz, frt, pseudoSpec, DatasetName, resultsDir){
+    if(!is.null(pseudoSpec) & length(pseudoSpec) > 0){
+        if (is.vector(pseudoSpec)) pseudoSpec <- as.data.frame(t(pseudoSpec))
+        pdf(file = paste(resultsDir, "pseudoMSMS_",
+                         DatasetName, "_", round(fmz,3), "mz_", round(frt,3),
+                         "s", ".pdf", sep=""), width=8, height=5)
+        
+        plot(pseudoSpec[,1], pseudoSpec[,2], type='h',
+             xlim=c(50, max(pseudoSpec[,1]) + 100),
+             ylim=c(0, max(pseudoSpec[,2]) + max(pseudoSpec[,2])/1.5),
+             xlab="m/z", ylab="intensity (a.u.)", col="black", lwd=1,
+             main=paste("Pseudo-MS/MS Feature:", fmz, "m/z,", frt, "s"),
+             cex.main=0.95, bty="L", xaxs="i", yaxs="i")
+        text(pseudoSpec[,1] - 10, pseudoSpec[,2],
+             as.character(round(pseudoSpec[,1],3)), pos=4, cex=0.8, srt=45)
+        dev.off()
+        write.csv(pseudoSpec, file=paste(resultsDir, "pseudoMSMS_",
+                                         DatasetName, "_", round(fmz,3), "mz_",
+                                         round(frt,3), "s", ".csv", sep = ""), 
+                  row.names=FALSE)
+    } else NULL
 }
