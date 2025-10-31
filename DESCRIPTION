@@ -1,7 +1,7 @@
 Package: MetaboAnnotatoR
 Title: Automated Annotation of All-Ion Fragmentation LC-MS Metabolomic Features
 Version: 1.1.1
-Date: 2025-10-30
+Date: 2025-10-31
 Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
            email = "g.gomes-da-graca@imperial.ac.uk", comment = c(ORCID = "https://orcid.org/0000-0002-0876-3876")),
       person(given = "Yuheng (Rene)", family = "Cai", role = c("aut"), email = "rene.cai@unc.edu"),
@@ -11,12 +11,13 @@ Depends:
     R (>= 3.5.0),
     xcms (>= 3.0.0), 
     RAMClustR (>= 1.0.6),
-    MSnbase (>= 2.16.1)
+    MSnbase (>= 2.16.1),
+    ProtGenerics
 Imports:
     ggplot2 (>= 3.3.3), 
     gridExtra (>= 2.3)
 biocViews: MassSpectrometry, Metabolomics
-License: `use_gpl3_license()`
+License: GPL-3
 URL: https://github.com/gggraca/MetaboAnnotatoR
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
