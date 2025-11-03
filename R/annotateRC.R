@@ -29,8 +29,8 @@
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples 
-#' Run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
-#' processed with RAMClustR:
+#' # Run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
+#' # processed with RAMClustR:
 #' annotateRC(targetTable="targetTable.csv", xcmsObject=XSet, ramclustObj=RC, 
 #' libs="Lipids", ESImode="POS")
 #' @importFrom utils read.csv write.csv
@@ -229,17 +229,15 @@ loadLibs <- function(libs, ESImode){
         libfiles <- list.files(path=paste("./Libraries/",libs,"/",
                                             ESImode, sep=""), 
                                full.names=TRUE)
+        # check.names=FALSE to use the original header names in the annotations:
+        lib <- lapply(libfiles, read.csv, header=TRUE, sep=",", check.names=FALSE)
+        libraries <- list(lib=lib, libfiles=libfiles)
     } else {
         message("Loading default libraries...")
-        defaultLibPath <- system.file(paste("/Libraries/",libs,"/", ESImode, 
-                                            sep=""),
+        defaultLib <- system.file(paste(libs,"_", ESImode, ".rds", sep=""),
                                       package="MetaboAnnotatoR")
-        libfiles <- list.files(defaultLibPath, full.names = TRUE)
+        libraries <- readRDS(defaultLib)
     }
-    
-    # check.names=FALSE to use the original header names in the annotations:
-    lib <- lapply(libfiles, read.csv, header=TRUE, sep=",", check.names=FALSE)
-    libraries <- list(lib=lib, libfiles=libfiles)
     return(libraries)
 }
 
@@ -284,7 +282,7 @@ saveMatched <- function(fmz, frt,
     if(!is.null(result)){
         if(length(rankedSpec) == 1) {
             plotCandidatesRC(fmz, frt, highCESpec, DatasetName, output, 1,
-                             DirPath=paste(mainDir, "/",subDir, "/", sep=""))
+                             DirPath=resultsDir)
         }
         if(length(rankedSpec) <= ncandidates) {
             plots <- lapply(seq_len(length(rankedSpec)),
