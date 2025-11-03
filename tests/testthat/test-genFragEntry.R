@@ -1,7 +1,7 @@
 # read expected table
-testFile <- system.file("./Libraries/Metabolites/POS/Pantothenic_acid_pos.csv",
-                        package = "MetaboAnnotatoR")
-expected <- read.csv(testFile, check.names = FALSE)
+testFile <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
+expected <- readRDS(testFile)
+expected <- expected$lib[[69]]
 
 # input test spectrum as data frame
 specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353, 124.0766, 184.0981, 202.1085, 220.1185),

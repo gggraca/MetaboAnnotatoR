@@ -1,17 +1,18 @@
 # expected result data
 fmz <- 152.0720
 frt <- 125
-file <- system.file("/Libraries/Metabolites/POS/Acetaminophen_pos.csv", package = "MetaboAnnotatoR")
+filePath <- system.file("/Data/Acetaminophen_pos.csv", package = "MetaboAnnotatoR")
 expected <- list()
-expected[[1]] <- read.csv(file, header = TRUE, sep=",", check.names = FALSE)
+expected[[1]] <- read.csv(filePath, header = TRUE, sep=",", check.names = FALSE)
 
 # test data
-LibPath <- system.file("/Libraries/Metabolites/POS/", package = "MetaboAnnotatoR")
-libfiles <- list.files(LibPath, full.names = TRUE)
-lib <- lapply(libfiles, read.csv, header = TRUE, sep=",", check.names = FALSE)
+filePath2 <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
+libraries <- readRDS(filePath2)
+libfiles <- libraries$libfiles
+lib <- libraries$lib
 inSourceSpec <- data.frame(mz = 152.0720, into = 1)
 
-test_that("obtains the correct candidates", {
+test_that("Obtains the correct candidates", {
   result <- searchLib(lib, libfiles, fmz, frt, tolerance = 25, RTs = "none", inSourceSpec)
   expect_true(is.list(result))
   expect_equal(result[[1]], expected[[1]])

@@ -2,9 +2,9 @@
 fmz <- 152.0720
 frt <- 125
 iso <- 0
-LibPath <- system.file("/Libraries/Metabolites/POS/", package="MetaboAnnotatoR")
-libfiles <- list.files(LibPath, full.names=TRUE)
-lib <- lapply(libfiles, read.csv, header=TRUE, sep=",", check.names=FALSE)
+LibPath <- system.file("/Data/Metabolites_POS.rds", package="MetaboAnnotatoR")
+metPos <- readRDS(LibPath)
+lib <- metPos$lib
 
 pseudoSpec <- data.frame(mz=c(59.0489, 65.0389, 66.0427, 67.0550, 70.0659, 73.0762, 82.0658, 92.0498, 93.0355, 93.0569, 109.0523,
                                 110.0622, 111.0452, 111.0647, 112.0476, 121.0408, 134.0611, 136.0762, 152.0716, 154.0781), 
