@@ -69,7 +69,7 @@ if(nrow(specMatch) >= 1){
     ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
     ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
 
-  pdf(file = paste(DirPath,SpName,"_",round(fmz,3),"mz_",
+  pdf(file = paste(DirPath, SpName,"_",round(fmz,3),"mz_",
                    round(frt,3),"_candidate_", candidate, ".pdf", sep=""),
       width = 10, height = 10)
     gridExtra::grid.arrange(p1, p2, nrow = 2)
