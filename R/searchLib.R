@@ -59,7 +59,7 @@ searchLib <- function(libraries,
       names(candidates)[j] <- as.character(i)
     } else {
 	# check for fragments
-		MZerr <- abs(tlib[,3:dim(tlib)[2]] - fmz) * 1e6 / fmz # ppm
+		MZerr <- abs(tlib[,3:ncol(tlib)] - fmz) * 1e6 / fmz # ppm
 			if (sum(MZerr <= tolerance) > 0){
 				# check if the parent ion is present in the in source ions list
 			  # store candidates in a temporary object:
