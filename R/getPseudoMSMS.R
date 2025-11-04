@@ -32,6 +32,12 @@
 #' feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
 #' feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the
 #' RT window of the feature of interest; feic, EIC of the feature of interest.
+#' @examples
+#' \dontrun{
+#' getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2, filetype=filetype, 
+#' nCE=1, cthres1=0.9,cthres2=0.8, savePlotResults=TRUE, savePseudoMSMS=TRUE, 
+#' ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
+#' }
 #' @importFrom xcms chromPeaks chromatogram 
 #' @importFrom MSnbase compareChromatograms
 #' @importFrom ProtGenerics intensity rtime
