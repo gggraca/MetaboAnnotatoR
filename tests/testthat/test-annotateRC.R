@@ -26,7 +26,7 @@ Xset@peaks <- as.matrix(rbind(ms1, ms2, dummy, dummyFrags))
 test_that("output files are created", {
     # run function  
     suppressMessages(
-      annotateRC(targetTable = tPath, xcmsObject = Xset, ramclustObj = RC,libs = "Lipids", ESImode = "POS")
+      annotateRC(targetTable=tPath, xcmsObject=Xset, ramclustObj=RC, libs="Lipids", ESImode="POS")
       )
     # test presence of Annotation folder 
     expect_true(dir.exists("./Annotations/"))

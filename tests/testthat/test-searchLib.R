@@ -1,9 +1,8 @@
 # expected result data
 fmz <- 152.0720
 frt <- 125
-filePath <- system.file("/Data/Acetaminophen_pos.csv", package = "MetaboAnnotatoR")
-expected <- list()
-expected[[1]] <- read.csv(filePath, header = TRUE, sep=",", check.names = FALSE)
+filePath <- system.file("/Data/Acetaminophen_pos.rds", package = "MetaboAnnotatoR")
+expected <- readRDS(filePath)
 
 # test data
 filePath2 <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
