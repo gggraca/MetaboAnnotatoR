@@ -35,15 +35,17 @@
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' # get the some example human serum LC-MS data and feaure list to annotate:
+#' \dontrun{
+#' # Get the some example human serum LC-MS data and fetaure list to annotate:
 #' getDemoData()
-#' # run the annotation using the lipid libraries:
+#' # Run the annotation using the lipid libraries:
 #' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", libs = "Lipids",
 #' ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7, checkIsotope = TRUE)
+#' }
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @export
-annotateAIF <- function(targetTable = NULL,
+annotateAIF <- function(targetTable = "targetTable.csv",
                         filetype = "mzML",
                         libs = "Lipids",
                         ESImode = "POS",
@@ -60,11 +62,13 @@ annotateAIF <- function(targetTable = NULL,
     if(is.null(xcmsOptions)) stop("Please edit the 'xcmsOptions.csv' and re-run.")
     
     ## Read targets table----------------------------------------------------------
-    targets <- getTargetTable(targetTable)
-    if(is.null(targets)) stop("Please edit 'targetTable.csv' and re-run.")
+    if(!file.exists("targetTable.csv")) {
+        stop("targetTable.csv not found! Run getDemoData(), edit targetTable.csv and re-run.")
+    }
+    targets <- read.csv("targetTable.csv")
     
     ## Initialize results object---------------------------------------------------
-    results <- initializeResults(targets, libs, ESImode)
+    results <- initializeResultsAIF(targets, libs, ESImode)
     
     ## Get RTs intervals from file ------------------------------------------------
     RTs <- RTsFromFile(RTfile)
@@ -184,20 +188,19 @@ annotateAIF <- function(targetTable = NULL,
     	
     	## Save output of ranked annotations -----------------------------------------
     	if(exists("rankedResult")){
-    	    saveRanked(fmz, frt, ncandidates, rankedResult, SpName,
+    	    saveRankedAIF(fmz, frt, ncandidates, rankedResult, SpName,
     	               resultsDir=results$resultsDir)
     	}
     	
     	## Store highest rank annotation in global results----------------------------
     	if(!exists("rankedResult")) rankedResult <- NULL
-    	results$global[i,] <- storeAnnotation(global=results$global[i,], 
+    	results$global[i,] <- storeAnnotations(global=results$global[i,], 
     	                                      rankedResult[1,])
     	
     	## save plot of matched spectra for the top n candidates----------------------
     	if(exists("rankedSpec")){
-    	    saveMatched(fmz, frt, highCESpec, ms2eic, output, ncandidates,
-    	                rankedSpec, SpName=SpName,
-    	                resultsDir=results$resultsDir)
+    	    saveMatchedAIF(fmz, frt, highCESpec, result, ms2eic, output, ncandidates,
+    	                rankedSpec, SpName, resultsDir=results$resultsDir)
     	}
     }
     ## save global results table------------------------------------------------------
@@ -222,6 +225,27 @@ annotateAIF <- function(targetTable = NULL,
 
 ## Helper functions------------------------------------------------------------
 
+## Initialization of results folder and global results table-------------------
+initializeResultsAIF <- function(targets, libs, ESImode){
+    # Create directory to store the results
+    mainDir <- "./Annotations"
+    Date <- Sys.Date()
+    Time <- format(Sys.time(), "%X")
+    Time <- gsub(":", "_", Time)
+    subDir <- paste(libs, "_", ESImode, "_", "AIF", "_", Date,"_", Time, sep="")
+    dir.create(file.path(mainDir), showWarnings = FALSE)
+    dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
+    resultsDir <- paste(mainDir, "/", subDir, "/", sep = "")
+    # create table to store global results
+    global <- targets
+    global[,c("metabolite", "feature.type", "ion.type", "isotope", 
+              "mz.metabolite","matched.mz", "mz.error", "pseudoMSMS", 
+              "fraction", "score")] <- NA
+    # return global results table and results path as list
+    results <- list(global=global, resultsDir=resultsDir)
+    return(results)
+}
+
 ## Load table with XCMS peak-picking options-----------------------------------
 getXcmsOptions <- function(){
     if (file.exists("XCMS_options.csv")) {
@@ -245,78 +269,10 @@ getXcmsOptions <- function(){
     return(xcmsOptions)
 }
 
-## Read targets table----------------------------------------------------------
-getTargetTable <- function(targetTable){
-    if(is.null(targetTable)){
-        message("Targets table not found")
-        targetTablePath <- system.file("targetTable.csv",
-                                       package = "MetaboAnnotatoR")
-        file.copy(from = targetTablePath, to = getwd())
-        message("Default targetTable file saved in the working directory.")
-        targets <- NULL
-    } else {
-        targets <- read.csv(targetTable)
-    }
-    return(targets)
-}
-
-## Initialization of results folder and global results table-------------------
-initializeResults <- function(targets, libs, ESImode){
-    # Create directory to store the results
-    mainDir <- "./Annotations"
-    Date <- Sys.Date()
-    Time <- format(Sys.time(), "%X")
-    Time <- gsub(":", "_", Time)
-    subDir <- paste(libs, "_", ESImode, "_", "AIF", "_", Date,"_", Time, sep="")
-    dir.create(file.path(mainDir), showWarnings = FALSE)
-    dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
-    resultsDir <- paste(mainDir, "/", subDir, "/", sep = "")
-    # create table to store global results
-    global <- targets
-    global[,c("metabolite", "feature.type", "ion.type", "isotope", 
-              "mz.metabolite","matched.mz", "mz.error", "pseudoMSMS", 
-              "fraction", "score")] <- NA
-    # return global results table and results path as list
-    results <- list(global=global, resultsDir=resultsDir)
-    return(results)
-}
-
-## Read RTs intervals from file------------------------------------------------
-RTsFromFile <- function(RTfile){
-    if(RTfile == "none") {
-        message("No RT information provided...")
-        RTs <- "none"
-    } else {
-        message("Reading RT information...")
-        RTs <- read.csv(RTfile,header=TRUE)
-    }
-    return(RTs)
-}
-
-## Load libraries and get libraries filepaths----------------------------------
-loadLibs <- function(libs, ESImode){
-    if(file.exists("./Libraries/")){
-        message("Loading user-defined libraries...")
-        libfiles <- list.files(path=paste("./Libraries/",libs,"/",
-                                          ESImode, sep=""), 
-                               full.names=TRUE)
-        # check.names=FALSE to use the original header names in the annotations:
-        lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
-                      check.names=FALSE)
-        libraries <- list(lib=lib, libfiles=libfiles)
-    } else {
-        message("Loading default libraries...")
-        defaultLib <- system.file(paste("/Data/", libs,"_", ESImode, ".rds", sep=""),
-                                  package="MetaboAnnotatoR")
-        libraries <- readRDS(defaultLib)
-    }
-    return(libraries)
-}
-
 ## read data from mzML or CDF files--------------------------------------------
 readData <- function(filetype, target, xcmsOptions, nCE){
     if(filetype == "mzML"){
-        dataPath <- paste("./", targets[1,3], ".mzML", sep = "")
+        dataPath <- paste(target, ".mzML", sep = "")
         # separate the two MS functions
         xcmsF1 <- MSnbase::readMSData(dataPath, msLevel. = 1, mode = "onDisk")
         xcmsF2 <- MSnbase::readMSData(dataPath, msLevel. = 2, mode = "onDisk")
@@ -347,7 +303,7 @@ readData <- function(filetype, target, xcmsOptions, nCE){
 }
 
 ## Save output of ranked annotations ------------------------------------------
-saveRanked <- function(fmz, frt, ncandidates, rankedResult, 
+saveRankedAIF <- function(fmz, frt, ncandidates, rankedResult, 
                        SpName, resultsDir){
     write.csv(rankedResult[rankedResult$rank <= ncandidates,],
               file=paste(resultsDir, SpName, "_", round(fmz,3), "mz_", 
@@ -355,38 +311,18 @@ saveRanked <- function(fmz, frt, ncandidates, rankedResult,
                          sep=""), row.names=FALSE)
 }
 
-## Store result for high rank candidate on global results table----------------
-storeAnnotation <- function(global, rankedResult){
-    if(!is.null(rankedResult)){
-        global$isotope <- as.character(rankedResult$isotope)
-        global$metabolite <- as.character(rankedResult$metabolite)
-        global$mz.metabolite <- rankedResult$mz.metabolite
-        global$matched.mz <- rankedResult$matched.mz
-        global$mz.error <- rankedResult$mz.error
-        global$ion.type <- as.character(rankedResult$ion.type)
-        global$feature.type <- as.character(rankedResult$feature.type)
-        global$pseudoMSMS <- rankedResult$pseudoMSMS
-        global$fraction <- as.character(rankedResult$fraction)
-        global$score <- rankedResult$score
-    } else {
-        global[,c("metabolite", "feature.type", "ion.type", "isotope",
-                  "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
-                  "fraction", "score")] <- NA
-    }
-    return(global)
-}
-
 ## save EICs and pseudoMSMS spectra of matched candidates----------------------
 # save image with matched spectra and EICs
 # must update the folder to save images in...
 # can be updated to work with single feature
-saveMatched <- function(fmz, frt, 
+saveMatchedAIF <- function(fmz, frt, 
                         highCESpec,
+                        result,
                         ms2eic,
                         output, 
                         ncandidates,
-                        rankedSpec, 
-                        SpName, 
+                        rankedSpec,
+                        SpName,
                         resultsDir){
     if(!is.null(result)){
         if(length(rankedSpec) == 1) {
