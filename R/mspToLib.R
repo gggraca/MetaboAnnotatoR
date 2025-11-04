@@ -20,8 +20,10 @@
 #' with the highest intensity.
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
-#' @examples 
+#' @examples
+#' \dontrun{ 
 #' mspToLib("MassBank_example.msp")
+#' }
 #' @export
 mspToLib <- function(msp_file,
                      library_name = "Custom",
