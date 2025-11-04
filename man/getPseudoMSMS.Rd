@@ -69,6 +69,13 @@ RT window of the feature of interest; feic, EIC of the feature of interest.
 Function to obtain in-source MS and pseudo MS/MS spectra from a feature of
 interest from All-ion fragmentation experiments (e.g. MSe, bbCID, AIF)
 }
+\examples{
+\dontrun{
+getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2, filetype=filetype, 
+nCE=1, cthres1=0.9,cthres2=0.8, savePlotResults=TRUE, savePseudoMSMS=TRUE, 
+ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
+}
+}
 \author{
 Goncalo Graca (Imperial College London)
 }

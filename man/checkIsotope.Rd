@@ -24,7 +24,9 @@ M+0, M+1, M+2 and M+3, respectively.
 Checks the type of isotope of the input feature.
 }
 \examples{
+\dontrun{ 
 iso <- checkIsotope(286.1442, 40.77, spec = spObject)
+}
 }
 \author{
 Goncalo Graca and Yuheng (Rene) Cai (Imperial College London)

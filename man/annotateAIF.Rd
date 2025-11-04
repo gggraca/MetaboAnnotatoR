@@ -5,7 +5,7 @@
 \title{Function to annotate features using LC-MS AIF raw chromatograms.}
 \usage{
 annotateAIF(
-  targetTable = NULL,
+  targetTable = "targetTable.csv",
   filetype = "mzML",
   libs = "Lipids",
   ESImode = "POS",
@@ -68,11 +68,13 @@ molecule libraries, using 'raw' LC-MS single chromatogram information
 already loaded and peak-picked.
 }
 \examples{
-# get the some example human serum LC-MS data and feaure list to annotate:
+\dontrun{
+# Get the some example human serum LC-MS data and fetaure list to annotate:
 getDemoData()
-# run the annotation using the lipid libraries:
+# Run the annotation using the lipid libraries:
 annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", libs = "Lipids",
 ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7, checkIsotope = TRUE)
+}
 }
 \author{
 Goncalo Graca (Imperial College London)

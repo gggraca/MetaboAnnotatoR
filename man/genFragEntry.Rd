@@ -59,10 +59,10 @@ obtained from from public databases, stored as a .txt file containing
 m/z and intensity values, and read imported into R as matrix
 }
 \examples{
-spec <- system.file("/Data/Pantothenic_acid_pos.txt", package = "MetaboAnnotatoR")
-specObject <- read.table(spec, header=FALSE)
+\dontrun{
 genFragEntry(specObject, "Pantothenic acid","[M+H]+",220.1179,"Pantothenic_acid_pos.csv",
 noise = 0.005, mpeaksScore = 0.9, mpeaksThres = 0.1, mzTol = 0.01)
+}
 }
 \author{
 Goncalo Graca (Imperial College London)

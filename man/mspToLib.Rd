@@ -43,7 +43,9 @@ Function to generate metabolite database entries from MS/MS spectra
 obtained from from an .msp file
 }
 \examples{
+\dontrun{ 
 mspToLib("MassBank_example.msp")
+}
 }
 \author{
 Goncalo Graca (Imperial College London)
