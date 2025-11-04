@@ -28,11 +28,13 @@
 #' annotations, a plot pseudo-MS/MS spectrum for the matched ions,
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
-#' @examples 
+#' @examples
+#' \dontrun{ 
 #' # Run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
 #' # processed with RAMClustR:
 #' annotateRC(targetTable="targetTable.csv", xcmsObject=XSet, ramclustObj=RC, 
 #' libs="Lipids", ESImode="POS")
+#' }
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics text
@@ -53,7 +55,7 @@ annotateRC <- function(targetTable,
 targets <- read.csv(targetTable, header=TRUE)
 
 ## Initialize results object------------------------
-results <- initializeResults(targets, libs, ESImode)
+results <- initializeResultsRC(targets, libs, ESImode)
 
 ## Get RTs intervals from file --------------------
 RTs <- RTsFromFile(RTfile)
@@ -84,7 +86,7 @@ for(i in seq_len(nrow(targets))){
 
 	# Search Libraries --------------------
     if(is.null(pseudoSpec) & is.null(highCESpec)) { next
-    } else {
+        } else {
     message("Searching candidates...")
     candidates <- searchLib(lib, libfiles, fmz - iso * 1.0034, frt,
 	                        tolerance=tolerance, RTs, inSourceSpec)
@@ -92,20 +94,18 @@ for(i in seq_len(nrow(targets))){
 
     # Compare fragments between Library candidates and high-collision-energy /
     # pseudo-MS/MS spectra --------------------
-    if(is.null(pseudoSpec) & is.null(highCESpec) |
-    length(unlist(candidates)) == 0) {
-    result <- NULL
+    if(is.null(pseudoSpec) & is.null(highCESpec) | length(unlist(candidates)) == 0) {
+        result <- NULL
     } else {
-    message("Matching candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
-    output <- mapply(compFrag, candidates,
+        message("Matching candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
+        output <- mapply(compFrag, candidates,
                      lapply(as.numeric(names(candidates)),function(x) lib[[x]]),
                      MoreArgs=list(fmz, frt, iso, highCESpec, pseudoSpec,
                                      maxMZdiff=maxMZdiff,
                                      matchWeight=matchWeight), SIMPLIFY=FALSE)
-
-    result <- do.call(rbind, lapply(output, "[[", 1))
-    specMatch <- unlist(lapply(output, "[[", 2), recursive = FALSE)
-    specMatch <- specMatch[!(specMatch) == "NULL"]
+        result <- do.call(rbind, lapply(output, "[[", 1))
+        specMatch <- unlist(lapply(output, "[[", 2), recursive = FALSE)
+        specMatch <- specMatch[!(specMatch) == "NULL"]
     }
 
     # Score ranking --------------------
@@ -114,25 +114,18 @@ for(i in seq_len(nrow(targets))){
       rankedResult[c("metabolite", "feature.type", "ion.type", "isotope",
                    "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
                    "fraction", "score")] <- NA
-      # type of ion isotope
-      if(iso == 0) {
-        rankedResult$isotope <- "M+0"
-        } else if (iso == 1) {
-          rankedResult$isotope <- "M+1"
-        } else if (iso == 2) {
-          rankedResult$isotope <- "M+2"
-        } else if (iso == 3) {
-          rankedResult$isotope <- "M+3"
-        }
+    # type of ion isotope
+    rankedResult$isotope <- paste("M+", iso, sep="")
+      
     # pseudoMSMS flag
-		if(is.null(pseudoSpec)) {
-           rankedResult$pseudoMSMS <- "FALSE"
+	if(is.null(pseudoSpec)) {
+	    rankedResult$pseudoMSMS <- "FALSE"
         } else { rankedResult$pseudoMSMS <- "TRUE"
-      }
+        }
     } else {
-      output <- rankScore(result, specMatch)
-      rankedResult <- output$rankedResult
-      rankedSpec <- output$rankedSpecMatch
+        output <- rankScore(result, specMatch)
+        rankedSpec <- output$rankedSpecMatch
+        rankedResult <- output$rankedResult
     }
     
     ## Save output of ranked annotations -------
@@ -144,12 +137,12 @@ for(i in seq_len(nrow(targets))){
 
     ## Store highest rank annotation in global results------
     if(!exists("rankedResult")) rankedResult <- NULL
-    results$global[i,] <- storeAnnotation(global=results$global[i,], 
+    results$global[i,] <- storeAnnotations(global=results$global[i,], 
                                           rankedResult[1,])
     
     ## save plot of matched spectra for the top n candidates
     if(exists("rankedSpec")){
-        saveMatched(fmz, frt, highCESpec, output, ncandidates,
+        saveMatched(fmz, frt, highCESpec, result, output, ncandidates,
                     rankedSpec, DatasetName=results$DatasetName,
                     resultsDir=results$resultsDir)
     }
@@ -186,7 +179,7 @@ message('Job done!')
 ## Helper functions-------------------------------------------------------------
 
 ## Initialization of results folder and global results table
-initializeResults <- function(targets, libs, ESImode){
+initializeResultsRC <- function(targets, libs, ESImode){
     # Create directory to store the results
     mainDir <- "./Annotations"
     Date <- Sys.Date()
@@ -210,37 +203,6 @@ initializeResults <- function(targets, libs, ESImode){
     return(results)
 }
 
-## Get RTs intervals from file --------------------
-RTsFromFile <- function(RTfile){
-    if(RTfile == "none") {
-        message("No RT information provided...")
-        RTs <- "none"
-    } else {
-        message("Reading RT information...")
-        RTs <- read.csv(RTfile,header=TRUE)
-    }
-    return(RTs)
-}
-
-## Load libraries and get libraries filepaths---------------
-loadLibs <- function(libs, ESImode){
-    if(file.exists("./Libraries/")){
-        message("Loading user-defined libraries...")
-        libfiles <- list.files(path=paste("./Libraries/",libs,"/",
-                                            ESImode, sep=""), 
-                               full.names=TRUE)
-        # check.names=FALSE to use the original header names in the annotations:
-        lib <- lapply(libfiles, read.csv, header=TRUE, sep=",", check.names=FALSE)
-        libraries <- list(lib=lib, libfiles=libfiles)
-    } else {
-        message("Loading default libraries...")
-        defaultLib <- system.file(paste(libs,"_", ESImode, ".rds", sep=""),
-                                      package="MetaboAnnotatoR")
-        libraries <- readRDS(defaultLib)
-    }
-    return(libraries)
-}
-
 ## Save output of ranked annotations ------------------
 saveRanked <- function(fmz, frt, ncandidates, rankedResult, 
                        DatasetName, resultsDir){
@@ -250,30 +212,10 @@ saveRanked <- function(fmz, frt, ncandidates, rankedResult,
                            sep=""), row.names=FALSE)
 }
 
-## Store result for high rank candidate on global results table
-storeAnnotation <- function(global, rankedResult){
-    if(!is.null(rankedResult)){
-        global$isotope <- as.character(rankedResult$isotope)
-        global$metabolite <- as.character(rankedResult$metabolite)
-        global$mz.metabolite <- rankedResult$mz.metabolite
-        global$matched.mz <- rankedResult$matched.mz
-        global$mz.error <- rankedResult$mz.error
-        global$ion.type <- as.character(rankedResult$ion.type)
-        global$feature.type <- as.character(rankedResult$feature.type)
-        global$pseudoMSMS <- rankedResult$pseudoMSMS
-        global$fraction <- as.character(rankedResult$fraction)
-        global$score <- rankedResult$score
-    } else {
-        global[,c("metabolite", "feature.type", "ion.type", "isotope",
-                   "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
-                   "fraction", "score")] <- NA
-    }
-    return(global)
-}
-
 ## Save plot of matched spectra for the top n candidates
 saveMatched <- function(fmz, frt, 
-                        highCESpec, 
+                        highCESpec,
+                        result,
                         output, 
                         ncandidates,
                         rankedSpec, 
