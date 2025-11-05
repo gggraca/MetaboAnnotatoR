@@ -1,5 +1,5 @@
-#' Common helper functions to organize annotation results 
-#' @author Goncalo Graca (Imperial College London)
+## Common helper functions to organize annotation results 
+## Goncalo Graca (Imperial College London)
 
 ## Read RTs intervals from file------------------------------------------------
 RTsFromFile <- function(RTfile){
