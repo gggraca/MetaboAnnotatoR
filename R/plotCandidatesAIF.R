@@ -26,53 +26,53 @@ plotCandidatesAIF <- function(fmz,
                               rankedCandidates,
                               candidate,
                               DirPath){
-# get relevant information from the rankedCandidates object
-metabolite <- rankedCandidates$rankedResult[candidate,"metabolite"]
-ionType <- rankedCandidates$rankedResult[candidate,"ion.type"]
-score <- rankedCandidates$rankedResult[candidate,"score"]
-adductName <- paste(metabolite,ionType)
-candidateMZ <- round(rankedCandidates$rankedResult[candidate,"mz.metabolite"],3)
-MZerror <- round(rankedCandidates$rankedResult[candidate,"mz.error"],1)
-specMatch <- rankedCandidates$rankedSpecMatch[[candidate]]
-rnk <- rankedCandidates$rankedResult[candidate,"rank"]
+    # get relevant information from the rankedCandidates object
+    metabolite <- rankedCandidates$rankedResult[candidate,"metabolite"]
+    ionType <- rankedCandidates$rankedResult[candidate,"ion.type"]
+    score <- rankedCandidates$rankedResult[candidate,"score"]
+    adductName <- paste(metabolite,ionType)
+    candidateMZ <- round(rankedCandidates$rankedResult[candidate,
+                                                       "mz.metabolite"],3)
+    MZerror <- round(rankedCandidates$rankedResult[candidate,"mz.error"],1)
+    specMatch <- rankedCandidates$rankedSpecMatch[[candidate]]
+    rnk <- rankedCandidates$rankedResult[candidate,"rank"]
 
-if(nrow(specMatch) >= 1){
-# plotting part
-  mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
-  df1 <- lapply(mz_idx, function(x) data.frame(
-    intensity = intensity(ms2eic[x,1]),
-    rt = rtime(ms2eic[x,1]),
-    mz = as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
-    df1 <- do.call("rbind", df1)
-
-  p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
-                        ggplot2::aes(x = rt, y = intensity, colour = mz)) +
-    ggplot2::geom_point() +
-    ggplot2::geom_line() +
-    ggplot2::labs(x = "RT (s)", y = "Intensity (a.u.)", colour = "fragments") +
-    ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),"s,",
-                    "Rank", rnk, "result:", adductName, ", mz.error =",
-                    MZerror, "ppm", ", score =", round(score, 2))) +
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-  df2 <- as.data.frame(specMatch[,c("mz", "into")])
-
-  p2 <- ggplot2::ggplot(df2,
-                        ggplot2::aes(x = mz, y = into, label = round(mz, 3))) +
-    ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0),
+    if(nrow(specMatch) >= 1){
+        # plotting part
+        # EICs
+        mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
+        df1 <- lapply(mz_idx, function(x) data.frame(
+            intensity=intensity(ms2eic[x,1]), rt=rtime(ms2eic[x,1]),
+            mz=as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
+        df1 <- do.call("rbind", df1)
+        p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
+                        ggplot2::aes(x=rt, y=intensity, colour=mz)) +
+            ggplot2::geom_point() +
+            ggplot2::geom_line() +
+            ggplot2::labs(x="RT (s)", y = "Intensity (a.u.)", 
+                          colour="fragments") +
+            ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),
+                                   "s,","Rank", rnk, "result:", adductName,
+                                   ", mz.error =", MZerror, "ppm", ", score =",
+                                   round(score, 2))) +
+            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
+        # Spectrum
+        df2 <- as.data.frame(specMatch[,c("mz", "into")])
+        p2 <- ggplot2::ggplot(df2,
+                              ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+            ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0),
                           color="red", lwd=0.5) +
-    ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
-    ggplot2::ggtitle(paste("ions matched to", adductName)) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-    ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
-    ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
-    ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
-
-  pdf(file = paste(DirPath, SpName,"_",round(fmz,3),"mz_",
+            ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+            ggplot2::ggtitle(paste("ions matched to", adductName)) +
+            ggplot2::theme_minimal() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+            ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
+            ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
+            ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+        pdf(file=paste(DirPath, SpName,"_",round(fmz,3),"mz_",
                    round(frt,3),"_candidate_", candidate, ".pdf", sep=""),
       width = 10, height = 10)
-    gridExtra::grid.arrange(p1, p2, nrow = 2)
-  dev.off()
+        gridExtra::grid.arrange(p1, p2, nrow=2)
+        dev.off()
 	} else NULL
 }
