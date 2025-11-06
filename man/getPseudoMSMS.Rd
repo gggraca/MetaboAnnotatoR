@@ -28,11 +28,15 @@ getPseudoMSMS(
 
 \item{xcmsF1}{MSn object containing the LC-MS no-collision energy scans.}
 
-\item{xcmsF2}{MSn object containing the LC-MS all-ion fragmentation scans.}
+\item{xcmsF2}{MSn object containing the LC-MS all-ion fragmentation scans.
+Should be set to NULL to obtain only the in-source fragmentation (ISF)
+pseudo-MS/MS.}
 
 \item{peaksF1}{LC-MS picked peaks from xcmsF1 dataset using XCMS.}
 
-\item{peaksF2}{LC-MS picked peaks from xcmsF2 dataset using XCMS.}
+\item{peaksF2}{LC-MS picked peaks from xcmsF2 dataset using XCMS.
+Should be set to NULL to obtain only the in-source fragmentation (ISF)
+pseudo-MS/MS.}
 
 \item{filetype}{The type of raw chromatogram imported: "mzML" or
 "CDF" this is needed for scan frequency calculation.}
@@ -64,6 +68,8 @@ ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
 feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
 feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the
 RT window of the feature of interest; feic, EIC of the feature of interest.
+If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source
+pseudo-MS/MS spectrum will be saved instead.
 }
 \description{
 Function to obtain in-source MS and pseudo MS/MS spectra from a feature of
