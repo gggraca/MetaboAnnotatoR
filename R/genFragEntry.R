@@ -68,7 +68,7 @@ genFragEntry <- function(specObject,
 # save entry as .csv
 	result <- rbind(denoised.spec[,1],scores)
 	frag <- rep(NA,(length(scores) - 1))
-	for (i in 1:length(scores)-1){
+	for (i in seq_len(length(scores)-1)){
 		frag[i] <- paste('fragment',i,sep='')
 	}
 	colnames(result) <- c(adduct, frag)
