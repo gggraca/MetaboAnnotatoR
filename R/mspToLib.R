@@ -31,84 +31,44 @@ mspToLib <- function(msp_file,
                      mpeaksScore = 0.9, 
                      mpeaksThres = 0.1) {
   
-  # create folder to store library
-  if(dir.exists("./Libraries")){
-    dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
-    dirPath <- paste("./Libraries/",library_name, sep="")
-  } else {
-    dir.create("./Libraries/", showWarnings = FALSE)
-    dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
-    dirPath <- paste("./Libraries/",library_name, sep="")
-  }
-    
-  # read msp file
-  m <- readLines(msp_file, warn = FALSE)
+    # create folder to store library
+    if(dir.exists("./Libraries")){
+        dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
+        dirPath <- paste("./Libraries/",library_name, sep="")
+        } else {
+            dir.create("./Libraries/", showWarnings = FALSE)
+            dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
+            dirPath <- paste("./Libraries/",library_name, sep="")
+            }
+    # read msp file
+    m <- readLines(msp_file, warn=FALSE)
   
-  #get names of all metabolites
-  n <- grep("Name:", m)
-  names <- unlist(lapply(n, function(x) substring(m[x], 7, nchar(m[x]))))
+    # get names of all metabolites
+    n <- grep("Name:", m)
+    cpdNames <- unlist(lapply(n, function(x) substring(m[x], 7, nchar(m[x]))))
+    # get number of peaks per MS/MS record
+    np <- grep("Num Peaks:", m)
+    npeaks <- unlist(lapply(np, function(x) substring(m[x], 11, nchar(m[x]))))
+    npeaks <- as.numeric(npeaks)
   
-  # get number of peaks per MS/MS record
-  np <- grep("Num Peaks:", m)
-  npeaks <- unlist(lapply(np, function(x) substring(m[x], 11, nchar(m[x]))))
-  npeaks <- as.numeric(npeaks)
+    # get all ion modes
+    im <- grep("Ion_mode:", m)
+    ion_modes <- unlist(lapply(im, function(x) substring(m[x], 11, nchar(m[x]))))
   
-  # get all ion modes
-  im <- grep("Ion_mode:", m)
-  ion_modes <- unlist(lapply(im, function(x) substring(m[x], 11, nchar(m[x]))))
-  
-  getMSPdetails <- function(x){
-    # get block of text
-    c <- m[n[x]:np[x]]
-    
-    # get precursor m/z
-    pmz <- grep("PrecursorMZ:", c)
-    if(length(pmz) == 0) precursor_mz <- NA else {
-      precursor_mz <- substring(c[pmz], 14, nchar(c[pmz]))
-      precursor_mz <- as.numeric(precursor_mz)
-    }
-    
-    # get ion mode
-    im <- grep("Ion_mode:", c)
-    if(length(im) == 0) ion_mode <- NA else {
-      ion_mode <- substring(c[im], 11, nchar(c[im]))
-    }
-    
-    # get Precursor_type:
-    pt <- grep("Precursor_type:", c)
-    if(length(pt) == 0) ptype <- NA else {
-      ptype <- substring(c[pt], 17, nchar(c[pt]))
-    }
-    
-    # get MS/MS spectrum
-    s <- NULL
-    for(i in 1:npeaks[x]){
-      tmp <- strsplit(m[np[x]+i], split = " ")
-      s <- c(s, as.numeric(tmp[[1]]))
-    }
-    spec <- matrix(s, ncol = 2, byrow = TRUE)
-    
-    result <- list(metabolite = names[x],
-                   precursor = precursor_mz,
-                   type = ptype,
-                   ion_mode = ion_mode,
-                   MSMS = spec)
-    return(result)
-  }
-  
-  libs <- lapply(1:length(n), function(x) getMSPdetails(x))
-  
-  for(i in 1:length(libs)){
-    name <- libs[[i]]$metabolite
-    ion_mode <- libs[[i]]$ion_mode
-    adduct <- libs[[i]]$type
-    tmz <- libs[[i]]$precursor
-    filename <- paste(name,".csv", sep = "")
-    specObject <- libs[[i]]$MSMS
+    # get MSP details  
+    libs <- lapply(seq_along(n), 
+                   function(x) getMSPdetails(x, m, n, np, npeaks, cpdNames))
+    for(i in seq_len(length(libs))){
+        name <- libs[[i]]$metabolite
+        ion_mode <- libs[[i]]$ion_mode
+        adduct <- libs[[i]]$type
+        tmz <- libs[[i]]$precursor
+        filename <- paste(name,".csv", sep = "")
+        specObject <- libs[[i]]$MSMS
     
     # sort and filter m/z values find maximum intensity peak for spectrum
     if(nrow(specObject)>1){
-      specObject <- specObject[order(-specObject[,1]),]
+        specObject <- specObject[order(-specObject[,1]),]
     } else NULL
     
     # normalise spectrum
@@ -116,7 +76,7 @@ mspToLib <- function(msp_file,
     norm.specObject[,2] <- specObject[,2]/specObject[which.max(specObject[,2]),2]
     
     # denoise spectrum
-    if(nrow(specObject)>1){
+    if(nrow(specObject) > 1){
       denoised.spec <- norm.specObject[which(norm.specObject[,2] > noise),]
     } else denoised.spec <- norm.specObject
     
@@ -125,8 +85,8 @@ mspToLib <- function(msp_file,
     # locate if parent m/z is present in the list
     p <- which.min(abs(denoised.spec[,1]-tmz))
       
-    if(length(p)==0) denoised.spec <- rbind(c(tmz,0),denoised.spec)
-    if(length(p)==1) denoised.spec[p,1] <- tmz
+    if(length(p) == 0) denoised.spec <- rbind(c(tmz,0),denoised.spec)
+    if(length(p) == 1) denoised.spec[p,1] <- tmz
     
     # define marker peaks and attribute score
     scores <- rep(0,nrow(denoised.spec))
@@ -144,25 +104,67 @@ mspToLib <- function(msp_file,
     
     # save entry as .csv
     if(nrow(specObject)>1){
-      result <- rbind(denoised.spec[,1],scores)
-      frag <- rep(NA,(length(scores) - 1))
-      for (i in 1:length(scores)-1){
-        frag[i] <- paste('fragment',i,sep='')
-      }
-      colnames(result) <- c(adduct, frag)
-      rownames(result) <- c(name,'scores')
-    } else if(nrow(specObject) == 1) {
-      result <- rbind(specObject[,1],1)
-      colnames(result) <- adduct
-      rownames(result) <- c(name,'scores')
-    } else NULL
-    if(ion_mode=="POSITIVE") {
-      dir.create(paste(dirPath,"/POS/",sep=""), showWarnings = FALSE)
-      targetPath <- paste(dirPath,"/POS/", filename, sep = "")
-    } else if(ion_mode=="NEGATIVE"){
-      dir.create(paste(dirPath,"/NEG/",sep=""), showWarnings = FALSE)
-      targetPath <- paste(dirPath,"/NEG/", filename, sep = "")
-    }
+        result <- rbind(denoised.spec[,1],scores)
+        frag <- rep(NA,(length(scores) - 1))
+        for (i in seq_len(length(scores)-1)){
+            frag[i] <- paste('fragment',i,sep='')
+            }
+        colnames(result) <- c(adduct, frag)
+        rownames(result) <- c(name,'scores')
+        } else if(nrow(specObject) == 1) {
+            result <- rbind(specObject[,1],1)
+            colnames(result) <- adduct
+            rownames(result) <- c(name,'scores')
+            } else NULL
+    if(ion_mode=="POSITIVE"){
+        dir.create(paste(dirPath,"/POS/",sep=""), showWarnings = FALSE)
+        targetPath <- paste(dirPath,"/POS/", filename, sep = "")
+        } else if(ion_mode=="NEGATIVE"){
+            dir.create(paste(dirPath,"/NEG/",sep=""), showWarnings = FALSE)
+            targetPath <- paste(dirPath,"/NEG/", filename, sep = "")
+            }
     write.csv(result, targetPath, row.names = TRUE)
   }
+}
+
+## helper function-------------------------------------------------------------
+
+# get MSP details
+getMSPdetails <- function(x, m, n, np, npeaks, cpdNames){
+    # get block of text
+    c <- m[n[x]:np[x]]
+    
+    # get precursor m/z
+    pmz <- grep("PrecursorMZ:", c)
+    if(length(pmz) == 0) precursor_mz <- NA else {
+        precursor_mz <- substring(c[pmz], 14, nchar(c[pmz]))
+        precursor_mz <- as.numeric(precursor_mz)
+    }
+    
+    # get ion mode
+    im <- grep("Ion_mode:", c)
+    if(length(im) == 0) ion_mode <- NA else {
+        ion_mode <- substring(c[im], 11, nchar(c[im]))
+    }
+    
+    # get Precursor_type:
+    pt <- grep("Precursor_type:", c)
+    if(length(pt) == 0) ptype <- NA else {
+        ptype <- substring(c[pt], 17, nchar(c[pt]))
+    }
+    
+    # get MS/MS spectrum
+    s <- NULL
+    for(i in seq_len(npeaks[x])){
+        tmp <- strsplit(m[np[x]+i], split = " ")
+        s <- c(s, as.numeric(tmp[[1]]))
+    }
+    spec <- matrix(s, ncol = 2, byrow = TRUE)
+    
+    result <- list(metabolite = cpdNames[x],
+                   precursor = precursor_mz,
+                   type = ptype,
+                   ion_mode = ion_mode,
+                   MSMS = spec)
+    return(result)
 }

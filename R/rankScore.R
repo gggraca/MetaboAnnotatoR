@@ -9,12 +9,10 @@
 #' @return Ranked results annotation table and ranked matched spectra as list.
 #' @export
 rankScore <- function(result, specMatch){
-
-  if (!is.null(result)){
-    if (nrow(result)>1) {
-    rankedResult <- result
-    rankedResult["rank"] <- NA
-
+    if (!is.null(result)){
+        if (nrow(result)>1) {
+            rankedResult <- result
+            rankedResult["rank"] <- NA
     # rank
     orderScores <- order(rankedResult$score,decreasing = TRUE)
     rankedResult <-  rankedResult[orderScores,]
@@ -28,14 +26,14 @@ rankScore <- function(result, specMatch){
         }
       }
     } else if (nrow(result)==1) {
-    rankedResult <- result
-    rankedResult["rank"] <- 1
-    rankedSpec <- specMatch
+        rankedResult <- result
+        rankedResult["rank"] <- 1
+        rankedSpec <- specMatch
     }
-  }
+        }
     if (is.null(result)){
-    rankedResult <- NULL
-    rankedSpec <- NULL
-    }
-  return(list("rankedResult"=rankedResult,"rankedSpecMatch"=rankedSpec))
+        rankedResult <- NULL
+        rankedSpec <- NULL
+        }
+    return(list("rankedResult"=rankedResult,"rankedSpecMatch"=rankedSpec))
 }

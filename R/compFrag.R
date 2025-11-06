@@ -97,7 +97,7 @@ specMatch <- list()
 result <- NULL
 
 # feature type by comparison with candidate
-for (i in 1:dim(candidate)[1]){
+for (i in seq_len(nrow(candidate))){
 # 4 is the the smallest difference between parent and
 # fragment assuming isotopes up to M+3:
 if (abs(fmz-tempResult$mz.metabolite[i]) <= 4) {
@@ -105,7 +105,7 @@ if (abs(fmz-tempResult$mz.metabolite[i]) <= 4) {
 		} else tempResult$feature.type <- "fragment"
   }
 
-for (i in 1:dim(candidate)[1]){
+for (i in seq_len(nrow(candidate))){
 # m/z error of feature
   correctedMZ <- fmz - iso*1.0034
   tempResult$mz.error[i] <- min(abs(candidate[i,2:dim(candidate)[2]] -
@@ -129,7 +129,7 @@ nonMatchedPseudo <- vector()
 nonMatchedScores <- vector()
 
 # matching (including parent ion m/z)
-  for (j in 2:dim(candidate)[2]){
+  for (j in 2:ncol(candidate)){
    # comparison between Library entry and pseudoMSMS spectrum
     if (!is.null(pseudoSpec)) {
       # if (!is.null(pseudoSpec) | !is.na(pseudoSpec)){

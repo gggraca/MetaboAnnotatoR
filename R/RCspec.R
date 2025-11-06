@@ -12,28 +12,28 @@
 #' @importFrom RAMClustR findmass
 #' @export
 RCspec <- function(fmz, frt, ramclustObj){
-  # find a given feature in RAMClust by mass
-  pseudoSpec <- NULL
-  altclus <- RAMClustR::findmass(ramclustObj,
+    # find a given feature in RAMClust by mass
+    pseudoSpec <- NULL
+    altclus <- RAMClustR::findmass(ramclustObj,
                                  mz = fmz,
                                  mztol = 0.02,
                                  rttol = 2,
                                  zmax = 6,
                                  m.check = TRUE)
-  if (length(altclus$rt) > 0){
-    # select matched cluster with nearest rt
-    if (min(abs(altclus$rt - frt)) < 3){
-      selectclus <- which.min(abs(altclus$rt - frt))
-      nclus <- altclus$featclus[selectclus] # id of matched cluster
-      # check if the matched cluster is cluster 0
-      if (nclus > 0){
-        # extract pseudo spectra
-        inclus <- which(ramclustObj$featclus == nclus)
-        pseudoSpec <- data.frame("mz" = ramclustObj$fmz[inclus],
-                                 "into" = ramclustObj$msint[inclus],
-                                 "rt" = ramclustObj$frt[inclus])
-      }
+    if(length(altclus$rt) > 0){
+        # select matched cluster with nearest rt
+        if(min(abs(altclus$rt - frt)) < 3){
+            selectclus <- which.min(abs(altclus$rt - frt))
+            nclus <- altclus$featclus[selectclus] # id of matched cluster
+            # check if the matched cluster is cluster 0
+            if (nclus > 0){
+                # extract pseudo spectra
+                inclus <- which(ramclustObj$featclus == nclus)
+                pseudoSpec <- data.frame("mz"=ramclustObj$fmz[inclus],
+                                         "into"=ramclustObj$msint[inclus],
+                                         "rt"=ramclustObj$frt[inclus])
+            }
+        }
     }
-  }
-  return(pseudoSpec)
+    return(pseudoSpec)
 }

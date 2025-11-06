@@ -29,37 +29,32 @@ xcmsSpec <- function(fmz,
                      mztol = 0.01,
                      rttol = 5,
                      highCE = TRUE){
+    selection1 <- peaks(xcmsObject)[
+        which(xcms::peaks(xcmsObject)[,"mz"] > (fmz - mztol) &
+        xcms::peaks(xcmsObject)[,"mz"] < (fmz + mztol) &
+        xcms::peaks(xcmsObject)[,"rt"] > (frt - rttol) &
+        xcms::peaks(xcmsObject)[,"rt"] < (frt + rttol)),]
 
-  selection1 <- peaks(xcmsObject)[which(
-    xcms::peaks(xcmsObject)[,"mz"] > (fmz - mztol) &
-    xcms::peaks(xcmsObject)[,"mz"] < (fmz + mztol) &
-    xcms::peaks(xcmsObject)[,"rt"] > (frt - rttol) &
-    xcms::peaks(xcmsObject)[,"rt"] < (frt + rttol)
-    ),]
-
-  if(is.null(dim(selection1))) selection1 <- rbind(selection1, c(0,0))
-
-  # get index of the sample with highest feature intensity
-  # index corresponding to the highCE scans for the sample
-  # with highest feature intensity:
-  if(highCE) {
-    idx <- as.numeric(selection1[which.max(selection1[,"into"]), "sample"] + 1)
-  }
-  # index corresponding to the lowCE scans for the sample with
-  # highest feature intensity:
-  if(!highCE) {
-    idx <- as.numeric(selection1[which.max(selection1[,"into"]), "sample"])
-  }
-  # get all peaks from the selected sample around the feature rt
-  selection2 <- which(xcms::peaks(xcmsObject)[,"sample"] == idx &
+    if(is.null(dim(selection1))) selection1 <- rbind(selection1, c(0,0))
+    # get index of the sample with highest feature intensity
+    # index corresponding to the highCE scans for the sample
+    # with highest feature intensity:
+    if(highCE){
+        idx <- as.numeric(selection1[which.max(selection1[,"into"]), "sample"] + 1)
+    }
+    # index corresponding to the lowCE scans for the sample with
+    # highest feature intensity:
+    if(!highCE){
+        idx <- as.numeric(selection1[which.max(selection1[,"into"]), "sample"])
+    }
+    # get all peaks from the selected sample around the feature rt
+    selection2 <- which(xcms::peaks(xcmsObject)[,"sample"] == idx &
                       xcms::peaks(xcmsObject)[,"rt"] > (frt - rttol) &
                       xcms::peaks(xcmsObject)[,"rt"] < (frt + rttol))
-  peakSelection <- xcms::peaks(xcmsObject)[selection2,]
-
-  # check if peakSelection is vector or data frame and store result
-  if(is.null(dim(peakSelection))) {
-    result <- peakSelection[c("mz","into")]
+    peakSelection <- xcms::peaks(xcmsObject)[selection2,]
+    # check if peakSelection is vector or data frame and store result
+    if(is.null(dim(peakSelection))){
+        result <- peakSelection[c("mz","into")]
     } else result <- peakSelection[, c("mz","into")]
-
-  return(result)
+    return(result)
 }
