@@ -45,18 +45,18 @@
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @export
-annotateAIF <- function(targetTable = "targetTable.csv",
-                        filetype = "mzML",
-                        libs = "Lipids",
-                        ESImode = "POS",
-                        RTfile = "none",
-                        nCE = 1,
-                        corThresh = 0.8,
-                        checkIsotope = TRUE,
-                        tolerance = 25,
-					    maxMZdiff = 0.01,
-					    matchWeight = 0.5,
-					    ncandidates = 5){
+annotateAIF <- function(targetTable="targetTable.csv",
+                        filetype="mzML",
+                        libs="Lipids",
+                        ESImode="POS",
+                        RTfile="none",
+                        nCE=1,
+                        corThresh=0.8,
+                        checkIsotope=TRUE,
+                        tolerance=25,
+					    maxMZdiff=0.01,
+					    matchWeight=0.5,
+					    ncandidates=5){
     ## Read XCMS peak-picking options----------------------------------------------
     xcmsOptions <- getXcmsOptions()
     if(is.null(xcmsOptions)) stop("Please edit the 'xcmsOptions.csv' and re-run.")
@@ -153,7 +153,7 @@ annotateAIF <- function(targetTable = "targetTable.csv",
     	   length(unlist(candidates)) == 0) {
     	  result <- NULL
     	} else {
-    	message("Matching candidate(s) fragments to pseudo-MS/MS and highCE spectra...")
+    	message("Matching candidate(s) fragments to pseudo-MS/MS spectra...")
     	output <- mapply(compFrag,
     	                 candidates,
     	                 lapply(as.numeric(names(candidates)), function(x) lib[[x]]),

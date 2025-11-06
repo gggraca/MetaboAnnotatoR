@@ -148,7 +148,7 @@ for(i in seq_len(nrow(targets))){
     }
     ## Save pseudo-MS/MS spectrum per target feature
     if(exists("pseudoSpec")){
-        savePseudoMSMS(fmz, frt, pseudoSpec, 
+        saveRCpseudoMSMS(fmz, frt, pseudoSpec, 
                        DatasetName=results$DatasetName, 
                        resultsDir=results$resultsDir)
     }
@@ -246,7 +246,7 @@ saveMatched <- function(fmz, frt,
 }
 
 ## Save pseudo-MS/MS spectrum per feature
-savePseudoMSMS <- function(fmz, frt, pseudoSpec, DatasetName, resultsDir){
+saveRCpseudoMSMS <- function(fmz, frt, pseudoSpec, DatasetName, resultsDir){
     if(!is.null(pseudoSpec) & length(pseudoSpec) > 0){
         if (is.vector(pseudoSpec)) pseudoSpec <- as.data.frame(t(pseudoSpec))
         pdf(file = paste(resultsDir, "pseudoMSMS_",
