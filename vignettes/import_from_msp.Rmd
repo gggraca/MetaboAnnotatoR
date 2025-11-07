@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 Load library and dependencies:
 
-```{r, eval = FALSE}
+```{r load_package, eval=TRUE, message=FALSE}
 library(MetaboAnnotatoR)
 ```
 
@@ -28,8 +28,8 @@ library(MetaboAnnotatoR)
 
 Get the path to the example file containing the .msp library. For illustrative purposes, an .msp file containing some MS/MS spectra obtained from MassBank from both positive and negative ionisation modes was used: 
 
-```{r, eval = FALSE}
-msp_path <- system.file("/Data/MassBank_example.msp", package = "MetaboAnnotatoR")
+```{r filepath, eval=TRUE}
+msp_path <- system.file("/Data/MassBank_example.msp", package="MetaboAnnotatoR")
 ```
 
 
@@ -39,10 +39,15 @@ Use function 'mspToLib' to read and convert the spectra records from the .msp in
 Similarly to the function 'genFragEntry' this function will attribute occurrence scores to the peaks above 'mpeaksThres' threshold ("marker peaks") and above the noise level.
 The peak-picking parameters 'noise' and 'mpeaksThres' and the occurrence scores used here are the default parameters.
 
-```{r, eval = FALSE}
+```{r run_function, eval=FALSE}
 mspToLib(msp_path,
          library_name = "Custom",
          noise = 0.005,
          mpeaksScore = 0.9,
          mpeaksThres = 0.1)
+```
+
+# Session Information
+```{r session_info, echo=FALSE}
+devtools::session_info()
 ```

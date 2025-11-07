@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 An example of usage using one LC-MS AIF chromatogram is illustrated here.
 First load library and dependencies:
 
-```{r, eval = FALSE}
+```{r load_package, eval=TRUE, echo=TRUE, message=FALSE}
 library(MetaboAnnotatoR)
 ```
 
@@ -35,8 +35,13 @@ As an input the software requires three files, that should be present in the wor
 each one containing the low or high collision energy scans. 
 
 The following function will place the example 'targetTable.csv' and 'XCMS_options.csv' files as described above in the user working directory:
-```{r, eval = FALSE}
+```{r load_data, eval=TRUE, results='hide'}
 getDemoData()
+```
+
+```{r remove_files, eval=TRUE, echo=FALSE}
+file.remove("targetTable.csv")
+file.remove("XCMS_options.csv")
 ```
 
 An example dataset used consisting of a lipidomics dataset (reverse-phase chromatography, containing both lipids and lipid-like molecules) acquired in ESI-MS positive mode should be downloaded from [zenodo repository](https://zenodo.org/records/17408169) and placed in the working directory.
@@ -47,7 +52,7 @@ The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids
 
 Let's start the annotation by searching the Lipid libraries:
 
-```{r, eval = FALSE}
+```{r lipids_example, eval=FALSE}
 annotateAIF(targetTable = "targetTable.csv", 
   filetype = "mzML", 
   libs = "Lipids",
@@ -67,7 +72,7 @@ Some fetures will remain unannotated, which means that no matching compound was 
 
 We can now try to use the non-lipid molecule libraries to annotate :
 
-```{r, eval = FALSE}
+```{r metabolites_example, eval=FALSE}
 annotateAIF(targetTable = "targetTable.csv", 
   filetype = "mzML", 
   libs = "Metabolites",
@@ -79,3 +84,9 @@ annotateAIF(targetTable = "targetTable.csv",
 ```
 
 The libraries used in the example are the default 'Lipids' and 'Metabolites' libraries provided with the package.
+
+# Session Information
+
+```{r session_info, echo=FALSE}
+devtools::session_info()
+```
