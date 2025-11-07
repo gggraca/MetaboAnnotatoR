@@ -8,10 +8,10 @@
 #' @return Files: targetTable.csv, XCMS_options.csv
 #' @export
 getDemoData <- function() {
-  targetTablePath <- system.file("targetTable.csv",
-                                 package = "MetaboAnnotatoR")
-  xcmsOptionsPath <- system.file("XCMS_options.csv",
-                                 package = "MetaboAnnotatoR")
-  file.copy(from = xcmsOptionsPath, to = getwd())
-  file.copy(from = targetTablePath, to = getwd())
+    targetTablePath <- system.file("targetTable.csv", 
+                                   package="MetaboAnnotatoR")
+    xcmsOptionsPath <- system.file("XCMS_options.csv", 
+                                   package="MetaboAnnotatoR")
+    file.copy(from=xcmsOptionsPath, to=getwd())
+    file.copy(from=targetTablePath, to=getwd())
 }

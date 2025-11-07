@@ -12,10 +12,14 @@
 #' window of the feature of interest;
 #' @param SpName Sample name label.
 #' @param rankedCandidates List containing the ranked candidate annotations.
-#' @param candidate Number of candidate annotations to plot.
+#' @param candidate Index of the candidate in the rankedCandidates list to 
+#' plot annotations from.
 #' @param DirPath Path to the folder where the plots will be saved.
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot of EICs and pseudo-MS/MS spectrum for the matched ions.
+#' @examples
+#' plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
+#' candidate=1, DirPath=getwd())
 #' @importFrom ProtGenerics intensity rtime
 #' @export
 plotCandidatesAIF <- function(fmz,

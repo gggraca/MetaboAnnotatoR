@@ -21,15 +21,13 @@
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
 #' @examples
-#' \dontrun{ 
 #' mspToLib("MassBank_example.msp")
-#' }
 #' @export
 mspToLib <- function(msp_file,
-                     library_name = "Custom",
-                     noise = 0.005,
-                     mpeaksScore = 0.9, 
-                     mpeaksThres = 0.1) {
+                     library_name="Custom",
+                     noise=0.005,
+                     mpeaksScore=0.9, 
+                     mpeaksThres=0.1) {
   
     # create folder to store library
     if(dir.exists("./Libraries")){

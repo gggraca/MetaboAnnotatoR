@@ -10,6 +10,8 @@
 #' @param ramclustObj RAMClustR object with parent-fragment reconstructions
 #' @return Pseudo-MS/MS spectrum for the feature of interest.
 #' @importFrom RAMClustR findmass
+#' @examples
+#' spec <- RCspec(fmz, frt, ramclustObj)
 #' @export
 RCspec <- function(fmz, frt, ramclustObj){
     # find a given feature in RAMClust by mass

@@ -21,6 +21,9 @@
 #' is matched to a fragment (in-source fragment).
 #' @return A list of data frames containing the candidates from the fragment
 #' libraries which will be used in the pseudo-MS/MS to fragment matching step.
+#' @examples
+#' candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
+#' RTs, inSourceSpec)
 #' @export
 searchLib <- function(libraries,
                       libfiles,
@@ -78,7 +81,7 @@ searchLib <- function(libraries,
                         j <- j+1
 				# row with scores added again
                         candidates[[j]] <- rbind(tmp,scores)
-				# add libraries index for fragment comparison
+                # add libraries index for fragment comparison
                         names(candidates)[j] <- as.character(i)
                         } else next
                 } else next

@@ -35,13 +35,12 @@
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' \dontrun{
 #' # Get the some example human serum LC-MS data and fetaure list to annotate:
 #' getDemoData()
 #' # Run the annotation using the lipid libraries:
-#' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", libs = "Lipids",
-#' ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7, checkIsotope = TRUE)
-#' }
+#' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", 
+#' libs = "Lipids", ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7,
+#' checkIsotope = TRUE)
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @export
@@ -57,28 +56,30 @@ annotateAIF <- function(targetTable="targetTable.csv",
 					    maxMZdiff=0.01,
 					    matchWeight=0.5,
 					    ncandidates=5){
-    ## Read XCMS peak-picking options----------------------------------------------
+    ## Read XCMS peak-picking options------------------------------------------
     xcmsOptions <- getXcmsOptions()
-    if(is.null(xcmsOptions)) stop("Please edit the 'xcmsOptions.csv' and re-run.")
-    
-    ## Read targets table----------------------------------------------------------
+    if(is.null(xcmsOptions)){
+        stop("Please edit the 'xcmsOptions.csv' and re-run.")
+    }
+    ## Read targets table------------------------------------------------------
     if(!file.exists("targetTable.csv")) {
-        stop("targetTable.csv not found! Run getDemoData(), edit targetTable.csv and re-run.")
+        stop("targetTable.csv not found! Run getDemoData(), 
+             edit targetTable.csv and re-run.")
     }
     targets <- read.csv("targetTable.csv")
     
-    ## Initialize results object---------------------------------------------------
+    ## Initialize results object-----------------------------------------------
     results <- initializeResultsAIF(targets, libs, ESImode)
     
-    ## Get RTs intervals from file ------------------------------------------------
+    ## Get RTs intervals from file --------------------------------------------
     RTs <- RTsFromFile(RTfile)
     
-    ## load libraries -------------------------------------------------------------
+    ## load libraries ---------------------------------------------------------
     libraries <- loadLibs(libs, ESImode)
     libfiles <- libraries$libfiles
     lib <- libraries$lib
     
-    # evaluate if one or more samples are to be read-------------------------------
+    # evaluate if one or more samples are to be read---------------------------
     if(length(unique(targets[,3])) == 1){
     	message("Reading data...")
         MSData <- readData(filetype=filetype, target=targets[1,3], 
@@ -88,11 +89,12 @@ annotateAIF <- function(targetTable="targetTable.csv",
         peaksF1 <- MSData$peaksF1
         peaksF2 <- MSData$peaksF2
     } else NULL
-    
-    ## process each feature from the targets table---------------------------------
+
+    ## process each feature from the targets table-----------------------------
     for(i in seq_len(nrow(targets))){
-    	message(paste("####### Processing feature", i, "of",
-    	              dim(targets)[1]), " ########")
+        progNote <- paste("####### Processing feature", i, "of", nrow(targets),
+                          "########")
+    	message(progNote)
     	if(length(unique(targets[,3]))>1){
     		message("Reading data...")
     	    MSData <- readData(filetype=filetype, target=targets[i,3], 
@@ -106,16 +108,16 @@ annotateAIF <- function(targetTable="targetTable.csv",
     	fmz <- targets[i,1]
     	frt <- targets[i,2]
     
-    	## get sample name to save files into -------------------------------------
-    	SpName <- targets[i,3]
+        ## get sample name to save files into --------------------------------
+        SpName <- targets[i,3]
     
-    	## get MS spectra at feature RT -------------------------------------------
+        ## get MS spectra at feature RT --------------------------------------
     	message("Obtaining pseudo-MS/MS spectrum...")
     	try(
     	  specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
-    	                         filetype = filetype, nCE = 1, cthres1 = corThresh,
-    	                         cthres2 = corThresh, savePlotResults = TRUE, 
-    	                         savePseudoMSMS = TRUE, ExpName="LCMS", 
+    	                         filetype=filetype, nCE=1, cthres1=corThresh,
+    	                         cthres2=corThresh, savePlotResults=TRUE, 
+    	                         savePseudoMSMS=TRUE, ExpName="LCMS", 
     	                         DirPath=results$resultsDir)
     	)
     
@@ -127,7 +129,7 @@ annotateAIF <- function(targetTable="targetTable.csv",
     	  feic <- specs$feic
     	} else next
     
-    	## Isotope check -------------------------------------------------------------
+        ## Isotope check ------------------------------------------------------
     	if(!checkIsotope) iso <- 0 else {
     		#message("Checking isotope type...")
     		if(is.null(inSourceSpec)) {
@@ -139,7 +141,7 @@ annotateAIF <- function(targetTable="targetTable.csv",
     		}
     	}
     
-    	## Search Libraries ----------------------------------------------------------
+        ## Search Libraries ---------------------------------------------------
     	if(is.null(pseudoSpec) & is.null(highCESpec)) { next
     	} else {
     	message("Searching candidates...")
@@ -147,28 +149,26 @@ annotateAIF <- function(targetTable="targetTable.csv",
     	                        frt, tolerance = tolerance, RTs, inSourceSpec)
     	}
     
-    	# Compare fragments between Library candidates and
-    	# high-collision-energy / pseudo-MS/MS spectra -------------------------------
+        # Compare fragments between Library candidates and
+        # high-collision-energy / pseudo-MS/MS spectra ------------------------
     	if(is.null(pseudoSpec) & is.null(highCESpec) |
     	   length(unlist(candidates)) == 0) {
     	  result <- NULL
     	} else {
     	message("Matching candidate(s) fragments to pseudo-MS/MS spectra...")
-    	output <- mapply(compFrag,
-    	                 candidates,
-    	                 lapply(as.numeric(names(candidates)), function(x) lib[[x]]),
-    	                 MoreArgs = list(fmz, frt, iso, highCESpec,
-    	                                 pseudoSpec,
-    	                                 maxMZdiff = maxMZdiff,
-    	                                 matchWeight = matchWeight),
-    	                 SIMPLIFY = FALSE)
+    	output <- mapply(
+    	    compFrag, candidates, lapply(as.numeric(names(candidates)), 
+    	                                 function(x) lib[[x]]), 
+    	    MoreArgs=list(fmz, frt, iso, highCESpec, pseudoSpec, 
+    	                  maxMZdiff=maxMZdiff, matchWeight=matchWeight), 
+    	    SIMPLIFY = FALSE)
     	result <- do.call(rbind,lapply(output, "[[", 1))
     	specMatch <- unlist(lapply(output, "[[",2), recursive = FALSE)
     	specMatch <- specMatch[!(specMatch) == "NULL"]
     	}
-    	## Score ranking -------------------------------------------------------------
+        ## Score ranking ------------------------------------------------------
     	if(is.null(result)) {
-    	rankedResult <- targets[i, 1:2]
+    	rankedResult <- targets[i, c(1,2)]
     	rankedResult[c("metabolite", "feature.type", "ion.type", "isotope",
     	               "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
     	               "fraction", "score")] <- NA
@@ -186,24 +186,25 @@ annotateAIF <- function(targetTable="targetTable.csv",
     	    rankedSpec <- output$rankedSpecMatch
     	}
     	
-    	## Save output of ranked annotations -----------------------------------------
+        ## Save output of ranked annotations ----------------------------------
     	if(exists("rankedResult")){
     	    saveRankedAIF(fmz, frt, ncandidates, rankedResult, SpName,
     	               resultsDir=results$resultsDir)
     	}
     	
-    	## Store highest rank annotation in global results----------------------------
+        ## Store highest rank annotation in global results---------------------
     	if(!exists("rankedResult")) rankedResult <- NULL
     	results$global[i,] <- storeAnnotations(global=results$global[i,], 
     	                                      rankedResult[1,])
     	
-    	## save plot of matched spectra for the top n candidates----------------------
+        ## save plot of matched spectra for the top n candidates---------------
     	if(exists("rankedSpec")){
-    	    saveMatchedAIF(fmz, frt, highCESpec, result, ms2eic, output, ncandidates,
-    	                rankedSpec, SpName, resultsDir=results$resultsDir)
+    	    saveMatchedAIF(fmz, frt, highCESpec, result, ms2eic, output, 
+    	                   ncandidates, rankedSpec, SpName, 
+    	                   resultsDir=results$resultsDir)
     	}
     }
-    ## save global results table------------------------------------------------------
+    ## save global results table-----------------------------------------------
     write.csv(results$global,
              file = paste(results$resultsDir, "Global_Results",
                           ".csv", sep = ""), row.names = FALSE)
@@ -337,7 +338,7 @@ saveMatchedAIF <- function(fmz, frt,
                                                           output, x, resultsDir))
         }
         if (length(rankedSpec) > ncandidates) {
-            plots <- lapply(seq_len(length(rankedSpec[1:ncandidates])),
+            plots <- lapply(seq_len(length(rankedSpec[seq_len(ncandidates)])),
                             function(x) plotCandidatesAIF(fmz, frt,
                                                           highCESpec,
                                                           ms2eic, SpName,

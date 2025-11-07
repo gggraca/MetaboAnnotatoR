@@ -13,21 +13,23 @@
 #' @param highCESpec MS2 peaks at the RT window of the feature of interest.
 #' @param pseudoSpec MS2 peaks related to the feature of interest.
 #' @param maxMZdiff Maximum m/z difference between candidate fragments and
-#' pseudo-MS/MS or AIF ions in Da.
+#' pseudo-MS/MS or AIF ions in Da (0.01 by default) .
 #' @param matchWeight weight of the fragment matches to the final score;
 #' value between 0 and 1; the remaining fraction of the weight comes from the
-#' candidate m/z error.
+#' candidate m/z error (0.5 by default).
 #' @param useMZerrorWeight Logical value to indicate if the m/z error between
 #' feature and candidate m/z is to be used for final scoring. Default is TRUE.
-#' @param additional Logical value to indicate if the fragments remaining
-#' unmatched to the pseudo-MS/MS are to be tested against the MS2 peaks at the
-#' RT window of the feature of interest.
 #' @param NoMatchWeight Weight to give to the additional matches between the
 #' candidate fragments and the MS2 peaks at the RT window of the feature of
-#' interest.
+#' interest (0.5 by default).
+#' @param additional Logical value to indicate if the fragments remaining
+#' unmatched to the pseudo-MS/MS are to be tested against the MS2 peaks at the
+#' RT window of the feature of interest (default is TRUE).
 #' @return A list containing one data frame with the summary result of the
 #' matching of a pseudo-MS/MS and fragments of a candidate and a data frame with 
 #' the pseudo-MS/MS spectrum of matched ion fragments.
+#' @examples
+#' result <- compFrag(candidate, lib, fmz, frt, iso, highCESpec, pseudoSpec)
 #' @export
 compFrag <- function(candidate,
                      lib,
@@ -88,8 +90,8 @@ tempResult$mz.metabolite <- candidate[,2]
 
 # pseudoMSMS flag
 if (is.null(pseudoSpec) | length(pseudoSpec) == 0) {
-    tempResult$pseudoMSMS <- 'FALSE'
-	 } else { tempResult$pseudoMSMS <- 'TRUE'
+    tempResult$pseudoMSMS <- "FALSE"
+	 } else { tempResult$pseudoMSMS <- "TRUE"
 }
 
 # spec match and final results table setup
@@ -169,8 +171,8 @@ nonMatchedScores <- vector()
 	if(additional & !is.null(pseudoSpec)){
 	  # !is.null(pseudoSpec) to avoid crashes with annotateRC
 	  second.count <- 0
-	if (nrow(pseudoSpec) > 0 & length(nonMatchedPseudo) > 0){
-		for (k in 1:length(nonMatchedPseudo)){
+	if(nrow(pseudoSpec) > 0 & length(nonMatchedPseudo) > 0){
+		for(k in seq_along(nonMatchedPseudo)){
 			if (any(abs(highCESpec[,"mz"] - nonMatchedPseudo[k]) < maxMZdiff)){
 			count <- count + 1
 			score <- score + nonMatchedScores[k] * NoMatchWeight

@@ -29,12 +29,10 @@
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' \dontrun{ 
 #' # Run annotation of lipid features for positive LC-MS data XCMS set (XSet) 
 #' # processed with RAMClustR:
 #' annotateRC(targetTable="targetTable.csv", xcmsObject=XSet, ramclustObj=RC, 
 #' libs="Lipids", ESImode="POS")
-#' }
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @importFrom graphics text
@@ -67,8 +65,9 @@ lib <- libraries$lib
 
 ## process each feature from the targets table------
 for(i in seq_len(nrow(targets))){
-    message(paste("##### Processing feature", i, "of", nrow(targets))," ######")
-    
+    progNote <- paste("##### Processing feature", i, "of", nrow(targets), 
+                      " ######")
+    message(progNote)
     fmz <- targets[i,1]
     frt <- targets[i,2]
 

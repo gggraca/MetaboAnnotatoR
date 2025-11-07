@@ -10,10 +10,14 @@
 #' @param highCESpec MS2 peaks at the RT window of the feature of interest.
 #' @param DatasetName Name of the data set processed using RAMClustR.
 #' @param rankedCandidates List containing the ranked candidate annotations.
-#' @param candidate Number of the candidate annotation to plot.
+#' @param candidate Index of the candidate in the rankedCandidates list to 
+#' plot annotations from.
 #' @param DirPath Path to the folder where the plots will be saved.
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot pseudo-MS/MS spectrum for the matched ions.
+#' @examples
+#' plotCandidatesRC(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
+#' candidate=1, DirPath=getwd())
 #' @export
 plotCandidatesRC <- function(fmz, frt, highCESpec, DatasetName,
                              rankedCandidates, candidate, DirPath){

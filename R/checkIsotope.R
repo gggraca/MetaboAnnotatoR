@@ -8,13 +8,11 @@
 #' @param frt Feature RT in seconds.
 #' @param spec A data frame containing XCMS peaks ("raw") or a
 #' RAMClustR pseudo-MS/MS spectrum ("cluster").
-#' @param mztol Absolute tolerance for feature m/z search in Da.
+#' @param mztol Absolute tolerance for feature m/z search in Da (default is 0.01).
 #' @return A "tag" of the isotope from an isotopic series as 0, 1, 2 or 3 for
 #' M+0, M+1, M+2 and M+3, respectively.
 #' @examples
-#' \dontrun{ 
-#' iso <- checkIsotope(286.1442, 40.77, spec = spObject)
-#' }
+#' iso <- checkIsotope(286.1442, 40.77, spec=spObject)
 #' @export
 checkIsotope <- function(fmz, frt, spec, mztol = 0.01){
   iso <- 0

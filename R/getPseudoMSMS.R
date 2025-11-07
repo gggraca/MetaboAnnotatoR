@@ -39,11 +39,9 @@
 #' If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source 
 #' pseudo-MS/MS spectrum will be saved instead.
 #' @examples
-#' \dontrun{
 #' getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2, filetype=filetype, 
 #' nCE=1, cthres1=0.9,cthres2=0.8, savePlotResults=TRUE, savePseudoMSMS=TRUE, 
 #' ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
-#' }
 #' @importFrom xcms chromPeaks chromatogram 
 #' @importFrom MSnbase compareChromatograms
 #' @importFrom ProtGenerics intensity rtime polarity

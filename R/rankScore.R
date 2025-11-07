@@ -7,6 +7,8 @@
 #' @param result Results from fragment matching as data frame.
 #' @param specMatch Pseudo-MS/MS of ions matched to candidate fragments.
 #' @return Ranked results annotation table and ranked matched spectra as list.
+#' @examples
+#' ranked <- rankScore(result, specMatch)
 #' @export
 rankScore <- function(result, specMatch){
     if (!is.null(result)){
