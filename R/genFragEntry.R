@@ -28,20 +28,19 @@
 #' @return A .csv file containing fragment and parent m/z values and corresponding 
 #' occurrence scores.
 #' @examples
-#' \dontrun{
-#' genFragEntry(specObject, "Pantothenic acid","[M+H]+",220.1179,"Pantothenic_acid_pos.csv",
-#' noise = 0.005, mpeaksScore = 0.9, mpeaksThres = 0.1, mzTol = 0.01)
-#' }
+#' genFragEntry(specObject, "Pantothenic acid", "[M+H]+", 220.1179,
+#' "Pantothenic_acid_pos.csv", noise=0.005, mpeaksScore=0.9, 
+#' mpeaksThres=0.1, mzTol=0.01)
 #' @export
 genFragEntry <- function(specObject,
                          name,
                          adduct,
                          tmz,
                          filename,
-                         noise = 0.005,
-                         mpeaksScore = 0.9, 
-                         mpeaksThres = 0.1,
-                         mzTol = 0.01) {
+                         noise=0.005,
+                         mpeaksScore=0.9, 
+                         mpeaksThres=0.1,
+                         mzTol=0.01) {
 # sort and filter m/z values find maximum intensity peak for spectrum 
 # normalisation and normalise spectrum
   specObject <- specObject[order(-specObject[,1]),]
