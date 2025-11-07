@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^MetaboAnnotatoR.jpeg
 ^LICENSE
+^vignettes/introduction.html
+^vignettes/gen_library_entry.html
+^vignettes/import_from_msp.html
