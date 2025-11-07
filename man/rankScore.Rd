@@ -17,6 +17,9 @@ Ranked results annotation table and ranked matched spectra as list.
 \description{
 Ranks the annotation results by final score.
 }
+\examples{
+ranked <- rankScore(result, specMatch)
+}
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 }

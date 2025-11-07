@@ -36,6 +36,10 @@ feature corresponding to an in-source fragment, fragments are then searched.
 Fragment ions will only be considered if the parent ion is present in the
 same pseudo-MS spectrum (MS1).
 }
+\examples{
+candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
+RTs, inSourceSpec)
+}
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 }

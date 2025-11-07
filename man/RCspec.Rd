@@ -20,6 +20,9 @@ Pseudo-MS/MS spectrum for the feature of interest.
 For a given feature, find out corresponding cluster from RAMClustR object
 and extract pseudo-MS/MS spectra.
 }
+\examples{
+spec <- RCspec(fmz, frt, ramclustObj)
+}
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 }

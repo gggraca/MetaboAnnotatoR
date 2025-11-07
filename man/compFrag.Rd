@@ -35,22 +35,22 @@ compFrag(
 \item{pseudoSpec}{MS2 peaks related to the feature of interest.}
 
 \item{maxMZdiff}{Maximum m/z difference between candidate fragments and
-pseudo-MS/MS or AIF ions in Da.}
+pseudo-MS/MS or AIF ions in Da (0.01 by default) .}
 
 \item{matchWeight}{weight of the fragment matches to the final score;
 value between 0 and 1; the remaining fraction of the weight comes from the
-candidate m/z error.}
+candidate m/z error (0.5 by default).}
 
 \item{useMZerrorWeight}{Logical value to indicate if the m/z error between
 feature and candidate m/z is to be used for final scoring. Default is TRUE.}
 
 \item{NoMatchWeight}{Weight to give to the additional matches between the
 candidate fragments and the MS2 peaks at the RT window of the feature of
-interest.}
+interest (0.5 by default).}
 
 \item{additional}{Logical value to indicate if the fragments remaining
 unmatched to the pseudo-MS/MS are to be tested against the MS2 peaks at the
-RT window of the feature of interest.}
+RT window of the feature of interest (default is TRUE).}
 }
 \value{
 A list containing one data frame with the summary result of the
@@ -60,6 +60,9 @@ the pseudo-MS/MS spectrum of matched ion fragments.
 \description{
 Function to compare pseudo-MS/MS and high-collision-energy spectra
 with fragment from a candidate metabolite from the database.
+}
+\examples{
+result <- compFrag(candidate, lib, fmz, frt, iso, highCESpec, pseudoSpec)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)

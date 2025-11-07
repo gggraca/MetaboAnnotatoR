@@ -68,13 +68,11 @@ molecule libraries, using 'raw' LC-MS single chromatogram information
 already loaded and peak-picked.
 }
 \examples{
-\dontrun{
 # Get the some example human serum LC-MS data and fetaure list to annotate:
 getDemoData()
 # Run the annotation using the lipid libraries:
 annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", libs = "Lipids",
 ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7, checkIsotope = TRUE)
-}
 }
 \author{
 Goncalo Graca (Imperial College London)

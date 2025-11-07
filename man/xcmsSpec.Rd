@@ -35,6 +35,9 @@ at the same RT window of the feature of interest from an XCMS output object
 obtained by processing both functions together from a set of LC-MS
 chromatograms.
 }
+\examples{
+spec <- xcmsSpec(fmz, frt, xcmsObject, mztol=0.01, rttol=5, highCE=TRUE)
+}
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 }

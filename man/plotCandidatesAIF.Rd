@@ -29,7 +29,8 @@ window of the feature of interest;}
 
 \item{rankedCandidates}{List containing the ranked candidate annotations.}
 
-\item{candidate}{Number of candidate annotations to plot.}
+\item{candidate}{Index of the candidate in the rankedCandidates list to
+plot annotations from.}
 
 \item{DirPath}{Path to the folder where the plots will be saved.}
 }
@@ -40,6 +41,10 @@ a plot of EICs and pseudo-MS/MS spectrum for the matched ions.
 \description{
 Plot pseudo-MS/MS spectra of matched fragments and corresponding EICs.
 Runs inside annotateAIF function.
+}
+\examples{
+plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
+candidate=1, DirPath=getwd())
 }
 \author{
 Goncalo Graca (Imperial College London)

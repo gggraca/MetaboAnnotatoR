@@ -25,7 +25,8 @@ plotCandidatesRC(
 
 \item{rankedCandidates}{List containing the ranked candidate annotations.}
 
-\item{candidate}{Number of the candidate annotation to plot.}
+\item{candidate}{Index of the candidate in the rankedCandidates list to
+plot annotations from.}
 
 \item{DirPath}{Path to the folder where the plots will be saved.}
 }
@@ -36,6 +37,10 @@ a plot pseudo-MS/MS spectrum for the matched ions.
 \description{
 Plots pseudo-MS/MS spectra of matched fragments from RC objects.
 Runs inside annotateRC function.
+}
+\examples{
+plotCandidatesRC(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
+candidate=1, DirPath=getwd())
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
