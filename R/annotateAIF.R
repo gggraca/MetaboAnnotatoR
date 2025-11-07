@@ -35,7 +35,7 @@
 #' a targeTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' # Get the some example human serum LC-MS data and fetaure list to annotate:
+#' # Get the some example human serum LC-MS data and feature list to annotate:
 #' getDemoData()
 #' # Run the annotation using the lipid libraries:
 #' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", 
