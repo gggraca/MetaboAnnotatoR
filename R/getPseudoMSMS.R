@@ -99,7 +99,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	    ms2_peaks <- AIF$ms2_peaks
 	    eic_aif <- AIF$eic_aif
 	    mz_ms2 <- AIF$mz_ms2
-	}
+	} else eic_aif <- eic_ms1 # stores ISF EICs instead for later plotting
 	
 	## plot in-source fragmentation (ISF) and AIF pseudo-MS/MS spectra------------
 	if(savePlotResults & !is.null(aif)) {
@@ -117,13 +117,13 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	    plotISF(fmz, frt, insource, ms1_peaks, eic_ms1, cthres1, DirPath, ExpName)
 	}
 	    
-	## save ISF pseudo-MS/MS spectrum as .csv and .mgf
+	## save ISF pseudo-MS/MS spectrum as .csv and .mgf----------------------------
 	if(savePseudoMSMS & is.null(aif) & !is.null(insource)){
 	    savePseudoMSMS(fmz, frt, xcmsF1, pseudo=insource, specType="ISF", DirPath, 
 	                   ExpName)
 	}
 	
-	## return pseudo-MS/MS object
+    ## return pseudo-MS/MS object
     result <- list(insource=insource, aif=aif, ms1=ms1_peaks, ms2=ms2_peaks,
                    ms2_eic=eic_aif, mz_ms2=mz_ms2, feic=feic)
     return(result)
