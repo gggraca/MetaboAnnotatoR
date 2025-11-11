@@ -99,7 +99,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 	    ms2_peaks <- AIF$ms2_peaks
 	    eic_aif <- AIF$eic_aif
 	    mz_ms2 <- AIF$mz_ms2
-	} else next
+	}
 	
 	## plot in-source fragmentation (ISF) and AIF pseudo-MS/MS spectra------------
 	if(savePlotResults & !is.null(aif)) {
