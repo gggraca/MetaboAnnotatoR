@@ -2,12 +2,12 @@
 
 ## Description
 This R package is designed to perform metabolite annotation of features from LC-MS All-ion fragmentation (AIF) datasets, using ion fragment databases.
-It requires raw LC-MS AIF chromatograms acquired/transformed in centroid mode or processed data outputs obtained using [RAMClustR](https://github.com/cbroeckl/RAMClustR).
+It requires raw LC-MS AIF chromatograms acquired/transformed in centroid mode.
 
 <img src="MetaboAnnotatoR.jpeg" width="950">
 
 For more details on how the software works, further testing and performance please read the full publication in Analytical Chemistry journal: https://pubs.acs.org/doi/10.1021/acs.analchem.1c03032, 
-and also try the vignettes below.
+and also try the package vignettes.
 
 ## Installation instructions
 
@@ -20,9 +20,6 @@ library(devtools)
 install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE)
 ```
 
-The dependency package RAMClustR can be installed directly from the Github repository:
-```
-install_github("cbroeckl/RAMClustR", build_vignettes = TRUE, dependencies = TRUE)
 ```
 ## Installation issues
 
@@ -37,5 +34,7 @@ install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE, INSTALL_opts = c(
 ```
 
 ## Vignettes
-An example of usage using one LC-MS AIF chromatogram is provided in the [introductory vignette](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/introduction.html).
-An illustration of the generation of Metabolite database records for MetaboAnnotatoR from text files is given [here](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/gen_library_entry.html). MS/MS spectra can also be imported from .msp files as exemplified [here](http://htmlpreview.github.io/?https://github.com/gggraca/MetaboAnnotatoR/blob/master/vignettes/import_from_msp.html).
+Please check the vignettes folder for examples of package use:
+- Introductory vignette: an example of usage using one LC-MS AIF chromatogram.
+- Generation of Metabolite fragment database entry from MS/MS experimental spectra.
+- Generation of Metabolite fragment database entry from MS/MS spectra from public databases (in .msp format).
