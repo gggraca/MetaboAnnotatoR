@@ -11,14 +11,16 @@ RCspec(fmz, frt, ramclustObj)
 
 \item{frt}{Retention time in seconds for the feature of interest.}
 
-\item{ramclustObj}{RAMClustR object with parent-fragment reconstructions}
+\item{ramclustObj}{RAMClustR object (list) with parent-fragment
+reconstructions. See RAMClustR paper for more details
+(https://pubs.acs.org/doi/10.1021/ac501530d).}
 }
 \value{
 Pseudo-MS/MS spectrum for the feature of interest.
 }
 \description{
-For a given feature, find out corresponding cluster from RAMClustR object
-and extract pseudo-MS/MS spectra.
+For a given feature, find out corresponding cluster (pseudo-MS/MS spectra)
+from RAMClustR object.
 }
 \examples{
 spec <- RCspec(fmz, frt, ramclustObj)

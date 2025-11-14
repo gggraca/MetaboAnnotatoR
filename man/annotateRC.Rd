@@ -2,7 +2,7 @@
 % Please edit documentation in R/annotateRC.R
 \name{annotateRC}
 \alias{annotateRC}
-\title{Annotation of features using LC-MS AIF datasets processed using RAMClusteR.}
+\title{Annotation of features using LC-MS AIF datasets processed using RAMClustR.}
 \usage{
 annotateRC(
   targetTable,
@@ -23,8 +23,9 @@ annotateRC(
 
 \item{xcmsObject}{XCMS object containing the processed AIF datasets.}
 
-\item{ramclustObj}{RAMClustR object with parent-fragment reconstructions.
-(clusters).}
+\item{ramclustObj}{RAMClustR object with parent-fragment reconstructions
+(clusters). See RAMClustR paper for more details
+(https://pubs.acs.org/doi/10.1021/ac501530d).}
 
 \item{libs}{Fragment library to use: 'Lipids' (default) or 'Metabolites'
 for other small molecules.}

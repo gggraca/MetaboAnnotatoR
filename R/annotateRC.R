@@ -1,4 +1,4 @@
-#' Annotation of features using LC-MS AIF datasets processed using RAMClusteR.
+#' Annotation of features using LC-MS AIF datasets processed using RAMClustR.
 #'
 #' Search possible matches of a feature in Lipid fragments and other
 #' small molecule libraries.
@@ -7,8 +7,9 @@
 #'
 #' @param targetTable A csv file containing the list of features to annotate.
 #' @param xcmsObject XCMS object containing the processed AIF datasets.
-#' @param ramclustObj RAMClustR object with parent-fragment reconstructions.
-#' (clusters).
+#' @param ramclustObj RAMClustR object with parent-fragment reconstructions
+#' (clusters). See RAMClustR paper for more details
+#' (https://pubs.acs.org/doi/10.1021/ac501530d).
 #' @param ESImode Ionization mode: 'POS' for positive (default) or 'NEG'
 #' for negative ionisation modes.
 #' @param libs Fragment library to use: 'Lipids' (default) or 'Metabolites'
