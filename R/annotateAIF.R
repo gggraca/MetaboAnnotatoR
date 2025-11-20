@@ -93,7 +93,7 @@ annotateAIF <- function(targetTable="targetTable.csv",
     ## process each feature from the targets table-----------------------------
     for(i in seq_len(nrow(targets))){
         progNote <- paste("####### Processing feature", i, "of", nrow(targets),
-                          "########")
+                          "#######")
     	message(progNote)
     	if(length(unique(targets[,3]))>1){
     		message("Reading data...")
