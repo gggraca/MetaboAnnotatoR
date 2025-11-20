@@ -67,13 +67,13 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
     delta <- 5
     fpeak <- chromPeaks(peaksF1, mz=fmz, ppm=delta)
     if(nrow(fpeak) == 0){
-        while(nrow(fpeak) == 0){
+        while(nrow(fpeak) == 0 & delta < 30){
             delta <- delta + 1
             fpeak <- chromPeaks(peaksF1, mz=fmz, ppm=delta)
-            # to avoid endless search:
-            if(delta > 30) message("feature not found in the peaks list") 
         }
     }
+    
+    if(nrow(fpeak) == 0) message("feature not found in the peaks list")
     
     if(is.matrix(fpeak) & nrow(fpeak) == 1) targetRT <- fpeak[,"rt"]
     if(nrow(fpeak) > 1) {
