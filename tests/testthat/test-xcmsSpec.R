@@ -8,7 +8,7 @@ data("xs")
 expected <- xs@peaks[which(xs@peaks[,"sample"] == 6),c("mz","into")]
 
 
-test_that("multiplication works", {
+test_that("xcmsSpec is correctly imported", {
     result <- xcmsSpec(410.1440, -1, mztol=0.001, xs, rttol=1, highCE = FALSE)
     expect_equal(result, expected)
 })
