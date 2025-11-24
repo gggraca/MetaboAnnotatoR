@@ -17,7 +17,7 @@
 RCspec <- function(fmz, frt, ramclustObj){
     # find a given feature in RAMClustR object by mass
     pseudoSpec <- NULL
-    altclus <- findfeature(ramclustObj,
+    altclus <- findFeature(ramclustObj,
                            mz=fmz,
                            mztol=0.02,
                            rttol = 2)
