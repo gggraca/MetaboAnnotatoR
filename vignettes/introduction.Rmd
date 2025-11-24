@@ -18,69 +18,46 @@ knitr::opts_chunk$set(
 
 ## Example session
 
-An example of usage using one LC-MS AIF chromatogram is illustrated here.
-First load library and dependencies:
+An example of usage using LC-MS AIF chromatograms processed using xcms and RamClustR is illustrated here.
+First load library and dependencies, and set the working directory (tempdir() in this example):
 
 ```{r load_package, eval=TRUE, echo=TRUE, message=FALSE}
 library(MetaboAnnotatoR)
+tmpd <- tempdir()
+setwd(tmpd)
 ```
 
-### Setting the files needed to run the LC-MS AIF annotations
+### Getting feature table and example data
 
-As an input the software requires three files, that should be present in the working directory:
+As an input the software requires a .csv file containing the features to be annotated (targetTable.csv - the file name can be changed).
+The following function will place the example 'targetTable.csv' and the 'XCMS_options.csv' (used for data peak-picking, when dealing with raw data) files in the user working directory. The option AIFdata=TRUE will load the AIF processed data into the global environment. These consist of two objects: 1) an xcmsSet object (XSet) containing the processed data from 100 AIF LC-MS chromatograms from human serum samples and 2) the respective pseudo-MS/Ms spectra obtained by processing the xcmsSet data using RAMClustR (RC): 
 
-1. A .csv file containing the features to be annotated (targetTable.csv - the file name can be changed);
-1. A .csv file containing the XCMS peak-picking options (XCMS_options.csv);
-1. A a raw chromatogram file in .mzML format containing low and high (AIF) collision energy scans or two .netCDF files, 
-each one containing the low or high collision energy scans. 
-
-The following function will place the example 'targetTable.csv' and 'XCMS_options.csv' files as described above in the user working directory:
 ```{r load_data, eval=TRUE, results='hide'}
-getDemoData()
+getDemoData(AIFdata=TRUE)
 ```
 
-```{r remove_files, eval=TRUE, echo=FALSE}
-file.remove("targetTable.csv")
-file.remove("XCMS_options.csv")
-```
 
-An example dataset used consisting of a lipidomics dataset (reverse-phase chromatography, containing both lipids and lipid-like molecules) acquired in ESI-MS positive mode should be downloaded from [zenodo repository](https://zenodo.org/records/17408169) and placed in the working directory.
-
-The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules.
+The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules. Annotation can be performed using two of the default libraries:
 
 ### Annotations using the Lipid libraries
 
 Let's start the annotation by searching the Lipid libraries:
 
-```{r lipids_example, eval=FALSE}
-annotateAIF(targetTable = "targetTable.csv", 
-  filetype = "mzML", 
-  libs = "Lipids",
-  ESImode = "POS",
-  RTfile = "none",
-  nCE = 1,
-  corThresh = 0.7,
-  checkIsotope = TRUE)
+```{r lipids_example, eval=TRUE}
+annotateRC(targetTable="targetTable.csv", xcmsObject=Xset, ramclustObj=RC, libs="Lipids", ESImode="POS")
 ```
-A new folder will be automatically created in the working directory called  'Annotations', were annotation results will be stored.
+A new folder will be automatically created in the working directory called 'Annotations', were annotation results will be stored.
 This folder contains several files. Annotation results are stored in .csv files for each feature. The annotated 'targetTable' 
 can be found in the 'Global_Results.csv' file. Graphical results are stored as .pdf files in the same folder.
 
-Some fetures will remain unannotated, which means that no matching compound was found in the lipids library. 
+Some features will remain unannotated, which means that no matching compound was found in the lipids library. 
 
 ### Annotations using the non-lipid Metabolites libraries
 
 We can now try to use the non-lipid molecule libraries to annotate :
 
-```{r metabolites_example, eval=FALSE}
-annotateAIF(targetTable = "targetTable.csv", 
-  filetype = "mzML", 
-  libs = "Metabolites",
-  ESImode = "POS",
-  RTfile = "none",
-  nCE = 1,
-  corThresh = 0.7,
-  checkIsotope = TRUE)
+```{r metabolites_example, eval=TRUE}
+annotateRC(targetTable="targetTable.csv", xcmsObject=Xset, ramclustObj=RC, libs="Metabolites", ESImode="POS")
 ```
 
 The libraries used in the example are the default 'Lipids' and 'Metabolites' libraries provided with the package.
