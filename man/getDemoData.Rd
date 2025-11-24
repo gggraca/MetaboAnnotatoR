@@ -4,7 +4,10 @@
 \alias{getDemoData}
 \title{Function to place demonstration data into working directory.}
 \usage{
-getDemoData()
+getDemoData(AIFdata = FALSE)
+}
+\arguments{
+\item{AIFdata}{If AIF test data is to be loaded. Default is FALSE.}
 }
 \value{
 Files: targetTable.csv, XCMS_options.csv
