@@ -1,14 +1,14 @@
 ## test for annotateRC function
 
 ## input test data
-fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR") 
+fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
 RC <- readRDS(fpath)
 
 # create new xcmsSet and add a matrix with peaks
 # note that ms1 and aif (ms2) peaks must be added so that xcmsSpec function works properly
 # "dummy" fragments were added to the Xset to avoid having in Source Spectra with one ion only 
 Xset <- new("xcmsSet")
-tPath <- system.file("targetTable.csv", package = "MetaboAnnotatoR") 
+tPath <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 ms1 <- read.csv(tPath)
 colnames(ms1) <- c("mz", "rt", "into")
 ms1$into <- 1
