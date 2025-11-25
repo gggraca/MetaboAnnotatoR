@@ -10,11 +10,16 @@ getDemoData(AIFdata = FALSE)
 \item{AIFdata}{If AIF test data is to be loaded. Default is FALSE.}
 }
 \value{
-Files: targetTable.csv, XCMS_options.csv
+Files: targetTable.csv, XCMS_options.csv and two additional
+environment objects if AIFdata=TRUE: Xset (xcmsSet object) and
+RC (RAMClustR object).
 }
 \description{
 Places XCMS_options and target features files into the working directory
 to test automated AIF annotation using annotateAIF function.
+}
+\examples{
+getDemoData()
 }
 \author{
 Goncalo Graca (Imperial College London)
