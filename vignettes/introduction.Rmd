@@ -9,17 +9,26 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r doc_options, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
 ## Example session
 
-An example of usage using LC-MS AIF chromatograms processed using xcms and RamClustR is illustrated here.
-First load library and dependencies, and set the working directory (tempdir() in this example):
+An example of usage using LC-MS AIF chromatograms processed using xcms and 
+RamClustR packages is illustrated here. For more details on RAMClustR object 
+processing, check the original publication:
+https://pubs.acs.org/doi/10.1021/ac501530d.  
+
+The details of how the example dataset was obtained check MetaboAnnotatoR
+original paper for the full details: 
+https://pubs.acs.org/doi/10.1021/acs.analchem.1c03032.  
+
+Firstly load library and dependencies, and set the working directory 
+(tempdir() in this example):
 
 ```{r load_package, eval=TRUE, echo=TRUE, message=FALSE}
 library(MetaboAnnotatoR)
@@ -29,41 +38,69 @@ setwd(tmpd)
 
 ### Getting feature table and example data
 
-As an input the software requires a .csv file containing the features to be annotated (targetTable.csv - the file name can be changed).
-The following function will place the example 'targetTable.csv' and the 'XCMS_options.csv' (used for data peak-picking, when dealing with raw data) files in the user working directory. The option AIFdata=TRUE will load the AIF processed data into the global environment. These consist of two objects: 1) an xcmsSet object (XSet) containing the processed data from 100 AIF LC-MS chromatograms from human serum samples and 2) the respective pseudo-MS/Ms spectra obtained by processing the xcmsSet data using RAMClustR (RC): 
+As an input the software requires a .csv file containing the features to be 
+annotated (targetTable.csv - the file name can be changed).
+The following function will place the example 'targetTable.csv' and the 
+'XCMS_options.csv' (used for data peak-picking, when dealing with raw data) 
+files in the user working directory. The option AIFdata=TRUE will load the 
+AIF processed data into the global environment. These consist of two objects: 
+1) an xcmsSet object (XSet) containing the processed data from 100 AIF LC-MS 
+chromatograms from human serum samples and 
+2) the respective pseudo-MS/Ms spectra obtained by processing the xcmsSet 
+data using RAMClustR (RC): 
 
 ```{r load_data, eval=TRUE, results='hide'}
 getDemoData(AIFdata=TRUE)
 ```
 
 
-The 'targetTable.csv' file contains 6 features, corresponding to 4 phospholipids and 2 lipid-like molecules. Annotation can be performed using two of the default libraries:
+The 'targetTable.csv' file contains 6 features, corresponding to 
+4 phospholipids and 2 lipid-like molecules. 
+Annotation can be performed using two of the default libraries: 'Lipids'
+or 'Metabolites' of either ESI+ (POS) or ESI- (NEG) ionisation modes.
 
 ### Annotations using the Lipid libraries
 
 Let's start the annotation by searching the Lipid libraries:
 
 ```{r lipids_example, eval=TRUE}
-annotateRC(targetTable="targetTable.csv", xcmsObject=Xset, ramclustObj=RC, libs="Lipids", ESImode="POS")
+annotateRC(targetTable="targetTable.csv", 
+            xcmsObject=Xset, 
+            ramclustObj=RC, 
+            libs="Lipids", 
+            ESImode="POS")
 ```
-A new folder will be automatically created in the working directory called 'Annotations', were annotation results will be stored.
-This folder contains several files. Annotation results are stored in .csv files for each feature. The annotated 'targetTable' 
-can be found in the 'Global_Results.csv' file. Graphical results are stored as .pdf files in the same folder.
 
-Some features will remain unannotated, which means that no matching compound was found in the lipids library. 
+A new folder will be automatically created in the working directory called
+'Annotations' were annotation results will be stored. Several files will be
+present in this folder. The annotation results are stored in .csv files for 
+each feature. The annotated 'targetTable' can be found in the 
+'Global_Results.csv' file. Graphical results are stored as .pdf files in 
+the same folder.
+
+Some features will remain un-annotated, which means that no matching compound
+was found in the lipids library. 
 
 ### Annotations using the non-lipid Metabolites libraries
 
 We can now try to use the non-lipid molecule libraries to annotate :
 
 ```{r metabolites_example, eval=TRUE}
-annotateRC(targetTable="targetTable.csv", xcmsObject=Xset, ramclustObj=RC, libs="Metabolites", ESImode="POS")
+annotateRC(targetTable="targetTable.csv", 
+            xcmsObject=Xset, 
+            ramclustObj=RC, 
+            libs="Metabolites", 
+            ESImode="POS")
 ```
 
-The libraries used in the example are the default 'Lipids' and 'Metabolites' libraries provided with the package.
+The libraries used in the example are the default 'Lipids' and 'Metabolites' 
+(ESI+ mode) libraries provided with the package.
+Similarly to the lipid annotations, an annotations folder will be created in 
+the working directory to store the annotations obtained using the 'Metabolites'
+ESI+ library.
 
 # Session Information
 
-```{r session_info, echo=FALSE}
+```{r session_info, , eval=TRUE, echo=FALSE}
 devtools::session_info()
 ```
