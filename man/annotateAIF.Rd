@@ -70,6 +70,9 @@ already loaded and peak-picked.
 \examples{
 # Get the some example human serum LC-MS data and feature list to annotate:
 getDemoData()
+# Download the example .mzML from zenodo website and store it in the 
+# working directory:
+# https://zenodo.org/records/17408169
 # Run the annotation using the lipid libraries:
 annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", 
 libs = "Lipids", ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7,
