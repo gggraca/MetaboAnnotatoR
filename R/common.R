@@ -18,16 +18,17 @@ loadLibs <- function(libs, ESImode){
     if(file.exists("./Libraries/")){
         message("Loading user-defined libraries...")
         libfiles <- list.files(path=paste("./Libraries/",libs,"/",
-                                          ESImode, sep=""), 
-                               full.names=TRUE)
+                                            ESImode, sep=""), 
+                                full.names=TRUE)
         # check.names=FALSE to use the original header names in the annotations:
         lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
-                      check.names=FALSE)
+                        check.names=FALSE)
         libraries <- list(lib=lib, libfiles=libfiles)
     } else {
         message("Loading default libraries...")
-        defaultLib <- system.file(paste("/Data/", libs,"_", ESImode, ".rds", sep=""),
-                                  package="MetaboAnnotatoR")
+        defaultLib <- system.file(paste("/Data/", libs,"_", ESImode, ".rds", 
+                                        sep=""),
+                                    package="MetaboAnnotatoR")
         libraries <- readRDS(defaultLib)
     }
     return(libraries)
@@ -48,8 +49,8 @@ storeAnnotations <- function(global, rankedResult){
         global$score <- rankedResult$score
     } else {
         global[,c("metabolite", "feature.type", "ion.type", "isotope",
-                  "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
-                  "fraction", "score")] <- NA
+                    "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
+                    "fraction", "score")] <- NA
     }
     return(global)
 }

@@ -25,13 +25,8 @@
 #' spec <- xcmsSpec(fmz, frt, xcmsObject, mztol=0.01, rttol=5, highCE=TRUE)
 #' @importFrom xcms peaks
 #' @export
-xcmsSpec <- function(fmz,
-                     frt,
-                     xcmsObject,
-                     mztol = 0.01,
-                     rttol = 5,
-                     highCE = TRUE){
-    
+xcmsSpec <- function(fmz, frt, xcmsObject, mztol=0.01, rttol=5, highCE=TRUE){
+
     selection1 <- peaks(xcmsObject)[
         which(xcms::peaks(xcmsObject)[,"mz"] > (fmz - mztol) &
         xcms::peaks(xcmsObject)[,"mz"] < (fmz + mztol) &
@@ -43,7 +38,8 @@ xcmsSpec <- function(fmz,
     # index corresponding to the highCE scans for the sample
     # with highest feature intensity:
     if(highCE){
-        idx <- as.numeric(selection1[which.max(selection1[,"into"]), "sample"] + 1)
+        idx <- as.numeric(
+                    selection1[which.max(selection1[,"into"]), "sample"] + 1)
     }
     # index corresponding to the lowCE scans for the sample with
     # highest feature intensity:
@@ -52,8 +48,8 @@ xcmsSpec <- function(fmz,
     }
     # get all peaks from the selected sample around the feature rt
     selection2 <- which(xcms::peaks(xcmsObject)[,"sample"] == idx &
-                      xcms::peaks(xcmsObject)[,"rt"] > (frt - rttol) &
-                      xcms::peaks(xcmsObject)[,"rt"] < (frt + rttol))
+                        xcms::peaks(xcmsObject)[,"rt"] > (frt - rttol) &
+                        xcms::peaks(xcmsObject)[,"rt"] < (frt + rttol))
     peakSelection <- xcms::peaks(xcmsObject)[selection2,]
     # check if peakSelection is vector or data frame and store result
     if(is.null(dim(peakSelection))){

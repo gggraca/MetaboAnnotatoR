@@ -17,10 +17,7 @@
 RCspec <- function(fmz, frt, ramclustObj){
     # find a given feature in RAMClustR object by mass
     pseudoSpec <- NULL
-    altclus <- findFeature(ramclustObj,
-                           mz=fmz,
-                           mztol=0.02,
-                           rttol = 2)
+    altclus <- findFeature(ramclustObj, mz=fmz, mztol=0.02, rttol=2)
     if(length(altclus$rt) > 0){
         # select matched cluster with nearest rt
         if(min(abs(altclus$rt - frt)) < 3){
@@ -31,8 +28,8 @@ RCspec <- function(fmz, frt, ramclustObj){
                 # extract pseudo spectra
                 inclus <- which(ramclustObj$featclus == nclus)
                 pseudoSpec <- data.frame("mz"=ramclustObj$fmz[inclus],
-                                         "into"=ramclustObj$msint[inclus],
-                                         "rt"=ramclustObj$frt[inclus])
+                                            "into"=ramclustObj$msint[inclus],
+                                            "rt"=ramclustObj$frt[inclus])
             }
         }
     }
@@ -43,13 +40,12 @@ RCspec <- function(fmz, frt, ramclustObj){
 # findFeature: finds the correct feature in the RAMClustR object
 findFeature <- function(ramclustObj, mz, mztol=0.02, rttol=2){
     target <- which(abs(ramclustObj$fmz-mz) <= mztol)
-    if (length(target) == 0) {
-      out <- data.frame(featn=NA, featclus=NA, 
-                        mz=NA, rt=NA, 
+    if(length(target) == 0) {
+        out <- data.frame(featn=NA, featclus=NA, mz=NA, rt=NA, 
                         int=NA, M0_plausible=NA)
-      out<-out[0,]
+        out<-out[0,]
     } else {
-      out <- data.frame(featn=target, featclus=ramclustObj$featclus[target], 
+        out <- data.frame(featn=target, featclus=ramclustObj$featclus[target], 
                         mz=ramclustObj$fmz[target], rt=ramclustObj$frt[target], 
                         int=ramclustObj$msint[target], 
                         M0_plausible=rep(NA, length(tar)))

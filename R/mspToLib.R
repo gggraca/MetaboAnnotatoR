@@ -3,44 +3,48 @@
 #' 
 #' @author Goncalo Graca (Imperial College London)
 #' 
-#' @param msp_file an MS/MS spectral library for spectra from one or both polarities
-#' @param library_name Custom library name under which POS and NEG folders will be created 
-#' and where the respective libray entries will be stored 
+#' @param msp_file an MS/MS spectral library for spectra from one or both 
+#' polarities.
+#' @param library_name Custom library name under which POS and NEG folders. 
+#' will be created and where the respective libray entries will be stored.
 #' @param noise Noise intensity threshold expressed as a ratio to the peak with
 #' the highest intensity.
 #' @param mpeaksScore The occurrence score to be attributed to the most intense 
-#' peaks of the MS/MS spectrum which should correspond to the most characteristic
-#' fragmentation ions from the metabolite (or 'marker' peaks). These will be the 
-#' peaks above 'mpeaksThres' value. This score is divided by the number of peaks 
-#' above 'mpeaksThres' threshold. By default this value is defined at 0.9, 
-#' which means that peaks below 'mpeaksThres' threshold will be given an 
-#' occurrence score of 0.1, so that the sum of all fragment occurrence scores is 1.
+#' peaks of the MS/MS spectrum which should correspond to the most 
+#' characteristic fragmentation ions from the metabolite (or 'marker' peaks). 
+#' These will be the peaks above 'mpeaksThres' value. This score is divided by 
+#' the number of peaks above 'mpeaksThres' threshold. By default this value is 
+#' defined at 0.9, which means that peaks below 'mpeaksThres' threshold will be 
+#' given an occurrence score of 0.1, so that the sum of all fragment occurrence 
+#' scores is 1.
 #' @param mpeaksThres Intensity threshold to select peaks of the MS/MS spectrum 
 #' considered to be highest intensity, expressed as a ratio to the peak 
 #' with the highest intensity.
-#' @return A .csv file containing fragment and parent m/z values and corresponding 
-#' occurrence scores.
+#' @return A .csv file containing fragment and parent m/z values and 
+#' corresponding occurrence scores.
 #' @examples
 #' mspToLib("MassBank_example.msp")
 #' @export
 mspToLib <- function(msp_file,
-                     library_name="Custom",
-                     noise=0.005,
-                     mpeaksScore=0.9, 
-                     mpeaksThres=0.1) {
-  
+                        library_name="Custom",
+                        noise=0.005,
+                        mpeaksScore=0.9, 
+                        mpeaksThres=0.1) {
+
     # create folder to store library
     if(dir.exists("./Libraries")){
-        dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
+        dir.create(paste("./Libraries/",library_name, sep=""),
+                    showWarnings=FALSE)
         dirPath <- paste("./Libraries/",library_name, sep="")
         } else {
-            dir.create("./Libraries/", showWarnings = FALSE)
-            dir.create(paste("./Libraries/",library_name, sep=""), showWarnings = FALSE)
+            dir.create("./Libraries/", showWarnings=FALSE)
+            dir.create(paste("./Libraries/",library_name, sep=""), 
+                        showWarnings = FALSE)
             dirPath <- paste("./Libraries/",library_name, sep="")
-            }
+        }
     # read msp file
     m <- readLines(msp_file, warn=FALSE)
-  
+
     # get names of all metabolites
     n <- grep("Name:", m)
     cpdNames <- unlist(lapply(n, function(x) substring(m[x], 7, nchar(m[x]))))
@@ -48,14 +52,15 @@ mspToLib <- function(msp_file,
     np <- grep("Num Peaks:", m)
     npeaks <- unlist(lapply(np, function(x) substring(m[x], 11, nchar(m[x]))))
     npeaks <- as.numeric(npeaks)
-  
+
     # get all ion modes
     im <- grep("Ion_mode:", m)
-    ion_modes <- unlist(lapply(im, function(x) substring(m[x], 11, nchar(m[x]))))
-  
+    ion_modes <- unlist(lapply(im, 
+                                function(x) substring(m[x], 11, nchar(m[x]))))
+
     # get MSP details  
     libs <- lapply(seq_along(n), 
-                   function(x) getMSPdetails(x, m, n, np, npeaks, cpdNames))
+                    function(x) getMSPdetails(x, m, n, np, npeaks, cpdNames))
     for(i in seq_len(length(libs))){
         name <- libs[[i]]$metabolite
         ion_mode <- libs[[i]]$ion_mode
@@ -71,18 +76,20 @@ mspToLib <- function(msp_file,
     
     # normalise spectrum
     norm.specObject <- specObject
-    norm.specObject[,2] <- specObject[,2]/specObject[which.max(specObject[,2]),2]
+    norm.specObject[,2] <- specObject[,2]/specObject[
+                                                    which.max(specObject[,2]),
+                                                    2]
     
     # denoise spectrum
     if(nrow(specObject) > 1){
-      denoised.spec <- norm.specObject[which(norm.specObject[,2] > noise),]
+        denoised.spec <- norm.specObject[which(norm.specObject[,2] > noise),]
     } else denoised.spec <- norm.specObject
     
-    if(is.vector(denoised.spec)) denoised.spec <- matrix(denoised.spec, nrow = 1)
-      
+    if(is.vector(denoised.spec)) denoised.spec <- matrix(denoised.spec, nrow=1)
+    
     # locate if parent m/z is present in the list
     p <- which.min(abs(denoised.spec[,1]-tmz))
-      
+    
     if(length(p) == 0) denoised.spec <- rbind(c(tmz,0),denoised.spec)
     if(length(p) == 1) denoised.spec[p,1] <- tmz
     
@@ -97,14 +104,14 @@ mspToLib <- function(msp_file,
     
     # check if score adds to 1, if not recalculate scores
     if(sum(scores) < 1){
-      scores[idx] <- 1/length(idx)
+        scores[idx] <- 1/length(idx)
     } else NULL
     
     # save entry as .csv
     if(nrow(specObject)>1){
         result <- rbind(denoised.spec[,1],scores)
         frag <- rep(NA,(length(scores) - 1))
-        for (i in seq_len(length(scores)-1)){
+        for(i in seq_len(length(scores)-1)){
             frag[i] <- paste('fragment',i,sep='')
             }
         colnames(result) <- c(adduct, frag)
@@ -114,15 +121,15 @@ mspToLib <- function(msp_file,
             colnames(result) <- adduct
             rownames(result) <- c(name,'scores')
             } else NULL
-    if(ion_mode=="POSITIVE"){
+    if(ion_mode == "POSITIVE"){
         dir.create(paste(dirPath,"/POS/",sep=""), showWarnings = FALSE)
         targetPath <- paste(dirPath,"/POS/", filename, sep = "")
         } else if(ion_mode=="NEGATIVE"){
             dir.create(paste(dirPath,"/NEG/",sep=""), showWarnings = FALSE)
             targetPath <- paste(dirPath,"/NEG/", filename, sep = "")
-            }
+        }
     write.csv(result, targetPath, row.names = TRUE)
-  }
+    }
 }
 
 ## helper function-------------------------------------------------------------
@@ -157,12 +164,12 @@ getMSPdetails <- function(x, m, n, np, npeaks, cpdNames){
         tmp <- strsplit(m[np[x]+i], split = " ")
         s <- c(s, as.numeric(tmp[[1]]))
     }
-    spec <- matrix(s, ncol = 2, byrow = TRUE)
+    spec <- matrix(s, ncol=2, byrow=TRUE)
     
-    result <- list(metabolite = cpdNames[x],
-                   precursor = precursor_mz,
-                   type = ptype,
-                   ion_mode = ion_mode,
-                   MSMS = spec)
+    result <- list(metabolite=cpdNames[x],
+                    precursor=precursor_mz,
+                    type=ptype,
+                    ion_mode=ion_mode,
+                    MSMS=spec)
     return(result)
 }

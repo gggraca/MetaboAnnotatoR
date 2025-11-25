@@ -20,14 +20,15 @@
 #' candidate=1, DirPath=getwd())
 #' @export
 plotCandidatesRC <- function(fmz, frt, highCESpec, DatasetName,
-                             rankedCandidates, candidate, DirPath){
+                                rankedCandidates, candidate, DirPath){
 
     # get relevant information from the rankedCandidates object
     metabolite <- rankedCandidates$rankedResult[candidate,"metabolite"]
     ionType <- rankedCandidates$rankedResult[candidate,"ion.type"]
     score <- rankedCandidates$rankedResult[candidate,"score"]
     adductName <- paste(metabolite,ionType)
-    candidateMZ <- round(rankedCandidates$rankedResult[candidate,"mz.metabolite"],3)
+    candidateMZ <- round(
+        rankedCandidates$rankedResult[candidate,"mz.metabolite"],3)
     MZerror <- round(rankedCandidates$rankedResult[candidate,"mz.error"],1)
     specMatch <- rankedCandidates$rankedSpecMatch[[candidate]]
     rnk <-  rankedCandidates$rankedResult[candidate,"rank"]
@@ -35,25 +36,27 @@ plotCandidatesRC <- function(fmz, frt, highCESpec, DatasetName,
     # plotting part
     if(is.null(nrow(specMatch))) {
         df1 <- as.data.frame(specMatch[c("mz", "into")])
-        } else df1 <- as.data.frame(specMatch[,c("mz", "into")])
+    } else df1 <- as.data.frame(specMatch[,c("mz", "into")])
 
     p1 <- ggplot2::ggplot(df1,
-                          ggplot2::aes(x = mz, y = into, label = round(mz, 3))) +
-        ggplot2::geom_segment(ggplot2::aes(xend = mz, yend=0), 
-                              color="red", lwd=0.5) +
+                            ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+        ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
+                                color="red", lwd=0.5) +
         ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
-        ggplot2::ggtitle(paste("Feature ", round(fmz,4), "m/z", "_", round(frt,4),
-                               "s ", ", Rank ", rnk, " result: ", adductName, 
-                               ", mz.error = ", MZerror, " ppm, ", "score = ", 
-                               round(score, 2), sep = "")) +
+        ggplot2::ggtitle(paste("Feature ", round(fmz,4), "m/z", "_", 
+                                round(frt,4), "s ", ", Rank ", rnk, 
+                                " result: ", adductName, ", mz.error = ", 
+                                MZerror, " ppm, ", "score = ", 
+                                round(score, 2), sep="")) +
         ggplot2::theme_minimal() +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+        ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
         ggplot2::ylim(0, max(df1$into) + 0.1*max(df1$into)) +
-        ggplot2::xlim(min(df1$mz) - 50, max(df1$mz) + 50) +
-        ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+        ggplot2::xlim(min(df1$mz)-50, max(df1$mz)+50) +
+        ggplot2::labs(x="m/z", y="Intensity (a.u.)")
 
-    pdf(file = paste(DirPath, DatasetName, "_", round(fmz,3), "mz_", round(frt,3),
-                 "_candidate_", candidate,".pdf", sep=""), width = 10, height = 5)
-  gridExtra::grid.arrange(p1, nrow = 1)
-  dev.off()
+    pdf(file=paste(DirPath, DatasetName, "_", round(fmz,3), "mz_", 
+                    round(frt,3), "_candidate_", candidate,".pdf", sep=""), 
+        width = 10, height = 5)
+    gridExtra::grid.arrange(p1, nrow = 1)
+    dev.off()
 }

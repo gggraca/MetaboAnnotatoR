@@ -8,31 +8,34 @@
 #' @param frt Feature RT in seconds.
 #' @param spec A data frame containing XCMS peaks ("raw") or a
 #' RAMClustR pseudo-MS/MS spectrum ("cluster").
-#' @param mztol Absolute tolerance for feature m/z search in Da (default is 0.01).
+#' @param mztol Absolute tolerance for feature m/z search in Da 
+#' (default is 0.01).
 #' @return A "tag" of the isotope from an isotopic series as 0, 1, 2 or 3 for
 #' M+0, M+1, M+2 and M+3, respectively.
 #' @examples
 #' iso <- checkIsotope(286.1442, 40.77, spec=spObject)
 #' @export
 checkIsotope <- function(fmz, frt, spec, mztol = 0.01){
-  iso <- 0
-  if(sum(abs(spec[,"mz"] - (fmz - 1.0034)) < mztol) > 0) {
-    if(spec[,"into"][which.min(abs(spec[,"mz"] - (fmz-1.0034)))] >
-       spec[,"into"][which.min(abs(spec[,"mz"] - fmz))]){
-        iso <- 1
-      if(sum(abs(spec[,"mz"] - (fmz - 1.0034 * 2)) < mztol) > 0){
-        if(spec[,"into"][which.min(abs(spec[,"mz"] - (fmz-1.0034)))] >
-           spec[,"into"][which.min(abs(spec[,"mz"] - (fmz - 1.0034)))]){
-            iso <- 2
-          if(sum(abs(spec[,"mz"] - (fmz - 1.0034 * 3)) < mztol) > 0){
-            if(spec[,"into"][which.min(abs(spec[,"mz"] - (fmz - 1.0034)))] >
-               spec[,"into"][which.min(abs(spec[,"mz"] - (fmz - 1.0034 * 2)))]){
-              iso <- 3
+    iso <- 0
+    if(sum(abs(spec[,"mz"]-(fmz-1.0034)) < mztol) > 0) {
+        if(spec[,"into"][which.min(abs(spec[,"mz"]-(fmz-1.0034)))] >
+            spec[,"into"][which.min(abs(spec[,"mz"]-fmz))]){
+            iso <- 1
+            if(sum(abs(spec[,"mz"]-(fmz-1.0034*2)) < mztol) > 0){
+                if(spec[,"into"][which.min(abs(spec[,"mz"]-(fmz-1.0034)))] >
+                    spec[,"into"][which.min(abs(spec[,"mz"]-(fmz-1.0034)))]){
+                    iso <- 2
+                    if(sum(abs(spec[,"mz"]-(fmz-1.0034*3)) < mztol) > 0){
+                        if(spec[,"into"][which.min(abs(spec[,"mz"]-
+                                                        (fmz-1.0034)))] >
+                        spec[,"into"][which.min(abs(spec[,"mz"]-
+                                                    (fmz-1.0034*2)))]){
+                        iso <- 3
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
-  return(iso)
+    return(iso)
 }

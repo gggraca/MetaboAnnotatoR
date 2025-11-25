@@ -25,20 +25,17 @@
 #' candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
 #' RTs, inSourceSpec)
 #' @export
-searchLib <- function(libraries,
-                      libfiles,
-                      fmz,
-                      frt,
-                      tolerance = 25,
-                      RTs,
-                      inSourceSpec){
+searchLib <- function(libraries, libfiles, fmz, frt, 
+                        tolerance=25, RTs, inSourceSpec){
     # narrow down candidate classes by RT (min)
     classgroup <- NULL
     if(is.character(RTs)) ilib <- seq(1,length(libfiles),1)
     if(!is.character(RTs)){
         for(i in seq_len(nrow(RTs))){
-            if(frt/60>RTs[i,1] & frt/60<RTs[i,2]) classgroup <- RTs[i,3:dim(RTs)[2]]
-		}
+            if(frt/60>RTs[i,1] & frt/60<RTs[i,2]) {
+                classgroup <- RTs[i,3:dim(RTs)[2]]
+            }
+        }
         classgroup <- classgroup[-which(classgroup == "")]
         ilib <- unlist(lapply(classgroup, grep, x = libfiles))
         ilib <- unique(ilib)
@@ -57,17 +54,18 @@ searchLib <- function(libraries,
                 j <- j+1
                 # extract candidates; row with scores added again:
                 candidates[[j]] <- rbind(tlib[which(MZerr <= tolerance),],
-                                         scores)
+                                        scores)
                 # add libraries index for fragment comparison:
                 names(candidates)[j] <- as.character(i)
             } else {
                 # check for fragments
                 MZerr <- abs(tlib[,3:ncol(tlib)] - fmz) * 1e6 / fmz # ppm
                 if(sum(MZerr <= tolerance) > 0){
-				# check if the parent ion is present in the in source ions list
-			    # store candidates in a temporary object:
-                    tmp <- tlib[which(MZerr < tolerance, arr.ind = TRUE)[,1],]
-				# creates a vector of indexed entries that will be discarded (if any)
+                # check if the parent ion is present in the in source ions list
+                # store candidates in a temporary object:
+                    tmp <- tlib[which(MZerr < tolerance, arr.ind=TRUE)[,1],]
+                # creates a vector of indexed entries 
+                # that will be discarded (if any)
                     idx <- seq(1, nrow(tmp))
                     for(k in seq_len(nrow(tmp))){
                         res <- which(abs(inSourceSpec[,'mz']-tmp[k,2]) < 0.01)
@@ -75,18 +73,18 @@ searchLib <- function(libraries,
                             idx[k] <- idx[k]*-1
                         } else next
                     }
-			     #tmp <- tmp[idx,]
+                # tmp <- tmp[idx,]
                     tmp <- tmp[which(idx >0),]
                     if(nrow(tmp)>0){
                         j <- j+1
-				# row with scores added again
+                # row with scores added again
                         candidates[[j]] <- rbind(tmp,scores)
                 # add libraries index for fragment comparison
                         names(candidates)[j] <- as.character(i)
                         } else next
                 } else next
             }
-        }, error=function(e){NULL}) # removed: {message("",conditionMessage(e))})
+        }, error=function(e){NULL})
     }
     return(candidates)
 }
