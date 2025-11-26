@@ -14,7 +14,8 @@ checkIsotope(fmz, frt, spec, mztol = 0.01)
 \item{spec}{A data frame containing XCMS peaks ("raw") or a
 RAMClustR pseudo-MS/MS spectrum ("cluster").}
 
-\item{mztol}{Absolute tolerance for feature m/z search in Da (default is 0.01).}
+\item{mztol}{Absolute tolerance for feature m/z search in Da
+(default is 0.01).}
 }
 \value{
 A "tag" of the isotope from an isotopic series as 0, 1, 2 or 3 for
