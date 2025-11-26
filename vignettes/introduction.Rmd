@@ -18,14 +18,14 @@ knitr::opts_chunk$set(
 
 ## Example session
 
-An example of usage using LC-MS AIF chromatograms processed using xcms and 
-RamClustR packages is illustrated here. For more details on RAMClustR object 
-processing, check the original publication:
-https://pubs.acs.org/doi/10.1021/ac501530d.  
-
+An example of feature annotation using LC-MS AIF chromatograms processed 
+using xcms and RamClustR packages is illustrated here.
 The details of how the example dataset was obtained check MetaboAnnotatoR
 original paper for the full details: 
-https://pubs.acs.org/doi/10.1021/acs.analchem.1c03032.  
+https://pubs.acs.org/doi/10.1021/acs.analchem.1c03032.
+
+For more details on RAMClustR object, check the original publication:
+https://pubs.acs.org/doi/10.1021/ac501530d.  
 
 Firstly load library and dependencies, and set the working directory 
 (tempdir() in this example):
