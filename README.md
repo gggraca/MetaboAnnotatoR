@@ -34,6 +34,6 @@ install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE, INSTALL_opts = c(
 
 ## Vignettes
 Please check the vignettes folder for examples of package use:
-- Introductory vignette: an example of usage using one LC-MS AIF chromatogram.
+- Introductory vignette: an example of feature annotation using LC-MS AIF chromatograms processed using xcms and RamClustR packages, as described in the MetaboAnnotatoR paper.
 - Generation of Metabolite fragment database entry from MS/MS experimental spectra.
 - Generation of Metabolite fragment database entry from MS/MS spectra from public databases (in .msp format).
