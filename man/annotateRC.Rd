@@ -51,9 +51,9 @@ candidate m/z error.}
 \item{ncandidates}{Maximum number of candidates to plot and store.}
 }
 \value{
-For each feature in the targeTable the will return a ranked list of
+For each feature in the targetTable the will return a ranked list of
 annotations, a plot pseudo-MS/MS spectrum for the matched ions,
-a targeTable annotated with rank 1 annotations and a table with the options
+a targetTable annotated with rank 1 annotations and a table with the options
 used for the function.
 }
 \description{
