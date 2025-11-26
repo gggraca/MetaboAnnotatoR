@@ -29,10 +29,10 @@
 #' value between 0 and 1; the remaining fraction of the weight comes from the
 #' candidate m/z error.
 #' @param ncandidates Maximum number of candidates to plot and store.
-#' @return For each feature in the targeTable the will return a ranked list of
+#' @return For each feature in the targetTable the will return a ranked list of
 #' annotations, a plot of EICs and pseudo-MS/MS spectrum for the matched ions,
 #' a plot of pseudo-MS/MS and pseudo-MS spectra for the each feature,
-#' a targeTable annotated with rank 1 annotations and a table with the options
+#' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
 #' # Get the some example human serum LC-MS data and feature list to annotate:
