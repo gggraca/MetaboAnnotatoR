@@ -25,9 +25,9 @@
 #' value between 0 and 1; the remaining fraction of the weight comes from the
 #' candidate m/z error.
 #' @param ncandidates Maximum number of candidates to plot and store.
-#' @return For each feature in the targeTable the will return a ranked list of
+#' @return For each feature in the targetTable the will return a ranked list of
 #' annotations, a plot pseudo-MS/MS spectrum for the matched ions,
-#' a targeTable annotated with rank 1 annotations and a table with the options
+#' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
 #' # Run annotation of lipid features for positive LC-MS data XCMS set (Xset) 
