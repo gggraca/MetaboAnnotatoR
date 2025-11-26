@@ -126,7 +126,7 @@ getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
 
     ## return pseudo-MS/MS object
     result <- list(insource=insource, aif=aif, ms1=ms1_peaks, ms2=ms2_peaks,
-                    ms2_eic=eic_aif, mz_ms2=mz_ms2, feic=feic)
+                    ms2_eic=eic_aif, ms1_eic=eic_ms1, mz_ms2=mz_ms2, feic=feic)
     return(result)
 }
 
