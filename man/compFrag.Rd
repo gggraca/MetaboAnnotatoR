@@ -54,8 +54,8 @@ RT window of the feature of interest (default is TRUE).}
 }
 \value{
 A list containing one data frame with the summary result of the
-matching of a pseudo-MS/MS and fragments of a candidate and a data frame with
-the pseudo-MS/MS spectrum of matched ion fragments.
+matching of a pseudo-MS/MS and fragments of a candidate and a data frame
+with the pseudo-MS/MS spectrum of matched ion fragments.
 }
 \description{
 Function to compare pseudo-MS/MS and high-collision-energy spectra

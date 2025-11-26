@@ -62,8 +62,8 @@ Other names are possible, e.g. CE-MS, LC-AIF-MS, etc..}
 The default folder is the working directory.}
 }
 \value{
-A list containing several objects: insource, all MS1 peaks related to
-the feature of interest; aif, all MS2 peaks related to the feature;
+A list containing several objects: insource, all MS1 peaks related
+to the feature of interest; aif, all MS2 peaks related to the feature;
 ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
 feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
 feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the

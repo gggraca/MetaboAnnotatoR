@@ -19,9 +19,9 @@ genFragEntry(
 )
 }
 \arguments{
-\item{specObject}{a matrix or data frame object containing the MS/MS spectrum
-arranged in two columns: 'mz' and  'intensity'. Intensity can be given in
-absolute or relative scale.}
+\item{specObject}{a matrix or data frame object containing the MS/MS
+spectrum arranged in two columns: 'mz' and  'intensity'. Intensity can be
+provided in absolute or relative scale.}
 
 \item{name}{Metabolite name.}
 
@@ -36,22 +36,23 @@ to generate the library entry.}
 the highest intensity.}
 
 \item{mpeaksScore}{The occurrence score to be attributed to the most intense
-peaks of the MS/MS spectrum which should correspond to the most characteristic
-fragmentation ions from the metabolite (or 'marker' peaks). These will be the
-peaks above 'mpeaksThres' value. This score is divided by the number of peaks
-above 'mpeaksThres' threshold. By default this value is defined at 0.9,
-which means that peaks below 'mpeaksThres' threshold will be given an
-occurrence score of 0.1, so that the sum of all fragment occurrence scores is 1.}
+peaks of the MS/MS spectrum which should correspond to the most
+characteristic fragmentation ions from the metabolite (or 'marker' peaks).
+These will be the peaks above 'mpeaksThres' value. This score is divided by
+the number of peaks above 'mpeaksThres' threshold. By default this value is
+defined at 0.9, which means that peaks below 'mpeaksThres' threshold will be
+given an occurrence score of 0.1, so that the sum of all fragment occurrence
+scores is 1.}
 
 \item{mpeaksThres}{Intensity threshold to select peaks of the MS/MS spectrum
-considered to be highest intensity, expressed as a ratio to the peak
-with the highest intensity.}
+considered to be highest intensity, expressed as a ratio to the peak with
+the highest intensity.}
 
 \item{mzTol}{Absolute tolerance for feature m/z search in Da.}
 }
 \value{
-A .csv file containing fragment and parent m/z values and corresponding
-occurrence scores.
+A .csv file containing fragment and parent m/z values and
+corresponding occurrence scores.
 }
 \description{
 Function to generate metabolite database entries from MS/MS spectra
