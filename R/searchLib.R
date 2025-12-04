@@ -29,7 +29,7 @@ searchLib <- function(libraries, libfiles, fmz, frt,
                         tolerance=25, RTs, inSourceSpec){
     # narrow down candidate classes by RT (min)
     classgroup <- NULL
-    if(is.character(RTs)) ilib <- seq(1,length(libfiles),1)
+    if(is.character(RTs)) ilib <- seq_along(libfiles)
     if(!is.character(RTs)){
         for(i in seq_len(nrow(RTs))){
             if(frt/60>RTs[i,1] & frt/60<RTs[i,2]) {
