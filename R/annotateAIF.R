@@ -41,9 +41,9 @@
 #' # working directory:
 #' # https://zenodo.org/records/17408169
 #' # Run the annotation using the lipid libraries:
-#' annotateAIF(targetTable = "targetTable.csv", filetype = "mzML", 
-#' libs = "Lipids", ESImode = "POS", RTfile = "none", nCE = 1, corThresh = 0.7,
-#' checkIsotope = TRUE)
+#' annotateAIF(targetTable="targetTable.csv", filetype="mzML", 
+#' libs="Lipids", ESImode="POS", RTfile="none", nCE=1, corThresh=0.7,
+#' checkIsotope=TRUE)
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @export
