@@ -1,7 +1,7 @@
 Package: MetaboAnnotatoR
 Title: Automated Annotation of All-Ion Fragmentation LC-MS Metabolomic Features
-Version: 0.99.1
-Date: 2025-10-31
+Version: 0.99.2
+Date: 2025-12-04
 Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
            email = "ggraca22@gmail.com", comment = c(ORCID = "0000-0002-0876-3876")),
       person(given = "Yuheng (Rene)", family = "Cai", role = c("aut"), email = "rene.cai@unc.edu"),
