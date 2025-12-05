@@ -35,14 +35,22 @@
 #' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' # Get the some example human serum LC-MS data and feature list to annotate:
+#' # Set working directory as tempdir
+#' setwd(tempdir())
+#' # Get the example feature list and peak-picking parameters files:
 #' getDemoData()
-#' # Download the example .mzML from zenodo website and store it in the 
-#' # working directory:
-#' # https://zenodo.org/records/17408169
+#' # Download the example .mzML from zenodo website into the working directory:
+#' download.file(
+#' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+#' "Lipid_Positive_QC.mzML"
+#' )
+#' # create a new targetTable with one feature to annotate
+#' t <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
+#' Sample.name="Lipid_Positive_QC")
+#' write.csv(t, "targetTable.csv", row.names=FALSE)
 #' # Run the annotation using the lipid libraries:
 #' annotateAIF(targetTable="targetTable.csv", filetype="mzML", 
-#' libs="Lipids", ESImode="POS", RTfile="none", nCE=1, corThresh=0.7,
+#' libs="Lipids", ESImode="POS", RTfile="none", nCE=1, corThresh=0.8,
 #' checkIsotope=TRUE)
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
