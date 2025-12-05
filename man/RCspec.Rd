@@ -23,7 +23,11 @@ For a given feature, find out corresponding cluster (pseudo-MS/MS spectra)
 from RAMClustR object.
 }
 \examples{
-spec <- RCspec(fmz, frt, ramclustObj)
+# read in ramclustR object
+RCpath <- system.file("/Data/MESA_RAMClustR.rds", package="MetaboAnnotatoR")
+ramclustObj <- readRDS(RCpath)
+# obtain pseudo-MS/MS
+spec <- RCspec(fmz=468.3094, frt=82.92, ramclustObj)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
