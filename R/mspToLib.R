@@ -6,7 +6,7 @@
 #' @param msp_file an MS/MS spectral library for spectra from one or both 
 #' polarities.
 #' @param library_name Custom library name under which POS and NEG folders. 
-#' will be created and where the respective libray entries will be stored.
+#' will be created and where the respective library entries will be stored.
 #' @param noise Noise intensity threshold expressed as a ratio to the peak with
 #' the highest intensity.
 #' @param mpeaksScore The occurrence score to be attributed to the most intense 
@@ -23,7 +23,11 @@
 #' @return A .csv file containing fragment and parent m/z values and 
 #' corresponding occurrence scores.
 #' @examples
-#' mspToLib("MassBank_example.msp")
+#' # read example.msp file and import as "custom" library
+#' msp_path <- system.file("/Data/MassBank_example.msp", 
+#' package="MetaboAnnotatoR")
+#' mspToLib(msp_path, library_name="Custom", noise=0.005, 
+#' mpeaksScore=0.9, mpeaksThres=0.1)
 #' @export
 mspToLib <- function(msp_file,
                         library_name="Custom",

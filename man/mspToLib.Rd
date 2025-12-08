@@ -18,7 +18,7 @@ mspToLib(
 polarities.}
 
 \item{library_name}{Custom library name under which POS and NEG folders.
-will be created and where the respective libray entries will be stored.}
+will be created and where the respective library entries will be stored.}
 
 \item{noise}{Noise intensity threshold expressed as a ratio to the peak with
 the highest intensity.}
@@ -45,7 +45,11 @@ Function to generate metabolite database entries from MS/MS spectra
 obtained from from an .msp file
 }
 \examples{
-mspToLib("MassBank_example.msp")
+# read example.msp file and import as "custom" library
+msp_path <- system.file("/Data/MassBank_example.msp", 
+package="MetaboAnnotatoR")
+mspToLib(msp_path, library_name="Custom", noise=0.005, 
+mpeaksScore=0.9, mpeaksThres=0.1)
 }
 \author{
 Goncalo Graca (Imperial College London)

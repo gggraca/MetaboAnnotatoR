@@ -25,7 +25,11 @@ M+0, M+1, M+2 and M+3, respectively.
 Checks the type of isotope of the input feature.
 }
 \examples{
-iso <- checkIsotope(286.1442, 40.77, spec=spObject)
+# create a data frame with a test spectra
+spObject <- data.frame(mz=c(703.5769, 704.5799, 705.5812, 706.5721),
+into=c(205458624, 85536216, 22717336, 5887723)) 
+# check the isotope of feature 703.5769 m/z and 70 s
+iso <- checkIsotope(fmz=703.5769, frt=70, spec=spObject)
 }
 \author{
 Goncalo Graca and Yuheng (Rene) Cai (Imperial College London)

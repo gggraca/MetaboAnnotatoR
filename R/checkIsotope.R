@@ -13,7 +13,11 @@
 #' @return A "tag" of the isotope from an isotopic series as 0, 1, 2 or 3 for
 #' M+0, M+1, M+2 and M+3, respectively.
 #' @examples
-#' iso <- checkIsotope(286.1442, 40.77, spec=spObject)
+#' # create a data frame with a test spectra
+#' spObject <- data.frame(mz=c(703.5769, 704.5799, 705.5812, 706.5721),
+#' into=c(205458624, 85536216, 22717336, 5887723)) 
+#' # check the isotope of feature 703.5769 m/z and 70 s
+#' iso <- checkIsotope(fmz=703.5769, frt=70, spec=spObject)
 #' @export
 checkIsotope <- function(fmz, frt, spec, mztol = 0.01){
     iso <- 0

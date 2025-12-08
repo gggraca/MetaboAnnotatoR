@@ -43,6 +43,20 @@ Plot pseudo-MS/MS spectra of matched fragments and corresponding EICs.
 Runs inside annotateAIF function.
 }
 \examples{
+# set working directory as tempdir()
+setwd(tempdir())
+# load example feature, sepctra and ranked candidates results data
+fmz <- 468.3094542
+frt <- 82.92008607
+pathTopseudoMSMS <- system.file("/Data/pseudoMSMS_example.rds", 
+package="MetaboAnnotatoR")
+specs <- readRDS(pathTopseudoMSMS)
+highCESpec <- specs$ms2
+ms2eic <- specs$ms2_eic
+pathToRkdCandidates <- system.file("/Data/rankedCandidates_example.rds", 
+package="MetaboAnnotatoR")
+rankedCandidates <-  readRDS(pathToRkdCandidates)
+# Save candidates plots 
 plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
 candidate=1, DirPath=getwd())
 }

@@ -60,6 +60,12 @@ obtained from from public databases, stored as a .txt file containing
 m/z and intensity values, and read imported into R as matrix
 }
 \examples{
+# create a specObject containing the MS/MS spectra to generate a fragment 
+# database entry from (Panthotenic acid)
+specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353, 
+124.0766, 184.0981, 202.1085, 220.1185), V2=c(13.965907, 13.534607, 100.0, 
+26.165537, 15.383036, 25.231054, 28.578764, 43.017047, 64.962005))
+# Generate fragment entry
 genFragEntry(specObject, "Pantothenic acid", "[M+H]+", 220.1179,
 "Pantothenic_acid_pos.csv", noise=0.005, mpeaksScore=0.9, 
 mpeaksThres=0.1, mzTol=0.01)

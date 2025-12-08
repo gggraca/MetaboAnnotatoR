@@ -62,7 +62,29 @@ Function to compare pseudo-MS/MS and high-collision-energy spectra
 with fragment from a candidate metabolite from the database.
 }
 \examples{
-result <- compFrag(candidate, lib, fmz, frt, iso, highCESpec, pseudoSpec)
+# read a hypothetical pseudo-MS/MS spectrum of a feature 152.0720 m/z, 125s
+# and assume it is a isotope M+0
+fmz <- 152.0720
+frt <- 125
+iso <- 0
+pseudoSpec <- data.frame(mz=c(59.0489, 65.0389, 66.0427, 67.0550, 70.0659, 
+73.0762, 82.0658, 92.0498, 93.0355, 93.0569, 109.0523,110.0622, 111.0452, 
+111.0647, 112.0476, 121.0408, 134.0611, 136.0762, 152.0716, 154.0781), 
+into=c(3228, 8696, 564, 1004, 432, 592, 2092, 4836, 832, 560, 448, 30696, 
+8516, 3400, 464, 804, 4480, 368, 65236, 464))
+# assume high-colision energy spectrum is the same as pseudo-MS/MS spectrum
+highCESpec <- pseudoSpec
+# Load the small molecule ESI+ library of fragments
+LibPath <- system.file("/Data/Metabolites_POS.rds", 
+package="MetaboAnnotatoR")
+metPos <- readRDS(LibPath)
+lib <- metPos$lib
+# Compare the pseudo-MS/MS of the test features with the fragments from
+# Acetaminophen (entry 8 of the library)
+candidate <- lib[[8]]
+result <- compFrag(candidate, lib, fmz, frt, iso, highCESpec, pseudoSpec,
+maxMZdiff=0.01, matchWeight=0.5, useMZerrorWeight=TRUE, NoMatchWeight=0.5, 
+additional = TRUE)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
