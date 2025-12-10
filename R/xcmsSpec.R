@@ -22,7 +22,11 @@
 #' high collision-energy or low collision-energy features found at the same
 #' RT window as the feature of interest.
 #' @examples
-#' spec <- xcmsSpec(fmz, frt, xcmsObject, mztol=0.01, rttol=5, highCE=TRUE)
+#' # load an example dataset from the msdata package
+#' library(msdata)
+#' data("xs")
+#' # Extract the MS1 spectrum of feature 410.1440 m/z
+#' spec <- xcmsSpec(fmz=410.1440, frt=-1, mztol=0.001, xs, rttol=1, highCE = FALSE)
 #' @importFrom xcms peaks
 #' @export
 xcmsSpec <- function(fmz, frt, xcmsObject, mztol=0.01, rttol=5, highCE=TRUE){

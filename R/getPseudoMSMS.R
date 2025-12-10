@@ -39,9 +39,27 @@
 #' If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source 
 #' pseudo-MS/MS spectrum will be saved instead.
 #' @examples
-#' getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2, filetype=filetype, 
-#' nCE=1, cthres1=0.9,cthres2=0.8, savePlotResults=TRUE, savePseudoMSMS=TRUE, 
-#' ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
+#' # obtain the pseudo-MS/MS of one feature from the MS1 scans (in-source fragments)
+#' # Set working directory as tempdir:
+#' setwd(tempdir())
+#' # read the feature data
+#' fmz <- 520.3408533
+#' frt <- 100.6238759
+#' # Download the example .mzML from zenodo website into the working directory:
+#' download.file(
+#' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+#' "Lipid_Positive_QC.mzML"
+#' ) 
+#' # read the LC-MS data
+#' xcmsF1 <- MSnbase::readMSData("Lipid_Positive_QC.mzML", mode = "onDisk")
+#' # perform peak-picking
+#' cwp <- xcms::CentWaveParam(snthresh=5, noise=1000, ppm=25,
+#'                             peakwidth=c(2,20), prefilter=c(3,100))
+#' peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
+#' # obtain the pseudo-MS/MS from MS1 scans (in-source fragments spectrum):
+#' getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, peaksF1, peaksF2=NULL, 
+#' filetype=filetype, nCE=1, cthres1=0.9,cthres2=0.8, savePlotResults=TRUE, 
+#' savePseudoMSMS=TRUE, ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
 #' @importFrom xcms chromPeaks chromatogram 
 #' @importFrom MSnbase compareChromatograms
 #' @importFrom ProtGenerics intensity rtime polarity
