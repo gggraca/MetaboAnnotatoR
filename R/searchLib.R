@@ -22,6 +22,17 @@
 #' @return A list of data frames containing the candidates from the fragment
 #' libraries which will be used in the pseudo-MS/MS to fragment matching step.
 #' @examples
+#' # load default libraries for Metabolites in Positive mode
+#' libPath <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
+#' # Separate libfiles and lib objects
+#' libraries <- readRDS(libPath)
+#' libfiles <- libraries$libfiles
+#' lib <- libraries$lib
+#' # read feature mz and rt and in-source sepctrum
+#' fmz <- 152.0720
+#' frt <- 125
+#' inSourceSpec <- data.frame(mz = 152.0720, into = 1)
+#' # Search the library for candidates
 #' candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
 #' RTs, inSourceSpec)
 #' @export
