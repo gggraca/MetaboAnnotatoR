@@ -33,7 +33,7 @@
 #' # Set working directory as tempdir:
 #' setwd(tempdir())
 #' # Read RAMClustR (RC) and XCMS processed example data:
-#' f <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
+#' fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
 #' RC <- readRDS(fpath)
 #' xcmsfile <- system.file("/Data/MESA_Xset.rds", package = "MetaboAnnotatoR") 
 #' Xset <- readRDS(xcmsfile)
