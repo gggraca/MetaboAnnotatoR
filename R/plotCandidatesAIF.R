@@ -32,8 +32,8 @@
 #' package="MetaboAnnotatoR")
 #' rankedCandidates <-  readRDS(pathToRkdCandidates)
 #' # Save candidates plots 
-#' plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
-#' candidate=1, DirPath=getwd())
+#' plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName="LCMS", 
+#' rankedCandidates, candidate=1, DirPath=getwd())
 #' @importFrom ProtGenerics intensity rtime
 #' @export
 plotCandidatesAIF <- function(fmz, frt, highCESpec, ms2eic, SpName,

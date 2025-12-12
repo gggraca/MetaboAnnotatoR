@@ -68,8 +68,8 @@ into=c(3228, 8696, 564, 1004, 432, 592, 2092, 4836, 832, 560, 448, 30696, 8516, 
 # run rankScore function and get the ranked result
 rankedCandidates <- rankScore(result, specMatch)
 # Plot the first candidate in the candidates list
-plotCandidatesRC(fmz, frt, highCESpec, ms2eic, SpName, rankedCandidates,
-candidate=1, DirPath=getwd())
+plotCandidatesRC(fmz, frt, highCESpec, ms2eic, SpName="LCMS", 
+rankedCandidates, candidate=1, DirPath=getwd())
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
