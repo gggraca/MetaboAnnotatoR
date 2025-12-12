@@ -45,8 +45,8 @@
 #' # run rankScore function and get the ranked result
 #' rankedCandidates <- rankScore(result, specMatch)
 #' # Plot the first candidate in the candidates list
-#' plotCandidatesRC(fmz, frt, highCESpec, ms2eic, SpName="LCMS", 
-#' rankedCandidates, candidate=1, DirPath=getwd())
+#' plotCandidatesRC(fmz, frt, highCESpec, DatasetName="LCMS", rankedCandidates, 
+#' candidate=1, DirPath=getwd())
 #' @export
 plotCandidatesRC <- function(fmz, frt, highCESpec, DatasetName,
                                 rankedCandidates, candidate, DirPath){
