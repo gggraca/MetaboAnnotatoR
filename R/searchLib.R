@@ -34,7 +34,7 @@
 #' inSourceSpec <- data.frame(mz = 152.0720, into = 1)
 #' # Search the library for candidates
 #' candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
-#' RTs, inSourceSpec)
+#' RTs="none", inSourceSpec)
 #' @export
 searchLib <- function(libraries, libfiles, fmz, frt, 
                         tolerance=25, RTs, inSourceSpec){
