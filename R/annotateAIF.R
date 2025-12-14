@@ -35,8 +35,6 @@
 #' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' # Set working directory as tempdir:
-#' setwd(tempdir())
 #' # Get the example feature list and peak-picking parameters files:
 #' getDemoData()
 #' # Download the example .mzML from zenodo website into the working directory:

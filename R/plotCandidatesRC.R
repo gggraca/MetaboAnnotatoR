@@ -16,8 +16,6 @@
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot pseudo-MS/MS spectrum for the matched ions.
 #' @examples
-#' # set working directory as tempdir()
-#' setwd(tempdir())
 #' # create a results data frame for 3 hypothetical metabolite candidates
 #' # for feature 152.0723 m/z and 125 s
 #' fmz <- 152.0723

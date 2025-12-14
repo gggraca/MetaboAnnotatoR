@@ -61,8 +61,6 @@ Search possible matches of a feature in Lipid fragments and other
 small molecule libraries.
 }
 \examples{
-# Set working directory as tempdir:
-setwd(tempdir())
 # Read RAMClustR (RC) and XCMS processed example data:
 fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
 RC <- readRDS(fpath)

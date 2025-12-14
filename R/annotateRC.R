@@ -30,8 +30,6 @@
 #' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' # Set working directory as tempdir:
-#' setwd(tempdir())
 #' # Read RAMClustR (RC) and XCMS processed example data:
 #' fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
 #' RC <- readRDS(fpath)

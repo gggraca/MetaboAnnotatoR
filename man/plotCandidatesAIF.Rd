@@ -43,8 +43,6 @@ Plot pseudo-MS/MS spectra of matched fragments and corresponding EICs.
 Runs inside annotateAIF function.
 }
 \examples{
-# set working directory as tempdir()
-setwd(tempdir())
 # load example feature, sepctra and ranked candidates results data
 fmz <- 468.3094542
 frt <- 82.92008607
