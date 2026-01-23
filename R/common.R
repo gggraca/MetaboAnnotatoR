@@ -24,14 +24,13 @@ loadLibs <- function(libs, ESImode){
         lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
                         check.names=FALSE)
         libraries <- list(lib=lib, libfiles=libfiles)
+        return(libraries)
     } else {
-        message("Loading default libraries...")
-        defaultLib <- system.file(paste("/Data/", libs,"_", ESImode, ".rds", 
-                                        sep=""),
-                                    package="MetaboAnnotatoR")
-        libraries <- readRDS(defaultLib)
+        if(libs == "Lipids" & ESImode == "POS") data("LipidPos")
+        if(libs == "Lipids" & ESImode == "NEG") data("LipidNeg")
+        if(libs == "Metabolites" & ESImode == "POS") data("MetabolitesPos")
+        if(libs == "Metabolites" & ESImode == "NEG") data("MetabolitesNeg")
     }
-    return(libraries)
 }
 
 ## Store result for high rank candidate on global results table----------------

@@ -26,7 +26,8 @@
 #' library(msdata)
 #' data("xs")
 #' # Extract the MS1 spectrum of feature 410.1440 m/z
-#' spec <- xcmsSpec(fmz=410.1440, frt=-1, mztol=0.001, xs, rttol=1, highCE = FALSE)
+#' spec <- xcmsSpec(fmz=410.1440, frt=-1, mztol=0.001, 
+#' xs, rttol=1, highCE=FALSE)
 #' @importFrom xcms peaks
 #' @export
 xcmsSpec <- function(fmz, frt, xcmsObject, mztol=0.01, rttol=5, highCE=TRUE){

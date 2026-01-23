@@ -296,8 +296,8 @@ readData <- function(filetype, target, xcmsOptions, nCE){
         }
     }
     if(filetype == "CDF"){
-        dataPath <- paste("./", targets[1,3], "01.CDF", sep = "")
-        dataPath2 <- paste("./", targets[1,3], "02.CDF", sep = "")
+        dataPath <- paste("./", target, "01.CDF", sep = "")
+        dataPath2 <- paste("./", target, "02.CDF", sep = "")
         # read the two MS functions
         xcmsF1 <- MSnbase::readMSData(dataPath, mode = "onDisk")
         xcmsF2 <- MSnbase::readMSData(dataPath2, mode = "onDisk")

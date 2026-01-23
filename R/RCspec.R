@@ -46,13 +46,12 @@ findFeature <- function(ramclustObj, mz, mztol=0.02, rttol=2){
     target <- which(abs(ramclustObj$fmz-mz) <= mztol)
     if(length(target) == 0) {
         out <- data.frame(featn=NA, featclus=NA, mz=NA, rt=NA, 
-                        int=NA, M0_plausible=NA)
+                        int=NA)
         out<-out[0,]
     } else {
         out <- data.frame(featn=target, featclus=ramclustObj$featclus[target], 
                         mz=ramclustObj$fmz[target], rt=ramclustObj$frt[target], 
-                        int=ramclustObj$msint[target], 
-                        M0_plausible=rep(NA, length(tar)))
+                        int=ramclustObj$msint[target])
     }
     return(out)
 }
