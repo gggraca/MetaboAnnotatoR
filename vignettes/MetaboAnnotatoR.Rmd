@@ -1,22 +1,36 @@
 ---
-title: "Introduction to MetaboAnnotatoR package"
+title: "Introduction to MetaboAnnotatoR"
 author: "Gonçalo Graça"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Introduction to MetaboAnnotatoR package}
+  %\VignetteIndexEntry{Introduction to MetaboAnnotatoR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r doc_options, include = FALSE}
 knitr::opts_chunk$set(
-    collapse = TRUE,
+    collapse = FALSE,
     comment = "#>"
 )
 ```
 
-## Example session
+# Installation
+
+```{r installation, eval=TRUE, echo=TRUE, message=FALSE}
+if (!require("devtools", quietly = TRUE))
+    install.packages("devtools", repos = "http://cran.us.r-project.org", dependencies = TRUE)
+
+devtools::install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE)
+```
+
+
+# Example session
 
 An example of feature annotation using LC-MS AIF chromatograms processed 
 using xcms and RamClustR packages is illustrated here.
@@ -27,16 +41,13 @@ https://pubs.acs.org/doi/10.1021/acs.analchem.1c03032.
 For more details on RAMClustR object, check the original publication:
 https://pubs.acs.org/doi/10.1021/ac501530d.  
 
-Firstly load library and dependencies, and set the working directory 
-(tempdir() in this example):
+Firstly load library and dependencies:
 
 ```{r load_package, eval=TRUE, echo=TRUE, message=FALSE}
 library(MetaboAnnotatoR)
-tmpd <- tempdir()
-setwd(tmpd)
 ```
 
-### Getting feature table and example data
+## Getting feature table and example data
 
 As an input the software requires a .csv file containing the features to be 
 annotated (targetTable.csv - the file name can be changed).
@@ -59,7 +70,7 @@ The 'targetTable.csv' file contains 6 features, corresponding to
 Annotation can be performed using two of the default libraries: 'Lipids'
 or 'Metabolites' of either ESI+ (POS) or ESI- (NEG) ionisation modes.
 
-### Annotations using the Lipid libraries
+## Annotations using the Lipid libraries
 
 Let's start the annotation by searching the Lipid libraries:
 
@@ -81,7 +92,7 @@ the same folder.
 Some features will remain un-annotated, which means that no matching compound
 was found in the lipids library. 
 
-### Annotations using the non-lipid Metabolites libraries
+## Annotations using the non-lipid Metabolites libraries
 
 We can now try to use the non-lipid molecule libraries to annotate :
 
