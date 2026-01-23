@@ -1,10 +1,14 @@
 ---
-title: "Generate Metabolite library entries for MetaboAnnotatoR package"
+title: "Generate metabolite library entries"
 author: "Gonçalo Graça"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Generate Metabolite library entries for MetaboAnnotatoR package}
+  %\VignetteIndexEntry{Generate metabolite library entries}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,24 +20,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-## This vignette illustrates how to generate a metabolite library entry from 
+# Introduction
+
+This vignette illustrates how to generate a metabolite library entry from 
 an experimental MS/MS spectrum.
 
-First load library and dependencies:
+# Generate a library entry
 
-```{r load_package, eval=TRUE, message=FALSE}
+Load library and dependencies:
+
+```{r load_package, eval=TRUE, message=FALSE, warning=FALSE}
 library(MetaboAnnotatoR)
 ```
 
-### Read the MS/MS spectrum
+**Read the MS/MS spectrum:**
 
-First we set the working directory (to tempdir() in this example) and then
-read the spectrum as data frame into R. In this example we will use the MS/MS
+Read the spectrum as data frame into R. In this example we will use the MS/MS
 spectrum of D-Pantothenic Acid [M+H]+ adduct from MassBank, accession code:
-[MSBNK-RIKEN-PR100295](https://massbank.eu/MassBank/RecordDisplay?id=MSBNK-RIKEN-PR100295):
+MSBNK-RIKEN-PR100295.
+
+```{r setwd_to_run, eval=TRUE, echo=FALSE, message=FALSE}
+## silently set working directory to tempdir() for the vignette
+setwd(tempdir())
+```
 
 ```{r import_spectrum, eval=TRUE}
-setwd(tempdir())
 specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353,
                             124.0766, 184.0981, 202.1085, 220.1185),
                         V2=c(13.965907, 13.534607, 100.0, 26.165537, 
@@ -42,7 +53,7 @@ specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353,
 ```
 
 
-### Generate library entry
+**Generate library entry:**
 
 We can then convert the spectra into a library entry by using the function 
 'genFragEntry'. This function will attribute occurrence scores to the peaks

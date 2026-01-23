@@ -1,10 +1,14 @@
 ---
-title: "Import MS/MS spectra library from .msp files to MetaboAnnotatoR"
+title: "Import an MS/MS library"
 author: "Gonçalo Graça"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Import MS/MS spectra library from .msp files to MetaboAnnotatoR}
+  %\VignetteIndexEntry{Import an MS/MS library}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,17 +20,24 @@ knitr::opts_chunk$set(
 )
 ```
 
-## This vignette illustrates how to convert MS/MS spectra libraries 
+# Introduction
+This vignette illustrates how to convert MS/MS spectra libraries 
 (.msp files) to MetaboAnnotatoR metabolite library entries.
 
-Load library and dependencies and set the working directory:
+# Import .msp library
 
-```{r load_package, eval=TRUE, message=FALSE}
+**Load MetaboAnnotatoR library and dependencies:**
+
+```{r load_package, eval=TRUE, message=FALSE, warning=FALSE}
 library(MetaboAnnotatoR)
+```
+
+```{r setwd_to_run, eval=TRUE, echo=FALSE, message=FALSE}
+## silently set working directory to tempdir() for the vignette
 setwd(tempdir())
 ```
 
-### Get the path to the example .msp MS/MS spectra library file
+**Get the path to the example .msp MS/MS spectra library file:**
 
 Get the path to the example file containing the .msp library. 
 For illustrative purposes, an .msp file containing some MS/MS spectra obtained
@@ -38,7 +49,7 @@ msp_path <- system.file("/Data/MassBank_example.msp",
 ```
 
 
-### Generate library entry
+**Generate library entry**
 
 Use function 'mspToLib' to read and convert the spectra records from the .msp
 into library entries (.csv files), which will be stored in the 'Libraries' 
