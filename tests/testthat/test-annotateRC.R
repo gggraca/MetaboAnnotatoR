@@ -1,18 +1,15 @@
 ## test for annotateRC function
 
-## input test data
-fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
-RC <- readRDS(fpath)
-
-XsetPath <- system.file("/Data/MESA_Xset.rds", package = "MetaboAnnotatoR") 
-Xset <- readRDS(XsetPath)
+## load test data
+data("MESA_RAMClustR")
+data("MESA_Xset")
 tPath <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 
 test_that("output files are created", {
     # run function  
     suppressMessages(
       annotateRC(targetTable=tPath, 
-                 xcmsObject=Xset, 
+                 xcmsObject=xset, 
                  ramclustObj=RC, 
                  libs="Lipids", 
                  ESImode="POS")

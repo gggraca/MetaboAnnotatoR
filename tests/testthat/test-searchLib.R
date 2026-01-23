@@ -1,18 +1,16 @@
 # expected result data
 fmz <- 152.0720
 frt <- 125
-filePath <- system.file("/Data/Acetaminophen_pos.rds", package = "MetaboAnnotatoR")
-expected <- readRDS(filePath)
+data("Acetaminophen_pos")
 
 # test data
-filePath2 <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
-libraries <- readRDS(filePath2)
-libfiles <- libraries$libfiles
+data("MetabolitesPos")
+
 lib <- libraries$lib
 inSourceSpec <- data.frame(mz = 152.0720, into = 1)
 
 test_that("Obtains the correct candidates", {
   result <- searchLib(lib, libfiles, fmz, frt, tolerance = 25, RTs = "none", inSourceSpec)
   expect_true(is.list(result))
-  expect_equal(result[[1]], expected[[1]])
+  expect_equal(result[[1]], acetaminophen[[1]])
 })

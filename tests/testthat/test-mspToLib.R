@@ -1,7 +1,7 @@
 # input test data
 # folders containing imported files will be created at:
 # ./Libraries/Custom/POS and ./Libraries/Custom/NEG
-msp_path <- system.file("/Data/MassBank_example.msp", package = "MetaboAnnotatoR")
+msp_path <- system.file("MassBank_example.msp", package = "MetaboAnnotatoR")
 mspToLib(msp_path,
          library_name = "Custom",
          noise = 0.005,

@@ -3,11 +3,10 @@
 ## input test data
 fmz <- 468.3094542
 frt <- 82.92008607
-  
-pathTopseudoMSMS <- system.file("/Data/pseudoMSMS_example.rds", package = "MetaboAnnotatoR")
-specs <- readRDS(pathTopseudoMSMS)
-highCESpec <- specs$ms2
-ms2eic <- specs$ms2_eic
+
+data("pseudoMSMS_example")
+highCESpec <- pseudoMSMS$ms2
+ms2eic <- pseudoMSMS$ms2_eic
 
 pathToRkdCandidates <- system.file("/Data/rankedCandidates_example.rds", package = "MetaboAnnotatoR")
 rankedCandidates <-  readRDS(pathToRkdCandidates)
