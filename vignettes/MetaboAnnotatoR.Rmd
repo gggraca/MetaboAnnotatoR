@@ -15,18 +15,25 @@ vignette: >
 
 ```{r doc_options, include = FALSE}
 knitr::opts_chunk$set(
-    collapse = FALSE,
+    collapse = TRUE,
     comment = "#>"
 )
 ```
 
+# Introduction
+
+MetaboAnnotatoR is designed to perform metabolite annotation of features from
+LC-MS All-ion fragmentation (AIF) datasets, using ion fragment databases.
+It requires raw LC-MS AIF chromatograms acquired/transformed in centroid mode.
+
 # Installation
 
-```{r installation, eval=TRUE, echo=TRUE, message=FALSE}
-if (!require("devtools", quietly = TRUE))
-    install.packages("devtools", repos = "http://cran.us.r-project.org", dependencies = TRUE)
+To install this package, start R (version "4.5") and enter:
+```{r installation, eval=FALSE, echo=TRUE, message=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
-devtools::install_github("gggraca/MetaboAnnotatoR", dependencies = TRUE)
+BiocManager::install("MetaboAnnotatoR")
 ```
 
 
@@ -45,6 +52,11 @@ Firstly load library and dependencies:
 
 ```{r load_package, eval=TRUE, echo=TRUE, message=FALSE}
 library(MetaboAnnotatoR)
+```
+
+```{r setwd_to_run, eval=TRUE, echo=FALSE, message=FALSE}
+## silently set working directory to tempdir() for the vignette
+setwd(tempdir())
 ```
 
 ## Getting feature table and example data
