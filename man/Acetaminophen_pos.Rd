@@ -1,5 +1,6 @@
 \name{Acetaminophen_pos}
 \alias{acetaminophen}
+\docType{data}
 \title{MetaboAnnotatoR fragment database entry for Acetaminophen Positive mode}
 \description{
 This dataset is an example of a MetaboAnnotatoR database entry. 
@@ -8,10 +9,11 @@ The database entry was generated from one of the MassBank entries for Acetaminop
 (\href{https://massbank.eu/MassBank/RecordDisplay?id=MSBNK-Athens_Univ-AU276702}{MSBNK-Athens_Univ-AU276702}) 
 using function \code{MetaboAnnotatoR::genFragEntry()}.
 }
-
+\usage{data(Acetaminophen_pos)}
+\format{A list containing one data frame with the database entry.}
 \seealso{
-  \code{\link[MetaboAnnotatoR]{genFragEntry}}
-  
+\code{\link[MetaboAnnotatoR]{genFragEntry}}
+}
 \author{
 Goncalo Graca
 }
