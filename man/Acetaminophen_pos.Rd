@@ -1,5 +1,5 @@
 \name{Acetaminophen_pos}
-\alias{Acetaminophen_pos}
+\alias{acetaminophen}
 \title{MetaboAnnotatoR fragment database entry for Acetaminophen Positive mode}
 \description{
 This dataset is an example of a MetaboAnnotatoR database entry. 
