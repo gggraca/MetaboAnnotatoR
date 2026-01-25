@@ -67,7 +67,7 @@ if(file.exists("./Libraries/")){
     data("LipidNeg")
 } else if(libs == "Metabolites" & ESImode == "POS") {
     data("MetabolitesPos")
-} if(libs == "Metabolites" & ESImode == "NEG") {
+} else if(libs == "Metabolites" & ESImode == "NEG") {
     data("MetabolitesNeg")
 }
 
