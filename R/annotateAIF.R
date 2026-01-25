@@ -85,15 +85,15 @@ annotateAIF <- function(targetTable="targetTable.csv",
     
     ## load libraries ---------------------------------------------------------
     if(file.exists("./Libraries/")){
-    	libraries <- loadLibs(libs, ESImode)
+        libraries <- loadLibs(libs, ESImode)
     } else if(libs == "Lipids" & ESImode == "POS") {
-    	data("LipidPos")
+        data("LipidPos")
     } else if(libs == "Lipids" & ESImode == "NEG") {
-    	data("LipidNeg")
+        data("LipidNeg")
     } else if(libs == "Metabolites" & ESImode == "POS") {
-    	data("MetabolitesPos")
+        data("MetabolitesPos")
     } else if(libs == "Metabolites" & ESImode == "NEG") {
-    	data("MetabolitesNeg")
+        data("MetabolitesNeg")
     }
     
     libfiles <- libraries$libfiles

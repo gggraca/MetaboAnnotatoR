@@ -60,9 +60,9 @@ RTs <- RTsFromFile(RTfile)
 
 ## load libraries ---------------------------------
 if(file.exists("./Libraries/")){
-	libraries <- loadLibs(libs, ESImode)
+    libraries <- loadLibs(libs, ESImode)
 } else if(libs == "Lipids" & ESImode == "POS") {
-	data("LipidPos")
+    data("LipidPos")
 } else if(libs == "Lipids" & ESImode == "NEG") {
     data("LipidNeg")
 } else if(libs == "Metabolites" & ESImode == "POS") {
