@@ -59,7 +59,18 @@ results <- initializeResultsRC(targets, libs, ESImode)
 RTs <- RTsFromFile(RTfile)
 
 ## load libraries ---------------------------------
-libraries <- loadLibs(libs, ESImode)
+if(file.exists("./Libraries/")){
+	libraries <- loadLibs(libs, ESImode)
+} else if(libs == "Lipids" & ESImode == "POS") {
+	data("LipidPos")
+} else if(libs == "Lipids" & ESImode == "NEG") {
+    data("LipidNeg")
+} else if(libs == "Metabolites" & ESImode == "POS") {
+    data("MetabolitesPos")
+} if(libs == "Metabolites" & ESImode == "NEG") {
+    data("MetabolitesNeg")
+}
+
 libfiles <- libraries$libfiles
 lib <- libraries$lib
 

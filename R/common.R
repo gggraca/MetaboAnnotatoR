@@ -15,22 +15,15 @@ RTsFromFile <- function(RTfile){
 
 ## Load libraries and get libraries filepaths----------------------------------
 loadLibs <- function(libs, ESImode){
-    if(file.exists("./Libraries/")){
-        message("Loading user-defined libraries...")
-        libfiles <- list.files(path=paste("./Libraries/",libs,"/",
-                                            ESImode, sep=""), 
+    message("Loading user-defined libraries...")
+    libfiles <- list.files(path=paste("./Libraries/",libs,"/",
+                                        ESImode, sep=""), 
                                 full.names=TRUE)
-        # check.names=FALSE to use the original header names in the annotations:
-        lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
-                        check.names=FALSE)
-        libraries <- list(lib=lib, libfiles=libfiles)
-        return(libraries)
-    } else {
-        if(libs == "Lipids" & ESImode == "POS") data("LipidPos")
-        if(libs == "Lipids" & ESImode == "NEG") data("LipidNeg")
-        if(libs == "Metabolites" & ESImode == "POS") data("MetabolitesPos")
-        if(libs == "Metabolites" & ESImode == "NEG") data("MetabolitesNeg")
-    }
+    # check.names=FALSE to use the original header names in the annotations:
+    lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
+                    check.names=FALSE)
+    libraries <- list(lib=lib, libfiles=libfiles)
+    return(libraries)
 }
 
 ## Store result for high rank candidate on global results table----------------
