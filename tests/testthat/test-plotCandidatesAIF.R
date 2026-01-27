@@ -4,12 +4,9 @@
 fmz <- 468.3094542
 frt <- 82.92008607
 
-data("pseudoMSMS_example")
 highCESpec <- pseudoMSMS$ms2
 ms2eic <- pseudoMSMS$ms2_eic
-
-pathToRkdCandidates <- system.file("/Data/rankedCandidates_example.rds", package = "MetaboAnnotatoR")
-rankedCandidates <-  readRDS(pathToRkdCandidates)
+rankedCandidates <- rCandidates
 
 test_that("plot successfuly saved to file", {
     plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName="AIF_test", rankedCandidates, candidate=1, DirPath="./")

@@ -1,8 +1,6 @@
 ## test for annotateRC function
 
 ## load test data
-data("MESA_RAMClustR")
-data("MESA_Xset")
 tPath <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 
 test_that("output files are created", {

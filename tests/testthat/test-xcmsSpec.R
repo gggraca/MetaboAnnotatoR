@@ -1,14 +1,17 @@
 ## test for xcmsSpec function
 
-# load test data from the msdata package
-library(msdata)
-data("xs")
+# feature to test
+fmz <- 585.2692
+frt <- 72.8
 
-# input expected result
-expected <- xs@peaks[which(xs@peaks[,"sample"] == 6),c("mz","into")]
+# input expected result from xset data
 
+expected <- xset@peaks[which(xset@peaks[,"sample"] == 7),]
+idx <- which(expected[,"rt"] > (frt - 1) &
+               expected[,"rt"] < (frt + 1))
+expected <- expected[idx, c("mz","into")]
 
 test_that("xcmsSpec is correctly imported", {
-    result <- xcmsSpec(410.1440, -1, mztol=0.001, xs, rttol=1, highCE = FALSE)
+    result <- xcmsSpec(fmz, frt, mztol=0.01, xset, rttol=1, highCE = FALSE)
     expect_equal(result, expected)
 })

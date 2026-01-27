@@ -1,12 +1,9 @@
 # expected result data
 fmz <- 152.0720
 frt <- 125
-data("Acetaminophen_pos")
 
-# test data
-data("MetabolitesPos")
-
-lib <- libraries$lib
+lib <- MetabolitesPos$lib
+libfiles <- MetabolitesPos$libfiles
 inSourceSpec <- data.frame(mz = 152.0720, into = 1)
 
 test_that("Obtains the correct candidates", {
