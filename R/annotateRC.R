@@ -30,15 +30,13 @@
 #' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
+#' # set working directory
+#' setwd(tempdir())
 #' # Read RAMClustR (RC) and XCMS processed example data:
-#' fpath <- system.file("/Data/MESA_RAMClustR.rds", package = "MetaboAnnotatoR")
-#' RC <- readRDS(fpath)
-#' xcmsfile <- system.file("/Data/MESA_Xset.rds", package = "MetaboAnnotatoR") 
-#' Xset <- readRDS(xcmsfile)
 #' tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 #' # Run annotation of lipid features for positive LC-MS 
 #' # processed with RAMClustR:
-#' annotateRC(targetTable=tfile, xcmsObject=Xset, ramclustObj=RC, 
+#' annotateRC(targetTable=tfile, xcmsObject=xset, ramclustObj=RC, 
 #' libs="Lipids", ESImode="POS")
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
@@ -62,13 +60,13 @@ RTs <- RTsFromFile(RTfile)
 if(file.exists("./Libraries/")){
     libraries <- loadLibs(libs, ESImode)
 } else if(libs == "Lipids" & ESImode == "POS") {
-    data("LipidPos")
+    libraries <- MetaboAnnotatoR::LipidPos
 } else if(libs == "Lipids" & ESImode == "NEG") {
-    data("LipidNeg")
+    libraries <- MetaboAnnotatoR::LipidNeg
 } else if(libs == "Metabolites" & ESImode == "POS") {
-    data("MetabolitesPos")
+    libraries <- MetaboAnnotatoR::MetabolitesPos
 } else if(libs == "Metabolites" & ESImode == "NEG") {
-    data("MetabolitesNeg")
+    libraries <- MetaboAnnotatoR::MetabolitesNeg
 }
 
 libfiles <- libraries$libfiles

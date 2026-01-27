@@ -35,6 +35,8 @@
 #' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
+#' # set working directory
+#' setwd(tempdir())
 #' # Get the example feature list and peak-picking parameters files:
 #' getDemoData()
 #' # Download the example .mzML from zenodo website into the working directory:
@@ -87,13 +89,13 @@ annotateAIF <- function(targetTable="targetTable.csv",
     if(file.exists("./Libraries/")){
         libraries <- loadLibs(libs, ESImode)
     } else if(libs == "Lipids" & ESImode == "POS") {
-        data("LipidPos")
+        libraries <- MetaboAnnotatoR::LipidPos
     } else if(libs == "Lipids" & ESImode == "NEG") {
-        data("LipidNeg")
+        libraries <- MetaboAnnotatoR::LipidNeg
     } else if(libs == "Metabolites" & ESImode == "POS") {
-        data("MetabolitesPos")
+        libraries <- MetaboAnnotatoR::MetabolitesPos
     } else if(libs == "Metabolites" & ESImode == "NEG") {
-        data("MetabolitesNeg")
+        libraries <- MetaboAnnotatoR::MetabolitesNeg
     }
     
     libfiles <- libraries$libfiles
