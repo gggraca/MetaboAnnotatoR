@@ -79,7 +79,8 @@ A .csv file named "Pantothenic_acid_pos.csv" will be generated in the working
 directory. This should be added to the local "Libraries" folder, under the 
 path "/Libraries/Metabolites/POS".
 
-# Session Information
-```{r session_info, , eval=TRUE, echo=FALSE}
-devtools::session_info()
+# Session Info
+
+```{r sessionInfo}
+sessionInfo()
 ```

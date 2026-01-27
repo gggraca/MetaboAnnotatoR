@@ -65,7 +65,8 @@ mspToLib(msp_path, library_name="Custom", noise=0.005, mpeaksScore=0.9,
             mpeaksThres=0.1)
 ```
 
-# Session Information
-```{r session_info, eval=TRUE, echo=FALSE}
-devtools::session_info()
+# Session Info
+
+```{r sessionInfo}
+sessionInfo()
 ```
