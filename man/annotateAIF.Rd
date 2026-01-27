@@ -68,6 +68,8 @@ molecule libraries, using 'raw' LC-MS single chromatogram information
 already loaded and peak-picked.
 }
 \examples{
+# set working directory
+setwd(tempdir())
 # Get the example feature list and peak-picking parameters files:
 getDemoData()
 # Download the example .mzML from zenodo website into the working directory:

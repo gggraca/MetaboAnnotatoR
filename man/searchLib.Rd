@@ -38,11 +38,8 @@ same pseudo-MS spectrum (MS1).
 }
 \examples{
 # load default libraries for Metabolites in Positive mode
-libPath <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
-# Separate libfiles and lib objects
-libraries <- readRDS(libPath)
-libfiles <- libraries$libfiles
-lib <- libraries$lib
+libfiles <- MetabolitesPos$libfiles
+lib <- MetabolitesPos$lib
 # read feature mz and rt and in-source sepctrum
 fmz <- 152.0720
 frt <- 125

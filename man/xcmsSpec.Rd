@@ -36,12 +36,10 @@ obtained by processing both functions together from a set of LC-MS
 chromatograms.
 }
 \examples{
-# load an example dataset from the msdata package
-library(msdata)
-data("xs")
-# Extract the MS1 spectrum of feature 410.1440 m/z
-spec <- xcmsSpec(fmz=410.1440, frt=-1, mztol=0.001, 
-xs, rttol=1, highCE=FALSE)
+# Extract the MS1 spectrum of feature 585.2692 m/z 72.8s using the xset
+# test data
+spec <- xcmsSpec(fmz=585.2692, frt=72.8, mztol=0.01, 
+xset, rttol=1, highCE=FALSE)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
