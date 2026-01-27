@@ -1,4 +1,6 @@
-CHANGES IN VERSION 0.99.13
+CHANGES IN VERSION 0.99.14
 --------------------------
 
-Formatting, unit tests, examples and vignettes added/modiffied to meet bioconductor requirements. 
+BUG FIXES AND MINOR IMPROVEMENTS
+
+    o Formatting, unit tests, examples and vignettes added/modified to meet bioconductor requirements. 
