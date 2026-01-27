@@ -23,11 +23,8 @@
 #' libraries which will be used in the pseudo-MS/MS to fragment matching step.
 #' @examples
 #' # load default libraries for Metabolites in Positive mode
-#' libPath <- system.file("/Data/Metabolites_POS.rds", package = "MetaboAnnotatoR")
-#' # Separate libfiles and lib objects
-#' libraries <- readRDS(libPath)
-#' libfiles <- libraries$libfiles
-#' lib <- libraries$lib
+#' libfiles <- MetabolitesPos$libfiles
+#' lib <- MetabolitesPos$lib
 #' # read feature mz and rt and in-source sepctrum
 #' fmz <- 152.0720
 #' frt <- 125

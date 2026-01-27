@@ -18,17 +18,13 @@
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot of EICs and pseudo-MS/MS spectrum for the matched ions.
 #' @examples
+#' setwd(tempdir())
 #' # load example feature, sepctra and ranked candidates results data
 #' fmz <- 468.3094542
 #' frt <- 82.92008607
-#' pathTopseudoMSMS <- system.file("/Data/pseudoMSMS_example.rds", 
-#' package="MetaboAnnotatoR")
-#' specs <- readRDS(pathTopseudoMSMS)
-#' highCESpec <- specs$ms2
-#' ms2eic <- specs$ms2_eic
-#' pathToRkdCandidates <- system.file("/Data/rankedCandidates_example.rds", 
-#' package="MetaboAnnotatoR")
-#' rankedCandidates <-  readRDS(pathToRkdCandidates)
+#' highCESpec <- pseudoMSMS$ms2
+#' ms2eic <- pseudoMSMS$ms2_eic
+#' rankedCandidates <-  rCandidates
 #' # Save candidates plots 
 #' plotCandidatesAIF(fmz, frt, highCESpec, ms2eic, SpName="LCMS", 
 #' rankedCandidates, candidate=1, DirPath=getwd())
