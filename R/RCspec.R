@@ -12,11 +12,8 @@
 #' (https://pubs.acs.org/doi/10.1021/ac501530d).
 #' @return Pseudo-MS/MS spectrum for the feature of interest.
 #' @examples
-#' # read in ramclustR object
-#' RCpath <- system.file("/Data/MESA_RAMClustR.rds", package="MetaboAnnotatoR")
-#' ramclustObj <- readRDS(RCpath)
-#' # obtain pseudo-MS/MS
-#' spec <- RCspec(fmz=468.3094, frt=82.92, ramclustObj)
+#' # obtain pseudo-MS/MS from the RC example data
+#' spec <- RCspec(fmz=468.3094, frt=82.92, ramclustObj=RC)
 #' @export
 RCspec <- function(fmz, frt, ramclustObj){
     # find a given feature in RAMClustR object by mass
