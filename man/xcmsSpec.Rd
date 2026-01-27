@@ -40,7 +40,8 @@ chromatograms.
 library(msdata)
 data("xs")
 # Extract the MS1 spectrum of feature 410.1440 m/z
-spec <- xcmsSpec(fmz=410.1440, frt=-1, mztol=0.001, xs, rttol=1, highCE = FALSE)
+spec <- xcmsSpec(fmz=410.1440, frt=-1, mztol=0.001, 
+xs, rttol=1, highCE=FALSE)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
