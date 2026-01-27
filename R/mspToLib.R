@@ -23,6 +23,8 @@
 #' @return A .csv file containing fragment and parent m/z values and 
 #' corresponding occurrence scores.
 #' @examples
+#' # set working directory
+#' setwd(tempdir())
 #' # read example.msp file and import as "custom" library
 #' msp_path <- system.file("/Data/MassBank_example.msp", 
 #' package="MetaboAnnotatoR")

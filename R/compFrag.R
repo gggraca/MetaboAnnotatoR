@@ -42,10 +42,7 @@
 #' # assume high-colision energy spectrum is the same as pseudo-MS/MS spectrum
 #' highCESpec <- pseudoSpec
 #' # Load the small molecule ESI+ library of fragments
-#' LibPath <- system.file("/Data/Metabolites_POS.rds", 
-#' package="MetaboAnnotatoR")
-#' metPos <- readRDS(LibPath)
-#' lib <- metPos$lib
+#' lib <- MetabolitesPos$lib
 #' # Compare the pseudo-MS/MS of the test features with the fragments from
 #' # Acetaminophen (entry 8 of the library)
 #' candidate <- lib[[8]]
