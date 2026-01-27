@@ -61,24 +61,29 @@ setwd(tempdir())
 
 ## Getting feature table and example data
 
-As an input the software requires a .csv file containing the features to be 
+As an input, the software requires a .csv file containing the features to be 
 annotated (targetTable.csv - the file name can be changed).
 The following function will place the example 'targetTable.csv' and the 
-'XCMS_options.csv' (used for data peak-picking, when dealing with raw data) 
-files in the user working directory. The option AIFdata=TRUE will load the 
-AIF processed data into the global environment. These consist of two objects: 
+'XCMS_options.csv'. The latter contains the xcms peak-picking parameters, needed
+when performing annotations on 'mzML' or 'CDF' raw data only. 
+```{r load_features, eval=TRUE, results='hide'}
+getDemoData()
+```
+  
+Two additional data objects need to be loaded into the workspace. 
+These consist of: 
 1) an xcmsSet object (XSet) containing the processed data from 100 AIF LC-MS 
 chromatograms from human serum samples and 
 2) the respective pseudo-MS/Ms spectra obtained by processing the xcmsSet 
-data using RAMClustR (RC): 
-
+data using RAMClustR (RC). These two datasets are included in the package and 
+can be loaded as follows:
 ```{r load_data, eval=TRUE, results='hide'}
-getDemoData(AIFdata=TRUE)
+data("MESA_Xset")
+data("MESA_RAMClustR")
 ```
-
-
+  
 The 'targetTable.csv' file contains 6 features, corresponding to 
-4 phospholipids and 2 lipid-like molecules. 
+4 phospholipids and 2 lipid-like molecules.
 Annotation can be performed using two of the default libraries: 'Lipids'
 or 'Metabolites' of either ESI+ (POS) or ESI- (NEG) ionisation modes.
 
@@ -106,7 +111,8 @@ was found in the lipids library.
 
 ## Annotations using the non-lipid Metabolites libraries
 
-We can now try to use the non-lipid molecule libraries to annotate :
+We can now try to use the non-lipid molecule libraries to annotate the remaining
+features:
 
 ```{r metabolites_example, eval=TRUE}
 annotateRC(targetTable="targetTable.csv", 
