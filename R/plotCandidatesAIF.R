@@ -18,7 +18,6 @@
 #' @return Saves the plots of the candidate annotations as one pdf file:
 #' a plot of EICs and pseudo-MS/MS spectrum for the matched ions.
 #' @examples
-#' setwd(tempdir())
 #' # load example feature, sepctra and ranked candidates results data
 #' fmz <- 468.3094542
 #' frt <- 82.92008607

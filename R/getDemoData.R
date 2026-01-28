@@ -6,8 +6,6 @@
 #' @author Goncalo Graca (Imperial College London)
 #' @return Files: targetTable.csv, XCMS_options.csv
 #' @examples
-#' # set working directory
-#' setwd(tempdir())
 #' getDemoData()
 #' @export
 getDemoData <- function() {

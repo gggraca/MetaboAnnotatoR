@@ -29,8 +29,6 @@
 #' @return A .csv file containing fragment and parent m/z values and 
 #' corresponding occurrence scores.
 #' @examples
-#' # set working directory
-#' setwd(tempdir())
 #' # create a specObject containing the MS/MS spectra to generate a fragment 
 #' # database entry from (Panthotenic acid)
 #' specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353, 

@@ -30,8 +30,6 @@
 #' a targetTable annotated with rank 1 annotations and a table with the options
 #' used for the function.
 #' @examples
-#' # set working directory
-#' setwd(tempdir())
 #' # Read RAMClustR (RC) and XCMS processed example data:
 #' tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 #' # Run annotation of lipid features for positive LC-MS 

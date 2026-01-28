@@ -39,8 +39,6 @@
 #' If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source 
 #' pseudo-MS/MS spectrum will be saved instead.
 #' @examples
-#' # set working directory
-#' setwd(tempdir())
 #' # obtain the pseudo-MS/MS of one feature from the MS1 scans (in-source fragments)
 #' # read the feature data
 #' fmz <- 520.3408533
