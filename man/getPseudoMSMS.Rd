@@ -76,8 +76,6 @@ Function to obtain in-source MS and pseudo MS/MS spectra from a feature of
 interest from All-ion fragmentation experiments (e.g. MSe, bbCID, AIF)
 }
 \examples{
-# set working directory
-setwd(tempdir())
 # obtain the pseudo-MS/MS of one feature from the MS1 scans (in-source fragments)
 # read the feature data
 fmz <- 520.3408533

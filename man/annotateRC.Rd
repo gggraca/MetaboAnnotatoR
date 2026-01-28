@@ -61,8 +61,6 @@ Search possible matches of a feature in Lipid fragments and other
 small molecule libraries.
 }
 \examples{
-# set working directory
-setwd(tempdir())
 # Read RAMClustR (RC) and XCMS processed example data:
 tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 # Run annotation of lipid features for positive LC-MS 

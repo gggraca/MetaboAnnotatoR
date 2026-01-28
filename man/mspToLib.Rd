@@ -45,8 +45,6 @@ Function to generate metabolite database entries from MS/MS spectra
 obtained from from an .msp file
 }
 \examples{
-# set working directory
-setwd(tempdir())
 # read example.msp file and import as "custom" library
 msp_path <- system.file("/Data/MassBank_example.msp", 
 package="MetaboAnnotatoR")

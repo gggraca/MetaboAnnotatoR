@@ -14,8 +14,6 @@ Places XCMS_options and target features files into the working directory
 to test automated AIF annotation using annotateAIF or annotateRC functions.
 }
 \examples{
-# set working directory
-setwd(tempdir())
 getDemoData()
 }
 \author{
