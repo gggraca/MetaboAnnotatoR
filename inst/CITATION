@@ -1,0 +1,14 @@
+citHeader("To cite MetaboAnnotatoR in publications, please use:")
+
+citEntry(entry="article",
+  author="Gonçalo Graça, Yuheng Cai, Chung-Ho E Lau, Panagiotis A Vorkas, Matthew R Lewis, Elizabeth J Want, David Herrington, Timothy M D Ebbels",
+  title="Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
+  journal="ANALYTICAL CHEMISTRY",
+  year="2022",
+  issn = "3446–3455",
+  doi = "10.1021/acs.analchem.1c03032",
+  url = "https://doi.org/10.1021/acs.analchem.1c03032",
+  textVersion = paste("Gonçalo Graça, Yuheng Cai, Chung-Ho E Lau, Panagiotis A Vorkas, Matthew R Lewis, Elizabeth J Want, David Herrington, Timothy M D Ebbels;",
+  "Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
+  "Anal. Chem. 2022, 94, 8, 3446–3455.")) 
+
