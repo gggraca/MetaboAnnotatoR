@@ -86,15 +86,15 @@ download.file(
 "Lipid_Positive_QC.mzML"
 ) 
 # read the LC-MS data
-xcmsF1 <- MSnbase::readMSData("Lipid_Positive_QC.mzML", mode = "onDisk")
+xcmsF1 <- MSnbase::readMSData("Lipid_Positive_QC.mzML", mode="onDisk")
 # perform peak-picking
 cwp <- xcms::CentWaveParam(snthresh=5, noise=1000, ppm=25,
                             peakwidth=c(2,20), prefilter=c(3,100))
 peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
 # obtain the pseudo-MS/MS from MS1 scans (in-source fragments spectrum):
 getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, peaksF1, peaksF2=NULL, 
-filetype=filetype, nCE=1, cthres1=0.9,cthres2=0.8, savePlotResults=TRUE, 
-savePseudoMSMS=TRUE, ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
+filetype="mzML", nCE=1, cthres1=0.9, cthres2=0.8, savePlotResults=FALSE, 
+savePseudoMSMS=FALSE, ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
 }
 \author{
 Goncalo Graca (Imperial College London)

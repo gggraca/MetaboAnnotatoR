@@ -79,6 +79,10 @@ download.file(
 t <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
 Sample.name="Lipid_Positive_QC")
 write.csv(t, "targetTable.csv", row.names=FALSE)
+# modify xcms parameters on the XCMS_options.csv file
+p <- read.csv("XCMS_options.csv")
+p[2,2] <- 1000
+write.csv(p, "XCMS_options.csv", row.names=FALSE)
 # Run the annotation using the lipid libraries:
 annotateAIF(targetTable="targetTable.csv", filetype="mzML", 
 libs="Lipids", ESImode="POS", RTfile="none", nCE=1, corThresh=0.8,
