@@ -40,7 +40,7 @@
 #' pseudo-MS/MS spectrum will be saved instead.
 #' @examples
 #' # obtain the pseudo-MS/MS of one feature from the 
-#' MS1 scans (in-source fragments)
+#' # MS1 scans (in-source fragments)
 #' # read the example LC-MS data from the msdata package
 #' library(msdata)
 #' filePath <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML", 
