@@ -1,6 +1,6 @@
 Package: MetaboAnnotatoR
 Title: Automated Annotation of All-Ion Fragmentation LC-MS Metabolomic Features
-Version: 0.99.17
+Version: 0.99.18
 Date: 2026-01-29
 Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
            email = "ggraca22@gmail.com", comment = c(ORCID = "0000-0002-0876-3876")),
@@ -26,7 +26,8 @@ Suggests:
     rmarkdown,
     knitr,
     testthat (>= 3.0.0),
-    BiocStyle
+    BiocStyle,
+    msdata
 LazyData: true
 VignetteBuilder: knitr
 Config/testthat/edition: 3
