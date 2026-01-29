@@ -39,21 +39,19 @@
 #' If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source 
 #' pseudo-MS/MS spectrum will be saved instead.
 #' @examples
-#' # obtain the pseudo-MS/MS of one feature from the MS1 scans (in-source fragments)
-#' # read the feature data
-#' fmz <- 520.3408533
-#' frt <- 100.6238759
-#' # Download the example .mzML from zenodo website into the working directory:
-#' download.file(
-#' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
-#' "Lipid_Positive_QC.mzML"
-#' ) 
-#' # read the LC-MS data
-#' xcmsF1 <- MSnbase::readMSData("Lipid_Positive_QC.mzML", mode="onDisk")
+#' # obtain the pseudo-MS/MS of one feature from the 
+#' MS1 scans (in-source fragments)
+#' # read the example LC-MS data from the msdata package
+#' library(msdata)
+#' filePath <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML", 
+#' package="msdata")
+#' xcmsF1 <- MSnbase::readMSData(filePath, msLevel.=1, mode="onDisk")
 #' # perform peak-picking
-#' cwp <- xcms::CentWaveParam(snthresh=5, noise=1000, ppm=25,
-#'                             peakwidth=c(2,20), prefilter=c(3,100))
+#' cwp <- CentWaveParam(snthresh=5, noise=100, ppm=10, peakwidth=c(3, 30))
 #' peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
+#' # feature m/z and RT
+#' fmz <- 304.1124
+#' frt <- 423.945
 #' # obtain the pseudo-MS/MS from MS1 scans (in-source fragments spectrum):
 #' getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, peaksF1, peaksF2=NULL, 
 #' filetype="mzML", nCE=1, cthres1=0.9, cthres2=0.8, savePlotResults=FALSE, 
