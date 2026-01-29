@@ -1,14 +1,25 @@
 citHeader("To cite MetaboAnnotatoR in publications, please use:")
 
-citEntry(entry="article",
-  author="Gonçalo Graça, Yuheng Cai, Chung-Ho E Lau, Panagiotis A Vorkas, Matthew R Lewis, Elizabeth J Want, David Herrington, Timothy M D Ebbels",
-  title="Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
-  journal="ANALYTICAL CHEMISTRY",
-  year="2022",
-  issn = "3446–3455",
-  doi = "10.1021/acs.analchem.1c03032",
-  url = "https://doi.org/10.1021/acs.analchem.1c03032",
-  textVersion = paste("Gonçalo Graça, Yuheng Cai, Chung-Ho E Lau, Panagiotis A Vorkas, Matthew R Lewis, Elizabeth J Want, David Herrington, Timothy M D Ebbels;",
-  "Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
-  "Anal. Chem. 2022, 94, 8, 3446–3455.")) 
+citEntry(entry = "article",
+    title = "Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
+    author = personList(
+         person(given = "Gonçalo", family = "Graça"),
+         person(given = "Yuheng", family = "Cai"),
+         person(given = "Chung-Ho", family = "E. Lau"),
+         person(given = "Panagiotis", family = "A. Vorkas"),
+         person(given = "Matthew", family = "R. Lewis"),
+         person(given = "Elizabeth", family = "J. Want"),
+         person(given = "David", family = "Herrington"),
+         person(given = "Timothy", family = "M. D. Ebbels")),
+    journal = "Analytical Chemistry",
+    year = "2022",
+    volume ="94", 
+    number="8",
+    pages = "3446–3455",
+    doi = "10.1021/acs.analchem.1c03032",
+    url = "https://doi.org/10.1021/acs.analchem.1c03032",
+    textVersion = paste("Gonçalo Graça, Yuheng Cai, Chung-Ho E. Lau, Panagiotis A. Vorkas, Matthew R. Lewis, Elizabeth J. Want, David Herrington, Timothy M. D. Ebbels.",
+                        "Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
+                        "Anal. Chem. 2022, 94, 8, 3446–3455.")
+) 
 
