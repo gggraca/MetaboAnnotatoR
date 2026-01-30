@@ -1,25 +1,19 @@
-citHeader("To cite MetaboAnnotatoR in publications, please use:")
+citHeader("To cite MetaboAnnotatoR in publications use:")
 
-citEntry(entry = "article",
-    title = "Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
-    author = personList(
-         person(given = "Gonçalo", family = "Graça"),
-         person(given = "Yuheng", family = "Cai"),
-         person(given = "Chung-Ho", family = "E. Lau"),
-         person(given = "Panagiotis", family = "A. Vorkas"),
-         person(given = "Matthew", family = "R. Lewis"),
-         person(given = "Elizabeth", family = "J. Want"),
-         person(given = "David", family = "Herrington"),
-         person(given = "Timothy", family = "M. D. Ebbels")),
-    journal = "Analytical Chemistry",
-    year = "2022",
-    volume ="94", 
-    number="8",
-    pages = "3446–3455",
-    doi = "10.1021/acs.analchem.1c03032",
-    url = "https://doi.org/10.1021/acs.analchem.1c03032",
-    textVersion = paste("Gonçalo Graça, Yuheng Cai, Chung-Ho E. Lau, Panagiotis A. Vorkas, Matthew R. Lewis, Elizabeth J. Want, David Herrington, Timothy M. D. Ebbels.",
-                        "Automated annotation of untargeted all-ion fragmentation LC–MS metabolomics data with MetaboAnnotatoR",
-                        "Anal. Chem. 2022, 94, 8, 3446–3455.")
-) 
-
+bibentry(
+  bibtype  = "Article",
+  title    = "Automated annotation of untargeted all-ion fragmentation LC-MS metabolomics data with MetaboAnnotatoR",
+  author   = c(person("Goncalo", "Graca"), 
+               person("Chung-Ho E.","Lau"), 
+               person("Panagiotis A.", "Vorkas"),
+               person("Matthew R.", "Lewis"),
+               person("Elizabeth J.", "Want"),
+               person("David", "Herrington"),
+               person("Timothy M. D.", "Ebbels")),
+  journal  = "Analytical Chemistry",
+  year     = "2022",
+  volume   = "94",
+  number   = "8",
+  pages    = "3446-3455",
+  doi      = "10.1021/acs.analchem.1c03032",
+)
