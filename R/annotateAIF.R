@@ -8,8 +8,6 @@
 #'
 #' @param targetTable A .csv file containing the list of features to annotate
 #' and the name of the files containing the raw data.
-#' @param filetype LC-MS chromatogram file extension ("mzML" or "CDF"). 
-#' The default is "mzML".
 #' @param ESImode Ionization mode: 'POS' for positive (default)
 #' or 'NEG' for negative ionisation modes
 #' @param libs Fragment libraries to use: 'Lipids' (default) or 'Metabolites'
@@ -28,7 +26,6 @@
 #' @param matchWeight weight of the fragment matches to the final score;
 #' value between 0 and 1; the remaining fraction of the weight comes from the
 #' candidate m/z error.
-#' @param ncandidates Maximum number of candidates to plot and store.
 #' @return For each feature in the targetTable the will return a ranked list of
 #' annotations, a plot of EICs and pseudo-MS/MS spectrum for the matched ions,
 #' a plot of pseudo-MS/MS and pseudo-MS spectra for the each feature,
@@ -57,56 +54,41 @@
 #' @importFrom utils read.csv write.csv
 #' @importFrom grDevices dev.off pdf
 #' @export
-annotateAIF <- function(targetTable="targetTable.csv",
-                        filetype="mzML",
-                        libs="Lipids",
-                        ESImode="POS",
+annotateAIF <- function(targets,
+						xcmsOptions,
+                        libs="LipidPOS",
                         RTfile="none",
                         nCE=1,
                         corThresh=0.8,
                         checkIsotope=TRUE,
                         tolerance=25,
                         maxMZdiff=0.01,
-                        matchWeight=0.5,
-                        ncandidates=5){
-    ## Read XCMS peak-picking options------------------------------------------
-    xcmsOptions <- getXcmsOptions()
-    if(is.null(xcmsOptions)){
-        stop("Please edit the 'xcmsOptions.csv' and re-run.")
-    }
-    ## Read targets table------------------------------------------------------
-    if(!file.exists("targetTable.csv")) {
-        stop("targetTable.csv not found! Run getDemoData(), 
-                edit targetTable.csv and re-run.")
-    }
-    targets <- read.csv("targetTable.csv")
+                        matchWeight=0.5){
     
     ## Initialize results object-----------------------------------------------
-    results <- initializeResultsAIF(targets, libs, ESImode)
+    results <- initializeResultsAIF(targets)
     
     ## Get RTs intervals from file --------------------------------------------
     RTs <- RTsFromFile(RTfile)
     
     ## load libraries ---------------------------------------------------------
-    if(file.exists("./Libraries/")){
-        libraries <- loadLibs(libs, ESImode)
-    } else if(libs == "Lipids" & ESImode == "POS") {
-        libraries <- MetaboAnnotatoR::LipidPos
-    } else if(libs == "Lipids" & ESImode == "NEG") {
-        libraries <- MetaboAnnotatoR::LipidNeg
-    } else if(libs == "Metabolites" & ESImode == "POS") {
-        libraries <- MetaboAnnotatoR::MetabolitesPos
-    } else if(libs == "Metabolites" & ESImode == "NEG") {
-        libraries <- MetaboAnnotatoR::MetabolitesNeg
-    }
+    if(libs == "LipidPos") {
+    	libraries <- MetaboAnnotatoR::LipidPos
+    } else if(libs == "LipidNeg") {
+    	libraries <- MetaboAnnotatoR::LipidNeg
+    } else if(libs == "MetabolitesPos") {
+    	libraries <- MetaboAnnotatoR::MetabolitesPos
+    } else if(libs == "MetabolitesNeg") {
+    	libraries <- MetaboAnnotatoR::MetabolitesNeg
+    } else libraries <- loadLibs(libs)
     
     libfiles <- libraries$libfiles
     lib <- libraries$lib
     
     # evaluate if one or more samples are to be read---------------------------
     if(length(unique(targets[,3])) == 1){
-        message("Reading data...")
-        MSData <- readData(filetype=filetype, target=targets[1,3], 
+        message("Reading and peak-picking data...")
+        MSData <- readData(filePath=targets[1,3], 
                             xcmsOptions=xcmsOptions, nCE)
         xcmsF1 <- MSData$xcmsF1
         xcmsF2 <- MSData$xcmsF2
@@ -120,8 +102,8 @@ annotateAIF <- function(targetTable="targetTable.csv",
                             "#######")
         message(progNote)
         if(length(unique(targets[,3]))>1){
-            message("Reading data...")
-            MSData <- readData(filetype=filetype, target=targets[i,3], 
+            message("Reading and peak-picking data...")
+            MSData <- readData(filePath=targets[i,3], 
                             xcmsOptions=xcmsOptions, nCE)
             xcmsF1 <- MSData$xcmsF1
             xcmsF2 <- MSData$xcmsF2
@@ -215,106 +197,56 @@ annotateAIF <- function(targetTable="targetTable.csv",
             results$rankedSpectra[[i]] <- rankedSpec
         }
 
-        ## Save output of ranked annotations ----------------------------------
-        # if(exists("rankedResult")){
-        #     saveRankedAIF(fmz, frt, ncandidates, rankedResult, SpName, 
-        #             resultsDir=results$resultsDir)
-        # }
-
         ## Store highest rank annotation in global results---------------------
         if(!exists("rankedResult")) rankedResult <- NULL
         results$global[i,] <- storeAnnotations(global=results$global[i,], 
                                                 rankedResult[1,])
-
-        ## save plot of matched spectra for the top n candidates---------------
-        # if(exists("rankedSpec")){
-        #     saveMatchedAIF(fmz, frt, highCESpec, result, ms2eic, output, 
-        #                     ncandidates, rankedSpec, SpName, 
-        #                     resultsDir=results$resultsDir)
-        # }
     }
-    ## save global results table-----------------------------------------------
-    # write.csv(results$global,
-    #             file = paste(results$resultsDir, "Global_Results",
-    #             ".csv", sep = ""), row.names = FALSE)
     # save general options
-    df <- data.frame(targetsTable_file=targetTable, libraries=libs,
-                        ESImode=ESImode, RTfile=RTfile, corThresh=corThresh,
+    df <- data.frame(data_type="AIF", libraries=libs, nCE=nCE,
+                        RTfile=RTfile, corThresh=corThresh,
                         checkIsotope=checkIsotope, matchWeight=matchWeight,
                         tolerance=paste(tolerance, "ppm"),
-                        maxMZdiff=paste(maxMZdiff, "Da"), row.names="Option")
-    df <- as.data.frame(t(df))
-    # write.csv(df, file=paste(results$resultsDir, "General_options", 
-    #                             ".csv", sep = ""))
-    # save xcms options
-    # write.csv(xcmsOptions,
-    #             file=paste(results$resultsDir, "XCMS_options", ".csv", sep=""), 
-    #             row.names=FALSE)
-    return(results)
+                        maxMZdiff=paste(maxMZdiff, "Da"))
+    results$options <- as.data.frame(t(df))
+
     message("Job done!")
+    return(results)
 }
 
 ## Helper functions------------------------------------------------------------
 
 ## Initialization of results folder and global results table-------------------
-initializeResultsAIF <- function(targets, libs, ESImode){
-    # Create directory to store the results
-    # mainDir <- "./Annotations"
-	Library <- paste(libs, ESImode)
+initializeResultsAIF <- function(targets){
+    # create objects to store results and metadata
     Date <- Sys.Date()
     Time <- format(Sys.time(), "%X")
-    # Time <- gsub(":", "_", Time)
-    # subDir <- paste(libs, "_", ESImode, "_AIF_", Date,"_", Time, sep="")
-    # dir.create(file.path(mainDir), showWarnings = FALSE)
-    # dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
-    # resultsDir <- paste(mainDir, "/", subDir, "/", sep = "")
+    rankedResult <- list()
+    rankedSpectra <- list()
+    pseudoMSMS <- list()
+    options <- NULL
     # create table to store global results
     global <- targets
     global[,c("metabolite", "feature.type", "ion.type", "isotope", 
                 "mz.metabolite","matched.mz", "mz.error", "pseudoMSMS", 
                 "fraction", "score")] <- NA
     # return global results table and results path as list
-    results <- list(global=global, 
+    results <- list(global=global,
     				Date=Date, 
-    				Time=Time, 
-    				Library= Library, 
-    				rankedResult, 
-    				rankedSpectra, 
-    				pseudoMSMS)
+    				Time=Time,
+    				options=options,
+    				rankedResult=rankedResult, 
+    				rankedSpectra=rankedSpectra, 
+    				pseudoMSMS=pseudoMSMS)
     return(results)
 }
 
-## Load table with XCMS peak-picking options-----------------------------------
-getXcmsOptions <- function(){
-    if(file.exists("XCMS_options.csv")) {
-        xcmsOptions <- read.csv("XCMS_options.csv")
-    } else {
-        message("No XCMS options file found in the working directory")
-        answer <- readline(prompt = "Use default options (Yes/No)? [y/n]")
-        if(answer == "y") {
-            xcmsOptionsPath <- system.file("XCMS_options.csv",
-                                            package = "MetaboAnnotatoR")
-            xcmsOptions <- read.csv(xcmsOptionsPath)
-        }
-        if(answer == "n"){
-            xcmsOptionsPath <- system.file("XCMS_options.csv",
-                                            package = "MetaboAnnotatoR")
-            file.copy(from = xcmsOptionsPath, to = getwd())
-            xcmsOptions <- NULL
-            message("Default  XCMS options file saved in the working directory"
-                    )
-        }
-    }
-    return(xcmsOptions)
-}
-
-## read data from mzML or CDF files--------------------------------------------
-readData <- function(filetype, target, xcmsOptions, nCE){
-    if(filetype == "mzML"){
-        dataPath <- paste(target, ".mzML", sep = "")
+## read and peak-pick data from mzML or CDF files------------------------------
+readData <- function(filePath, xcmsOptions, nCE){
+    if(length(grep(".mzML", filePath)) == 1){
         # separate the two MS functions
-        xcmsF1 <- MSnbase::readMSData(dataPath, msLevel. = 1, mode = "onDisk")
-        xcmsF2 <- MSnbase::readMSData(dataPath, msLevel. = 2, mode = "onDisk")
+        xcmsF1 <- MSnbase::readMSData(filePath, msLevel. = 1, mode = "onDisk")
+        xcmsF2 <- MSnbase::readMSData(filePath, msLevel. = 2, mode = "onDisk")
         if(nCE > 1){
             maxCE <- max(xcmsF2@featureData@data$collisionEnergy)
             highCEscans <- which(
@@ -323,12 +255,13 @@ readData <- function(filetype, target, xcmsOptions, nCE){
             xcmsF2@featureData@data <- xcmsF2@featureData@data[highCEscans,]
         }
     }
-    if(filetype == "CDF"){
-        dataPath <- paste("./", target, "01.CDF", sep = "")
-        dataPath2 <- paste("./", target, "02.CDF", sep = "")
+	# 2 CDF files have been used in Waters data, 
+	# converted from raw using data bridge 
+    if(length(grep(".CDF", filePath)) == 1){
+        filePath2 <- grep("01.CDF", "02.CDF", filePath)
         # read the two MS functions
-        xcmsF1 <- MSnbase::readMSData(dataPath, mode = "onDisk")
-        xcmsF2 <- MSnbase::readMSData(dataPath2, mode = "onDisk")
+        xcmsF1 <- MSnbase::readMSData(filePath, mode = "onDisk")
+        xcmsF2 <- MSnbase::readMSData(filePath2, mode = "onDisk")
     }
     # use same centwave parameters for both no- and high-collision scans
     cwp <- xcms::CentWaveParam(snthresh = xcmsOptions[3,2],
@@ -342,51 +275,4 @@ readData <- function(filetype, target, xcmsOptions, nCE){
     MSData <- list(xcmsF1=xcmsF1, xcmsF2=xcmsF2, 
                     peaksF1=peaksF1, peaksF2=peaksF2)
     return(MSData)
-}
-
-## Save output of ranked annotations ------------------------------------------
-saveRankedAIF <- function(fmz, frt, ncandidates, rankedResult, 
-                            SpName, resultsDir){
-    write.csv(rankedResult[rankedResult$rank <= ncandidates,],
-                file=paste(resultsDir, SpName, "_", round(fmz,3), "mz_", 
-                        round(frt,3), "s_", "ranked_candidates.csv", 
-                        sep=""), 
-                row.names=FALSE)
-}
-
-## save EICs and pseudoMSMS spectra of matched candidates----------------------
-# save image with matched spectra and EICs
-# must update the folder to save images in...
-# can be updated to work with single feature
-saveMatchedAIF <- function(fmz, frt, 
-                        highCESpec,
-                        result,
-                        ms2eic,
-                        output, 
-                        ncandidates,
-                        rankedSpec,
-                        SpName,
-                        resultsDir){
-    if(!is.null(result)){
-        if(length(rankedSpec) == 1) {
-            plotCandidatesAIF(fmz, frt, highCESpec,
-                                ms2eic, SpName, output, 1, resultsDir)
-        }
-        if(length(rankedSpec) <= ncandidates) {
-            plots <- lapply(seq_len(length(rankedSpec)),
-                            function(x) plotCandidatesAIF(fmz, frt,
-                                                            highCESpec,
-                                                            ms2eic, SpName,
-                                                            output, x, 
-                                                            resultsDir))
-        }
-        if(length(rankedSpec) > ncandidates) {
-            plots <- lapply(seq_len(length(rankedSpec[seq_len(ncandidates)])),
-                            function(x) plotCandidatesAIF(fmz, frt,
-                                                            highCESpec,
-                                                            ms2eic, SpName,
-                                                            output, x, 
-                                                            resultsDir))
-        }
-    } else NULL
 }
