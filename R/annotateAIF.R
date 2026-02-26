@@ -6,13 +6,12 @@
 #'
 #' @author Goncalo Graca (Imperial College London)
 #'
-#' @param targetTable A .csv file containing the list of features to annotate
-#' and the name of the files containing the raw data.
-#' @param ESImode Ionization mode: 'POS' for positive (default)
-#' or 'NEG' for negative ionisation modes
-#' @param libs Fragment libraries to use: 'Lipids' (default) or 'Metabolites'
-#' for other small molecules.
-#' @param RTfile Optional csv file with Lipid/metabolites classes Retention
+#' @param targets A data.frame containing the features to annotate
+#' and the file paths to the raw data.
+#' @param libs Fragment libraries to use. Either the built-in libraries can be
+#' specified ("LipidPOS", "LipidNEG", "MetabolitesPOS", "MetabolitesNEG") or
+#' the full path to user-defined libraries.
+#' @param RTs Optional data.frame with Lipid/metabolites classes Retention
 #' Times in seconds.
 #' @param nCE Number of Collision Energy levels depending on the MS system used
 #' Waters, Bruker (QToF) and Thermo Orbitrap = 1, Agilent (QToF) > 1, however,
@@ -33,31 +32,29 @@
 #' used for the function.
 #' @examples
 #' # Get the example feature list and peak-picking parameters files:
-#' getDemoData()
 #' # Download the example .mzML from zenodo website into the working directory:
 #' download.file(
 #' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
 #' "Lipid_Positive_QC.mzML"
 #' )
 #' # create a new targetTable with one feature to annotate
-#' t <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
+#' targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
 #' Sample.name="Lipid_Positive_QC")
-#' write.csv(t, "targetTable.csv", row.names=FALSE)
-#' # modify xcms parameters on the XCMS_options.csv file
-#' p <- read.csv("XCMS_options.csv")
-#' p[2,2] <- 1000
-#' write.csv(p, "XCMS_options.csv", row.names=FALSE)
-#' # Run the annotation using the lipid libraries:
-#' annotateAIF(targetTable="targetTable.csv", filetype="mzML", 
-#' libs="Lipids", ESImode="POS", RTfile="none", nCE=1, corThresh=0.8,
+#' # read the default xcms parameters on the XCMS_options.csv file and modify
+#' # the noise threshold parameter
+#' xcmsOptionsPath <- system.file("XCMS_options.csv", 
+#' package="MetaboAnnotatoR")
+#' xcmsOptions <- read.csv(xcmsOptionsPath)
+#' xcmsOptions[2,2] <- 1000
+#' # Run the annotation using the built-in lipid POS library:
+#' annotateAIF(targets=featureTable, xcmsOptions, 
+#' libs="LipidPOS", RTs="none", nCE=1, corThresh=0.8,
 #' checkIsotope=TRUE)
-#' @importFrom utils read.csv write.csv
-#' @importFrom grDevices dev.off pdf
 #' @export
 annotateAIF <- function(targets,
 						xcmsOptions,
                         libs="LipidPOS",
-                        RTfile="none",
+                        RTs="none",
                         nCE=1,
                         corThresh=0.8,
                         checkIsotope=TRUE,
@@ -68,8 +65,12 @@ annotateAIF <- function(targets,
     ## Initialize results object-----------------------------------------------
     results <- initializeResultsAIF(targets)
     
-    ## Get RTs intervals from file --------------------------------------------
-    RTs <- RTsFromFile(RTfile)
+    ## RTs intervals specified? --------------------------------------------
+    if(RTs == "none") {
+        message("No RT information provided...")
+    } else if(is.data.frame(RTs)){
+        message("Using user provided RT information...")
+    } else stop("RTs must be a data.frame")
     
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
@@ -121,10 +122,7 @@ annotateAIF <- function(targets,
         message("Obtaining pseudo-MS/MS spectrum...")
         try(
             specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
-                            filetype=filetype, nCE=1, cthres1=corThresh,
-                            cthres2=corThresh, savePlotResults=FALSE, 
-                            savePseudoMSMS=FALSE, ExpName="LCMS", 
-                            DirPath=results$resultsDir)
+                            cthres1=corThresh, cthres2=corThresh)
         )
     
         if(exists("specs")){
@@ -202,12 +200,12 @@ annotateAIF <- function(targets,
         results$global[i,] <- storeAnnotations(global=results$global[i,], 
                                                 rankedResult[1,])
     }
-    # save general options
-    df <- data.frame(data_type="AIF", libraries=libs, nCE=nCE,
-                        RTfile=RTfile, corThresh=corThresh,
+    # store general options
+    df <- data.frame(dataType="AIF", libraries=libs, nCE=nCE,
+                        RTs=RTs, corThresh=corThresh,
                         checkIsotope=checkIsotope, matchWeight=matchWeight,
                         tolerance=paste(tolerance, "ppm"),
-                        maxMZdiff=paste(maxMZdiff, "Da"))
+                        maxMZdiff=paste(maxMZdiff, "Da"), row.names="parameter")
     results$options <- as.data.frame(t(df))
 
     message("Job done!")

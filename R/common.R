@@ -1,18 +1,6 @@
 ## Common helper functions to organize annotation results 
 ## Goncalo Graca (Imperial College London)
 
-## Read RTs intervals from file------------------------------------------------
-RTsFromFile <- function(RTfile){
-    if(RTfile == "none") {
-        message("No RT information provided...")
-        RTs <- "none"
-    } else {
-        message("Reading RT information...")
-        RTs <- read.csv(RTfile,header=TRUE)
-    }
-    return(RTs)
-}
-
 ## Load libraries and get libraries filepaths----------------------------------
 loadLibs <- function(libs){
 	message("Loading user-defined libraries...")
