@@ -151,7 +151,8 @@ annotateAIF <- function(targetTable="targetTable.csv",
             inSourceSpec <- specs$insource
             ms2eic <- specs$ms2_eic
             feic <- specs$feic
-        } else next
+            results$pseudoMSMS[[i]] <- specs
+        } else results$pseudoMSMS[[i]] <- NA
     
         ## Isotope check ------------------------------------------------------
         if(!checkIsotope) iso <- 0 else {
@@ -202,12 +203,16 @@ annotateAIF <- function(targetTable="targetTable.csv",
         # pseudoMSMS flag
         if(is.null(pseudoSpec)) {
                 rankedResult$pseudoMSMS <- "FALSE"
+                results$rankedResult[[i]] <- NA
+                results$rankedSpectra[[i]] <- NA
             } else { rankedResult$pseudoMSMS <- "TRUE"
             }
         } else {
             output <- rankScore(result,specMatch)
             rankedResult <- output$rankedResult
             rankedSpec <- output$rankedSpecMatch
+            results$rankedResult[[i]] <- rankedResult
+            results$rankedSpectra[[i]] <- rankedSpec
         }
 
         ## Save output of ranked annotations ----------------------------------
@@ -255,9 +260,10 @@ annotateAIF <- function(targetTable="targetTable.csv",
 initializeResultsAIF <- function(targets, libs, ESImode){
     # Create directory to store the results
     # mainDir <- "./Annotations"
+	Library <- paste(libs, ESImode)
     Date <- Sys.Date()
     Time <- format(Sys.time(), "%X")
-    Time <- gsub(":", "_", Time)
+    # Time <- gsub(":", "_", Time)
     # subDir <- paste(libs, "_", ESImode, "_AIF_", Date,"_", Time, sep="")
     # dir.create(file.path(mainDir), showWarnings = FALSE)
     # dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
@@ -268,7 +274,13 @@ initializeResultsAIF <- function(targets, libs, ESImode){
                 "mz.metabolite","matched.mz", "mz.error", "pseudoMSMS", 
                 "fraction", "score")] <- NA
     # return global results table and results path as list
-    results <- list(global=global, Date=Date, Time=Time)
+    results <- list(global=global, 
+    				Date=Date, 
+    				Time=Time, 
+    				Library= Library, 
+    				rankedResult, 
+    				rankedSpectra, 
+    				pseudoMSMS)
     return(results)
 }
 
