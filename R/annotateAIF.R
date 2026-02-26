@@ -140,8 +140,8 @@ annotateAIF <- function(targetTable="targetTable.csv",
         try(
             specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2,
                             filetype=filetype, nCE=1, cthres1=corThresh,
-                            cthres2=corThresh, savePlotResults=TRUE, 
-                            savePseudoMSMS=TRUE, ExpName="LCMS", 
+                            cthres2=corThresh, savePlotResults=FALSE, 
+                            savePseudoMSMS=FALSE, ExpName="LCMS", 
                             DirPath=results$resultsDir)
         )
     
@@ -211,10 +211,10 @@ annotateAIF <- function(targetTable="targetTable.csv",
         }
 
         ## Save output of ranked annotations ----------------------------------
-        if(exists("rankedResult")){
-            saveRankedAIF(fmz, frt, ncandidates, rankedResult, SpName, 
-                    resultsDir=results$resultsDir)
-        }
+        # if(exists("rankedResult")){
+        #     saveRankedAIF(fmz, frt, ncandidates, rankedResult, SpName, 
+        #             resultsDir=results$resultsDir)
+        # }
 
         ## Store highest rank annotation in global results---------------------
         if(!exists("rankedResult")) rankedResult <- NULL
@@ -222,16 +222,16 @@ annotateAIF <- function(targetTable="targetTable.csv",
                                                 rankedResult[1,])
 
         ## save plot of matched spectra for the top n candidates---------------
-        if(exists("rankedSpec")){
-            saveMatchedAIF(fmz, frt, highCESpec, result, ms2eic, output, 
-                            ncandidates, rankedSpec, SpName, 
-                            resultsDir=results$resultsDir)
-        }
+        # if(exists("rankedSpec")){
+        #     saveMatchedAIF(fmz, frt, highCESpec, result, ms2eic, output, 
+        #                     ncandidates, rankedSpec, SpName, 
+        #                     resultsDir=results$resultsDir)
+        # }
     }
     ## save global results table-----------------------------------------------
-    write.csv(results$global,
-                file = paste(results$resultsDir, "Global_Results",
-                ".csv", sep = ""), row.names = FALSE)
+    # write.csv(results$global,
+    #             file = paste(results$resultsDir, "Global_Results",
+    #             ".csv", sep = ""), row.names = FALSE)
     # save general options
     df <- data.frame(targetsTable_file=targetTable, libraries=libs,
                         ESImode=ESImode, RTfile=RTfile, corThresh=corThresh,
@@ -239,12 +239,13 @@ annotateAIF <- function(targetTable="targetTable.csv",
                         tolerance=paste(tolerance, "ppm"),
                         maxMZdiff=paste(maxMZdiff, "Da"), row.names="Option")
     df <- as.data.frame(t(df))
-    write.csv(df, file=paste(results$resultsDir, "General_options", 
-                                ".csv", sep = ""))
+    # write.csv(df, file=paste(results$resultsDir, "General_options", 
+    #                             ".csv", sep = ""))
     # save xcms options
-    write.csv(xcmsOptions,
-                file=paste(results$resultsDir, "XCMS_options", ".csv", sep=""), 
-                row.names=FALSE)
+    # write.csv(xcmsOptions,
+    #             file=paste(results$resultsDir, "XCMS_options", ".csv", sep=""), 
+    #             row.names=FALSE)
+    return(results)
     message("Job done!")
 }
 
@@ -253,21 +254,21 @@ annotateAIF <- function(targetTable="targetTable.csv",
 ## Initialization of results folder and global results table-------------------
 initializeResultsAIF <- function(targets, libs, ESImode){
     # Create directory to store the results
-    mainDir <- "./Annotations"
+    # mainDir <- "./Annotations"
     Date <- Sys.Date()
     Time <- format(Sys.time(), "%X")
     Time <- gsub(":", "_", Time)
-    subDir <- paste(libs, "_", ESImode, "_AIF_", Date,"_", Time, sep="")
-    dir.create(file.path(mainDir), showWarnings = FALSE)
-    dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
-    resultsDir <- paste(mainDir, "/", subDir, "/", sep = "")
+    # subDir <- paste(libs, "_", ESImode, "_AIF_", Date,"_", Time, sep="")
+    # dir.create(file.path(mainDir), showWarnings = FALSE)
+    # dir.create(file.path(mainDir, subDir), showWarnings = FALSE)
+    # resultsDir <- paste(mainDir, "/", subDir, "/", sep = "")
     # create table to store global results
     global <- targets
     global[,c("metabolite", "feature.type", "ion.type", "isotope", 
                 "mz.metabolite","matched.mz", "mz.error", "pseudoMSMS", 
                 "fraction", "score")] <- NA
     # return global results table and results path as list
-    results <- list(global=global, resultsDir=resultsDir)
+    results <- list(global=global, Date=Date, Time=Time)
     return(results)
 }
 
