@@ -24,9 +24,11 @@
 #' ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
 #' feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
 #' feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the
-#' RT window of the feature of interest; feic, EIC of the feature of interest.
-#' If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source 
-#' pseudo-MS/MS spectrum will be saved instead.
+#' RT window of the feature of interest; feic, EIC of the feature of interest;
+#' feic_aif, the EICs of all MS2 ions correlated with the feature of interest.
+#' If xcmsF2 is set to NULL the in-source pseudo-MS/MS spectrum will be saved 
+#' instead of the AIF pseudo-MS/MS and similarly the EICs from the MS1 ions
+#' correlated with the feature of interest.
 #' @examples
 #' # obtain the pseudo-MS/MS of one feature from the 
 #' # MS1 scans (in-source fragments)

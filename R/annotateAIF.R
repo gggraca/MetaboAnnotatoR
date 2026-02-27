@@ -25,11 +25,13 @@
 #' @param matchWeight weight of the fragment matches to the final score;
 #' value between 0 and 1; the remaining fraction of the weight comes from the
 #' candidate m/z error.
-#' @return For each feature in the targetTable the will return a ranked list of
-#' annotations, a plot of EICs and pseudo-MS/MS spectrum for the matched ions,
-#' a plot of pseudo-MS/MS and pseudo-MS spectra for the each feature,
-#' a targetTable annotated with rank 1 annotations and a table with the options
-#' used for the function.
+#' @return For each feature in the targets data table the function will return 
+#' a data frame with each feature rank 1 annotation and a table with the options
+#' used for the function, the data and time of annotation. In addition, lists with
+#' the ranked candidates matched to each feature (rankedResult), ranked matched
+#' spectra (rankedSpectra) and a list with pseudo-MS/MS spectra, in-source spectra,
+#' and AIF spectra and respective EIC objects (pseudoMSMS, see also getPseudoMSMS,
+#' documentation for details).
 #' @examples
 #' # Get the example feature list and peak-picking parameters files:
 #' # Download the example .mzML from zenodo website into the working directory:
@@ -47,13 +49,13 @@
 #' xcmsOptions <- read.csv(xcmsOptionsPath)
 #' xcmsOptions[2,2] <- 1000
 #' # Run the annotation using the built-in lipid POS library:
-#' annotateAIF(targets=featureTable, xcmsOptions, 
+#' annotations <- annotateAIF(targets, xcmsOptions, 
 #' libs="LipidPOS", RTs="none", nCE=1, corThresh=0.8,
 #' checkIsotope=TRUE)
 #' @export
 annotateAIF <- function(targets,
 						xcmsOptions,
-                        libs="LipidPOS",
+                        libs="LipidPos",
                         RTs="none",
                         nCE=1,
                         corThresh=0.8,
@@ -99,8 +101,8 @@ annotateAIF <- function(targets,
 
     ## process each feature from the targets table-----------------------------
     for(i in seq_len(nrow(targets))){
-        progNote <- paste("####### Processing feature", i, "of", nrow(targets),
-                            "#######")
+        progNote <- paste("... Processing feature", i, "of", nrow(targets),
+                            "...")
         message(progNote)
         if(length(unique(targets[,3]))>1){
             message("Reading and peak-picking data...")
