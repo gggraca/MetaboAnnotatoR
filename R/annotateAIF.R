@@ -41,7 +41,7 @@
 #' )
 #' # create a new targetTable with one feature to annotate
 #' targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
-#' Sample.name="Lipid_Positive_QC")
+#' Sample.name="Lipid_Positive_QC.mzML")
 #' # read the default xcms parameters on the XCMS_options.csv file and modify
 #' # the noise threshold parameter
 #' xcmsOptionsPath <- system.file("XCMS_options.csv", 
@@ -50,7 +50,7 @@
 #' xcmsOptions[2,2] <- 1000
 #' # Run the annotation using the built-in lipid POS library:
 #' annotations <- annotateAIF(targets, xcmsOptions, 
-#' libs="LipidPOS", RTs="none", nCE=1, corThresh=0.8,
+#' libs="LipidPos", RTs="none", nCE=1, corThresh=0.8,
 #' checkIsotope=TRUE)
 #' @export
 annotateAIF <- function(targets,
