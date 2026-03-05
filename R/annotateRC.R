@@ -85,7 +85,7 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 		highCESpec <- xcmsSpec(fmz, frt, xcmsObject, highCE = TRUE)
 		# store spectra in the annotation results object
 		if(!is.null(pseudoMSMS)) {
-			results$pseudoMSMS[[i]] <- pseudoSpec {
+			results$pseudoMSMS[[i]] <- pseudoSpec
 			} else results$pseudoMSMS[[i]] <- NA
 		results$AIFspectra[[i]] <- highCESpec
 		results$inSourceSpectra[[i]] <- inSourceSpec
@@ -125,13 +125,12 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 		}
 		
 		# Score ranking --------------------
-		if(is.null(result)) {
+        if(is.null(result)) {
 			rankedResult <- targets[i,c(1,2)]
 			rankedResult[c("metabolite", "feature.type", "ion.type", "isotope",
 						   "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
 						   "fraction", "score")] <- NA
-			rankedResult <- NA
-			rankedSpec <- NA
+			rankedSpec <- NULL
 
 			# type of ion isotope
 			rankedResult$isotope <- paste("M+", iso, sep="")
