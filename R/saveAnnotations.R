@@ -168,55 +168,54 @@ plotCandidatesRC <- function(rankedResult, rankedSpectra, DirPath){
 		candidates <- nrow(rankedResult)
 		if(!is.null(candidates)) candidates <- seq_len(candidates)
 		
-		l <- lapply(candidates, function(x) innerFunRC(rankedResult, 
+		l <- lapply(candidates, function(x) plotSingleCandidateRC(rankedResult, 
 														rankedSpectra, 
 														pseudoMSMS,
 														x,
 														DirPath))
 	}
-	
-    innerFunRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
-    					   candidate, DirPath){
-    	# get relevant information from the rankedResult and rankedSpectra objects
-    	metabolite <- rankedResult[candidate,"metabolite"]
-    	ionType <- rankedResult[candidate,"ion.type"]
-    	score <- rankedResult[candidate,"score"]
-    	adductName <- paste(metabolite, ionType)
-    	candidateMZ <- round(rankedResult[candidate,"mz.metabolite"], 3)
-    	MZerror <- round(rankedResult[candidate,"mz.error"], 1)
-    	rnk <- rankedResult[candidate,"rank"]
-    	specMatch <- rankedSpectra[[candidate]]
-    	fmz <- rankedResult[candidate,"feature.mz"]
-    	frt <- rankedResult[candidate,"feature.rt"]
-    	
-    	# plotting part
-    	if(is.null(nrow(specMatch))) {
-    		df <- as.data.frame(specMatch[c("mz", "into")])
-    	} else df <- as.data.frame(specMatch[,c("mz", "into")])
-    	
-    	plt <- ggplot2::ggplot(df,
-    						   ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
-    		ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
-    							  color="red", lwd=0.5) +
-    		ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
-    		ggplot2::ggtitle(paste("Feature ", round(fmz, 4), "m/z", "_", 
-    							   round(frt, 4), "s ", ", Rank ", rnk, 
-    							   " result: ", adductName, ", mz.error = ", 
-    							   MZerror, " ppm, ", "score = ", 
-    							   round(score, 2), sep="")) +
-    		ggplot2::theme_minimal() +
-    		ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
-    		ggplot2::ylim(0, max(df$into) + 0.1*max(df$into)) +
-    		ggplot2::xlim(min(df$mz)-50, max(df$mz)+50) +
-    		ggplot2::labs(x="m/z", y="Intensity (a.u.)")
-    	
-    	fpath <- file.path(round(fmz,3), "mz_", 
-    					   round(frt,3), "s", "_candidate_", candidate,".pdf", fsep="")
-    	ggplot2::ggsave(fpath, plot=plt, path=DirPath, width=10, height=5)
-    }
 }
 
-
+# plot one RC candidate and save to DirPath
+plotSingleCandidateRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
+								  candidate, DirPath){
+	# get relevant information from the rankedResult and rankedSpectra objects
+	metabolite <- rankedResult[candidate,"metabolite"]
+	ionType <- rankedResult[candidate,"ion.type"]
+	score <- rankedResult[candidate,"score"]
+	adductName <- paste(metabolite, ionType)
+	candidateMZ <- round(rankedResult[candidate,"mz.metabolite"], 3)
+	MZerror <- round(rankedResult[candidate,"mz.error"], 1)
+	rnk <- rankedResult[candidate,"rank"]
+	specMatch <- rankedSpectra[[candidate]]
+	fmz <- rankedResult[candidate,"feature.mz"]
+	frt <- rankedResult[candidate,"feature.rt"]
+	
+	# plotting part
+	if(is.null(nrow(specMatch))) {
+		df <- as.data.frame(specMatch[c("mz", "into")])
+	} else df <- as.data.frame(specMatch[,c("mz", "into")])
+	
+	plt <- ggplot2::ggplot(df,
+						   ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+		ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
+							  color="red", lwd=0.5) +
+		ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+		ggplot2::ggtitle(paste("Feature ", round(fmz, 4), "m/z", "_", 
+							   round(frt, 4), "s ", ", Rank ", rnk, 
+							   " result: ", adductName, ", mz.error = ", 
+							   MZerror, " ppm, ", "score = ", 
+							   round(score, 2), sep="")) +
+		ggplot2::theme_minimal() +
+		ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
+		ggplot2::ylim(0, max(df$into) + 0.1*max(df$into)) +
+		ggplot2::xlim(min(df$mz)-50, max(df$mz)+50) +
+		ggplot2::labs(x="m/z", y="Intensity (a.u.)")
+	
+	fpath <- file.path(round(fmz,3), "mz_", 
+					   round(frt,3), "s", "_candidate_", candidate,".pdf", fsep="")
+	ggplot2::ggsave(fpath, plot=plt, path=DirPath, width=10, height=5)
+}
 
 # plotCandidatesAIF to plot annotation candidates matched spectra--------------
 plotCandidatesAIF <- function(rankedResult, 
@@ -226,67 +225,69 @@ plotCandidatesAIF <- function(rankedResult,
 	candidates <- nrow(rankedResult)
 	if(!is.null(candidates)) candidates <- seq_len(candidates)
 	
-	l <- lapply(candidates, function(x) innerFunAIF(rankedResult, 
+	l <- lapply(candidates, function(x) plotSingleCandidateAIF(rankedResult, 
                                                  rankedSpectra, 
 												 pseudoMSMS,
 												 x,
 												 DirPath))
-    innerFunAIF <- function(rankedResult, 
-    					 rankedSpectra, 
-    					 pseudoMSMS,
-    					 candidate,
-    					 DirPath){
-    	# get relevant information from the rankedCResult and rankedSpectra objects
-    	metabolite <- rankedResult[candidate,"metabolite"]
-    	ionType <- rankedResult[candidate,"ion.type"]
-    	score <- rankedResult[candidate,"score"]
-    	adductName <- paste(metabolite,ionType)
-    	candidateMZ <- round(rankedResult[candidate, "mz.metabolite"],3)
-    	MZerror <- round(rankedResult[candidate,"mz.error"],1)
-    	specMatch <- rankedSpectra[[candidate]]
-    	highCESpec <- pseudoMSMS$ms2
-    	ms2eic <- pseudoMSMS$ms2_eic
-    	rnk <- rankedResult[candidate,"rank"]
-    	fmz <- rankedResult[candidate,"feature.mz"]
-    	frt <- rankedResult[candidate,"feature.rt"]
-    	
-    	if(nrow(specMatch) >= 1){
-    		# plotting part
-    		# EICs
-    		mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
-    		df1 <- lapply(mz_idx, function(x) data.frame(
-    			intensity=intensity(ms2eic[x,1]), rt=rtime(ms2eic[x,1]),
-    			mz=as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
-    		df1 <- do.call("rbind", df1)
-    		p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
-    							  ggplot2::aes(x=rt, y=intensity, colour=mz)) +
-    			ggplot2::geom_point() +
-    			ggplot2::geom_line() +
-    			ggplot2::labs(x="RT (s)", y = "Intensity (a.u.)", 
-    						  colour="fragments") +
-    			ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),
-    								   "s,","Rank", rnk, "result:", adductName,
-    								   ", mz.error =", MZerror, "ppm", ", 
+}
+
+# plot one AIF candidate and save to DirPath
+plotSingleCandidateAIF <- function(rankedResult, 
+								   rankedSpectra, 
+								   pseudoMSMS,
+								   candidate,
+								   DirPath){
+	# get relevant information from the rankedCResult and rankedSpectra objects
+	metabolite <- rankedResult[candidate,"metabolite"]
+	ionType <- rankedResult[candidate,"ion.type"]
+	score <- rankedResult[candidate,"score"]
+	adductName <- paste(metabolite,ionType)
+	candidateMZ <- round(rankedResult[candidate, "mz.metabolite"],3)
+	MZerror <- round(rankedResult[candidate,"mz.error"],1)
+	specMatch <- rankedSpectra[[candidate]]
+	highCESpec <- pseudoMSMS$ms2
+	ms2eic <- pseudoMSMS$ms2_eic
+	rnk <- rankedResult[candidate,"rank"]
+	fmz <- rankedResult[candidate,"feature.mz"]
+	frt <- rankedResult[candidate,"feature.rt"]
+	
+	if(nrow(specMatch) >= 1){
+		# plotting part
+		# EICs
+		mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
+		df1 <- lapply(mz_idx, function(x) data.frame(
+			intensity=intensity(ms2eic[x,1]), rt=rtime(ms2eic[x,1]),
+			mz=as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
+		df1 <- do.call("rbind", df1)
+		p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
+							  ggplot2::aes(x=rt, y=intensity, colour=mz)) +
+			ggplot2::geom_point() +
+			ggplot2::geom_line() +
+			ggplot2::labs(x="RT (s)", y = "Intensity (a.u.)", 
+						  colour="fragments") +
+			ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),
+								   "s,","Rank", rnk, "result:", adductName,
+								   ", mz.error =", MZerror, "ppm", ", 
                                     score =", round(score, 2))) +
-    			ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
-    		# Spectrum
-    		df2 <- as.data.frame(specMatch[,c("mz", "into")])
-    		p2 <- ggplot2::ggplot(df2,
-    							  ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
-    			ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0),
-    								  color="red", lwd=0.5) +
-    			ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
-    			ggplot2::ggtitle(paste("ions matched to", adductName)) +
-    			ggplot2::theme_minimal() +
-    			ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
-    			ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
-    			ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
-    			ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
-    		fpath <- file.path(round(fmz,3),"mz_", round(frt,3), "s", "_candidate_",
-    						   candidate, ".pdf", fsep="")
-    		plt <- gridExtra::grid.arrange(p1, p2, nrow=2)
-    		ggplot2::ggsave(fpath, plot=plt, device="pdf", 
-    						path=DirPath, width=10, height=10)
-    	} else NULL
-    }
+			ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
+		# Spectrum
+		df2 <- as.data.frame(specMatch[,c("mz", "into")])
+		p2 <- ggplot2::ggplot(df2,
+							  ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+			ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0),
+								  color="red", lwd=0.5) +
+			ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+			ggplot2::ggtitle(paste("ions matched to", adductName)) +
+			ggplot2::theme_minimal() +
+			ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+			ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
+			ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
+			ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+		fpath <- file.path(round(fmz,3),"mz_", round(frt,3), "s", "_candidate_",
+						   candidate, ".pdf", fsep="")
+		plt <- gridExtra::grid.arrange(p1, p2, nrow=2)
+		ggplot2::ggsave(fpath, plot=plt, device="pdf", 
+						path=DirPath, width=10, height=10)
+	} else NULL
 }
