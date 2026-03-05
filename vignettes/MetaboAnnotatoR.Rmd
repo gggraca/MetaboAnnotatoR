@@ -114,8 +114,16 @@ annotations$rankedResult[[3]]
 ```
 
 The rank 1 annotation is LPC(14:0). However, it is also possible to see this
-feature could also be annotated (although with lower score) to fragments of
-several PCs that also contain the 14:0 fatty acyl chain.
+feature could also be annotated (although with lower score and hence 
+confidence) to fragments of several PCs that also contain the 14:0 fatty acyl 
+chain.
+
+It is possible to visualise the spectra containing the matched ions to each
+candidate. The example code below will plot the rank 1 candidate for the
+annotation of the 3rd feature of the targets table:
+```{r plot_result_spectrum, eval=TRUE}
+plotResultSpec(annotations, 3, 1)
+```
 
 ## Save the annotations
 
