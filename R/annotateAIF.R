@@ -26,11 +26,12 @@
 #' value between 0 and 1; the remaining fraction of the weight comes from the
 #' candidate m/z error.
 #' @return For each feature in the targets data table the function will return 
-#' a data frame with each feature rank 1 annotation and a table with the options
-#' used for the function, the data and time of annotation. In addition, lists with
-#' the ranked candidates matched to each feature (rankedResult), ranked matched
-#' spectra (rankedSpectra) and a list with pseudo-MS/MS spectra, in-source spectra,
-#' and AIF spectra and respective EIC objects (pseudoMSMS, see also getPseudoMSMS,
+#' a data frame with each feature rank 1 annotation and a table with the 
+#' options used for the function, the data and time of annotation. In addition, 
+#' lists with the ranked candidates matched to each feature
+#' (\code{rankedResult}), ranked matched spectra (\code{rankedSpectra}) and a 
+#' list with pseudo-MS/MS spectra, in-source spectra, and AIF spectra and 
+#' respective EIC objects (\code{pseudoMSMS}, see also \code{getPseudoMSMS},
 #' documentation for details).
 #' @examples
 #' # Get the example feature list and peak-picking parameters files:
@@ -202,8 +203,14 @@ annotateAIF <- function(targets,
         results$global[i,] <- storeAnnotations(global=results$global[i,], 
                                                 rankedResult[1,])
     }
+    # check ESI polarity
+    polarity <- unique(polarity(xcmsF1))
+    if(polarity == 1) polarity <- "positive"
+    if(polarity == 0) polarity <- "negative"
+    
     # store general options
-    df <- data.frame(dataType="AIF", libraries=libs, nCE=nCE,
+    df <- data.frame(dataType="AIF", 
+                        polarity=polarity, libraries=libs, nCE=nCE,
                         RTs=RTs, corThresh=corThresh,
                         checkIsotope=checkIsotope, matchWeight=matchWeight,
                         tolerance=paste(tolerance, "ppm"),

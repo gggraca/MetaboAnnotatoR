@@ -84,7 +84,9 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 		inSourceSpec <- xcmsSpec(fmz, frt, xcmsObject, highCE = FALSE)
 		highCESpec <- xcmsSpec(fmz, frt, xcmsObject, highCE = TRUE)
 		# store spectra in the annotation results object
-		results$pseudoMSMS[[i]] <- pseudoSpec
+		if(!is.null(pseudoMSMS)) {
+			results$pseudoMSMS[[i]] <- pseudoSpec {
+			} else results$pseudoMSMS[[i]] <- NA
 		results$AIFspectra[[i]] <- highCESpec
 		results$inSourceSpectra[[i]] <- inSourceSpec
 		
@@ -152,7 +154,9 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 											   rankedResult[1,])
 	}
 	# store options
-	df <- data.frame(dataType="RAMClustR", libraries=libs,
+	df <- data.frame(dataType="RAMClustR",
+					 polarity=ramclustObj$ExpDes$instrument$value[9],
+					 libraries=libs,
 					 RTs=RTs,
 					 checkIsotope=checkIsotope, matchWeight=matchWeight,
 					 tolerance=paste(tolerance, "ppm"),
