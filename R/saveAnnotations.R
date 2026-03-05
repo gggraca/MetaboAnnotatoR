@@ -33,6 +33,7 @@
 #' saveAnnotations(annotations, DirPath=userDir, saveOptions=TRUE, 
 #' saveXCMSoptions=FALSE, saveRanked=TRUE,
 #' saveRankedSpec=TRUE, savePseudoMSMS=TRUE)
+#' @importFrom utils read.csv write.csv
 #' @export
 saveAnnotations <- function(annotations,
 							DirPath="",
