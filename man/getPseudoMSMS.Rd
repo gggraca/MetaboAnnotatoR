@@ -11,14 +11,8 @@ getPseudoMSMS(
   xcmsF2,
   peaksF1,
   peaksF2,
-  filetype = filetype,
-  nCE = 1,
   cthres1 = 0.9,
-  cthres2 = 0.8,
-  savePlotResults = TRUE,
-  savePseudoMSMS = TRUE,
-  ExpName = "LCMS",
-  DirPath = paste(getwd(), "/", sep = "")
+  cthres2 = 0.8
 )
 }
 \arguments{
@@ -38,28 +32,11 @@ pseudo-MS/MS.}
 Should be set to NULL to obtain only the in-source fragmentation (ISF)
 pseudo-MS/MS.}
 
-\item{filetype}{The type of raw chromatogram imported: "mzML" or
-"CDF" this is needed for scan frequency calculation.}
-
-\item{nCE}{Number of collision energy MS2 functions contained in the data.}
-
 \item{cthres1}{Correlation threshold for the selection of in-source ions
 related to the feature of interest.}
 
 \item{cthres2}{Correlation threshold for the selection of all-ion fragment
 ions related to the feature of interest.}
-
-\item{savePlotResults}{Logical argument indicate if the EICs and pseudo
-in-source MS spectrum plots should be saved to disk.}
-
-\item{savePseudoMSMS}{Logical argument indicate if the pseudo MS/MS should
-be saved to disk as .csv.}
-
-\item{ExpName}{Name of the experimental technique, commonly LC-MS (default).
-Other names are possible, e.g. CE-MS, LC-AIF-MS, etc..}
-
-\item{DirPath}{Path to the folder where plots will be saved.
-The default folder is the working directory.}
 }
 \value{
 A list containing several objects: insource, all MS1 peaks related
@@ -67,9 +44,11 @@ to the feature of interest; aif, all MS2 peaks related to the feature;
 ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
 feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
 feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the
-RT window of the feature of interest; feic, EIC of the feature of interest.
-If xcmsF2 are both set to NULL and savePseudoMSMS is TRUE the in-source
-pseudo-MS/MS spectrum will be saved instead.
+RT window of the feature of interest; feic, EIC of the feature of interest;
+feic_aif, the EICs of all MS2 ions correlated with the feature of interest.
+If xcmsF2 is set to NULL the in-source pseudo-MS/MS spectrum will be saved
+instead of the AIF pseudo-MS/MS and similarly the EICs from the MS1 ions
+correlated with the feature of interest.
 }
 \description{
 Function to obtain in-source MS and pseudo MS/MS spectra from a feature of
@@ -91,8 +70,7 @@ fmz <- 304.1124
 frt <- 423.945
 # obtain the pseudo-MS/MS from MS1 scans (in-source fragments spectrum):
 getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, peaksF1, peaksF2=NULL, 
-filetype="mzML", nCE=1, cthres1=0.9, cthres2=0.8, savePlotResults=FALSE, 
-savePseudoMSMS=FALSE, ExpName="LCMS", DirPath=paste(getwd(), "/", sep =""))
+cthres1=0.9, cthres2=0.8)
 }
 \author{
 Goncalo Graca (Imperial College London)
