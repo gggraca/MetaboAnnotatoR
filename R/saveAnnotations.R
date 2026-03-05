@@ -151,7 +151,20 @@ saveAIFmgf <- function(global, pseudoMSMS, polarity, DirPath){
 }
 
 # plotCandidatesRC to plot annotation candidates matched spectra--------------
-plotCandidatesRC <- function(rankedResult, rankedSpectra, candidate, DirPath){
+plotCandidatesRC <- function(rankedResult, rankedSpectra, DirPath){
+	if(!is.null(rankedResult)){
+		candidates <- nrow(rankedResult)
+		if(!is.null(candidates)) candidates <- seq_len(candidates)
+		
+		l <- lapply(candidates, function(x) innerFunRC(rankedResult, 
+														rankedSpectra, 
+														pseudoMSMS,
+														x,
+														DirPath))
+	}
+	
+    innerFunRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
+    					   candidate, DirPath){
     	# get relevant information from the rankedResult and rankedSpectra objects
     	metabolite <- rankedResult[candidate,"metabolite"]
     	ionType <- rankedResult[candidate,"ion.type"]
@@ -170,7 +183,7 @@ plotCandidatesRC <- function(rankedResult, rankedSpectra, candidate, DirPath){
     	} else df <- as.data.frame(specMatch[,c("mz", "into")])
     	
     	plt <- ggplot2::ggplot(df,
-    						  ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+    						   ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
     		ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
     							  color="red", lwd=0.5) +
     		ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
@@ -182,14 +195,16 @@ plotCandidatesRC <- function(rankedResult, rankedSpectra, candidate, DirPath){
     		ggplot2::theme_minimal() +
     		ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
     		ggplot2::ylim(0, max(df$into) + 0.1*max(df$into)) +
-    		ggplot2::xlim(min(df1$mz)-50, max(df$mz)+50) +
+    		ggplot2::xlim(min(df$mz)-50, max(df$mz)+50) +
     		ggplot2::labs(x="m/z", y="Intensity (a.u.)")
     	
-    	fname <- file.path(round(fmz,3), "mz_", 
+    	fpath <- file.path(round(fmz,3), "mz_", 
     					   round(frt,3), "s", "_candidate_", candidate,".pdf", fsep="")
     	ggplot2::ggsave(fpath, plot=plt, path=DirPath, width=10, height=5)
     }
 }
+
+
 
 # plotCandidatesAIF to plot annotation candidates matched spectra--------------
 plotCandidatesAIF <- function(rankedResult, 
