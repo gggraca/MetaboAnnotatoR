@@ -21,6 +21,18 @@
 #' @return Global and candidate annotations as .csv files and pseudo-MS/MS 
 #' spectra as .png and/or .mgf files.
 #' @examples
+#' #' # Read RAMClustR (RC) and XCMS processed example data:
+#' tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
+#' targets <- read.csv(tfile)
+#' # Run annotation of lipid features for positive LC-MS 
+#' # processed with RAMClustR:
+#' annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
+#' libs="LipidPos", RTs="none", checkIsotope=TRUE)
+#' # Finally, save the results to a user-defined directory
+#' userDir <- tempdir()
+#' saveAnnotations(annotations, DirPath=userDir, saveOptions=TRUE, 
+#' saveXCMSoptions=FALSE, saveRanked=TRUE,
+#' saveRankedSpec=TRUE, savePseudoMSMS=TRUE)
 #' @export
 saveAnnotations <- function(annotations,
 							DirPath="",
