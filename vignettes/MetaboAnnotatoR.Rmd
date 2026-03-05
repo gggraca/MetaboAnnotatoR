@@ -28,7 +28,7 @@ It requires raw LC-MS AIF chromatograms acquired/transformed in centroid mode.
 
 # Installation
 
-To install this package, start R (version "4.5") and enter:
+To install this package, start R (version "4.5.0" or higher) and enter:
 ```{r installation, eval=FALSE, echo=TRUE, message=FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -54,79 +54,85 @@ Firstly load library and dependencies:
 library(MetaboAnnotatoR)
 ```
 
-```{r setwd_to_run, eval=TRUE, echo=FALSE, message=FALSE}
-## silently set working directory to tempdir() for the vignette
-setwd(tempdir())
-```
-
 ## Getting feature table and example data
 
-As an input, the software requires a .csv file containing the features to be 
-annotated (targetTable.csv - the file name can be changed).
-The following function will place the example 'targetTable.csv' and the 
-'XCMS_options.csv'. The latter contains the xcms peak-picking parameters, needed
-when performing annotations on 'mzML' or 'CDF' raw data only. 
-```{r load_features, eval=TRUE, results='hide'}
-getDemoData()
+As an input, MetaboAnnotatoR requires a data frame containing the features to
+be annotated and either a raw AIF LC-MS chromatogram (as .mzML or CDF) or a 
+processed dataset composed of two objects: 
+RAMClustR (object containing the pseudo-MS/MS spectra) and 
+an XCMS object containing the peak-picked data. 
+Additionally, the fragment libraries need to be specified.
+
+Firstly a data table (targets) containing one feature to annotate needs to be 
+loaded. There is an example feature table in MetaboAnnotatoR 
+("targetTable.csv") that it will be used in this example.
+```{r features, eval=TRUE, echo=TRUE, message=FALSE}
+tfile <- system.file("targetTable.csv", package="MetaboAnnotatoR")
+targets <- read.csv(tfile)
 ```
-  
-Two additional data objects need to be loaded into the workspace. 
-These consist of: 
-1) an xcmsSet object (xset) containing the processed data from 100 AIF LC-MS 
-chromatograms from human serum samples and 
-2) the respective pseudo-MS/Ms spectra obtained by processing the xcmsSet 
-data using RAMClustR (RC). These two datasets are included in the package and 
-can be loaded as follows:
+This table contains 6 features from a LC-MS Lipidomics (ESI+) chromatogram
+to be annotated.
+
+The example in this vignette will use of processed data, included in the 
+package. These consist of:
+1) an \code{xcmsSet} object (xset) containing the processed data from 100 
+AIF LC-MS chromatograms from human serum samples and 
+2) the respective pseudo-MS/Ms spectra obtained by processing the 
+\code{xcmsSet} data using RAMClustR (RC). 
+The data can be loaded as followed:
 ```{r load_data, eval=TRUE}
-data("MESA_Xset")
-data("MESA_RAMClustR")
-```
-  
-The 'targetTable.csv' file contains 6 features, corresponding to 
-4 phospholipids and 2 lipid-like molecules.
-Annotation can be performed using two of the default libraries: 'Lipids'
-or 'Metabolites' of either ESI+ (POS) or ESI- (NEG) ionisation modes.
-
-## Annotations using the Lipid libraries
-
-Let's start the annotation by searching the Lipid libraries:
-
-```{r lipids_example, eval=TRUE}
-annotateRC(targetTable="targetTable.csv", 
-            xcmsObject=xset, 
-            ramclustObj=RC, 
-            libs="Lipids", 
-            ESImode="POS")
+data("xset")
+data("RC")
 ```
 
-A new folder will be automatically created in the working directory called
-'Annotations' were annotation results will be stored. Several files will be
-present in this folder. The annotation results are stored in .csv files for 
-each feature. The annotated 'targetTable' can be found in the 
-'Global_Results.csv' file. Graphical results are stored as .pdf files in 
-the same folder.
+## Annotations using the Lipid ESI+ libraries
 
-Some features will remain un-annotated, which means that no matching compound
-was found in the lipids library. 
+Since the features come from a ESI+ lipidomics experiment, annotation can be 
+performed using the default Lipid Positive mode libraries
+"LpidPos", using the \code{annotateRC}" function. 
+The annotations will be stored in an \code{annotations} object:
 
-## Annotations using the non-lipid Metabolites libraries
-
-We can now try to use the non-lipid molecule libraries to annotate the remaining
-features:
-
-```{r metabolites_example, eval=TRUE}
-annotateRC(targetTable="targetTable.csv", 
-            xcmsObject=xset, 
-            ramclustObj=RC, 
-            libs="Metabolites", 
-            ESImode="POS")
+```{r lipid_pos_example, eval=TRUE}
+annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
+                            libs="LipidPos")
 ```
 
-The libraries used in the example are the default 'Lipids' and 'Metabolites' 
-(ESI+ mode) libraries provided with the package.
-Similarly to the lipid annotations, an annotations folder will be created in 
-the working directory to store the annotations obtained using the 'Metabolites'
-ESI+ library.
+The most significant annotations (rank 1 annotations) for each feature are 
+summarised in the global results object within the \code{annotations} object:
+```{r global, eval=TRUE}
+annotations$global
+```
+
+Three out of the six features were annotated with a lipid.
+
+It is also possible to inspect if there were other candidate annotations for
+a given feature, for instance feature 3: 468.3095 m/z,  82.92009 s.
+This information can be accessed from the \code{rankedResult} object stored
+in the \code{annotations}. For feature 3, it is accessed as follows:
+```{r ranked, eval=TRUE}
+annotations$rankedResult[[3]]
+```
+
+The rank 1 annotation is LPC(14:0). However, it is also possible to see this
+feature could also be annotated (although with lower score) to fragments of
+several PCs that also contain the 14:0 fatty acyl chain.
+
+## Save the annotations
+
+It is possible to save the annotation results to a user-specified directory.
+By default, the global annotations are saved specified directory. 
+The annotation options can be also saved, as well as the pseudo-MS/MS spectra
+of each matched candidate will be saved (as .pdf) and any pseudo-MS/MS spectra
+as (.mgf file). 
+For this examples we'll make use of a temporary directory. 
+
+```{r save_results, eval=TRUE}
+exampleDir <- tempdir()
+saveAnnotations(annotations, DirPath=exampleDir, saveOptions=TRUE, 
+                saveXCMSoptions=FALSE, saveRanked=TRUE,
+                saveRankedSpec=TRUE, savePseudoMSMS=TRUE)
+
+```
 
 # Session Info
 
