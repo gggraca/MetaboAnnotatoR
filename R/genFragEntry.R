@@ -10,6 +10,8 @@
 #' @param name Metabolite name.
 #' @param adduct Type of adduct of the parent ion.
 #' @param tmz m/z value of the parent ion.
+#' @param DirPath Path to the user-defined folder, where the library entry will
+#' be saved.
 #' @param filename The name of the .txt file containing the MS/MS spectrum used
 #' to generate the library entry.
 #' @param noise Noise intensity threshold expressed as a ratio to the peak with
@@ -34,15 +36,18 @@
 #' specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353, 
 #' 124.0766, 184.0981, 202.1085, 220.1185), V2=c(13.965907, 13.534607, 100.0, 
 #' 26.165537, 15.383036, 25.231054, 28.578764, 43.017047, 64.962005))
+#' # Choose a folder to store the result
+#' userFir <- tempdir()
 #' # Generate fragment entry
-#' genFragEntry(specObject, "Pantothenic acid", "[M+H]+", 220.1179,
-#' "Pantothenic_acid_pos", noise=0.005, mpeaksScore=0.9, 
+#' genFragEntry(specObject, "Pantothenic acid", "[M+H]+", 220.1179, 
+#' DirPath=userDir, "Pantothenic_acid_pos", noise=0.005, mpeaksScore=0.9, 
 #' mpeaksThres=0.1, mzTol=0.01)
 #' @export
 genFragEntry <- function(specObject,
                             name,
                             adduct,
                             tmz,
+                            DirPath="",
                             filename,
                             noise=0.005,
                             mpeaksScore=0.9, 
@@ -81,5 +86,6 @@ genFragEntry <- function(specObject,
     }
     colnames(result) <- c(adduct, frag)
     rownames(result) <- c(name,'scores')
-    write.csv(result, paste(filename,'.csv', sep = ''), row.names = TRUE)
+    fpath <- file.path(DirPath, paste0(filename,'.csv'))
+    write.csv(result, fpath, row.names = TRUE)
 }
