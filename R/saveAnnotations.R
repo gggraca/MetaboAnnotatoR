@@ -1,25 +1,28 @@
-#' Save results of annotations based on LC-MS AIF raw data or RAMClustR processed data.
+#' @title Save annotation results
 #'
-#' Saves pseudo-MS/MS spectra of matched fragments and write annotation tables. 
+#' @description
+#' Saves all annotation related data, such as annotation table, options,
+#' and optionally plots of pseudo-MS/MS and matched fragments spectra. 
 #'
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'
 #' @param annotations Annotation object created from running annotation
 #' \code{annotateAIF} or \code{annotateRC} functions.
-#' @param saveOptions If "TRUE", will save the annotation options as .csv file.
+#' @param saveOptions If \code{TRUE}, will save the annotation options as 
+#' .csv file.
 #' @param saveXCMSoptions Saves the XCMS options if the annotations
-#' originate from AIF raw files, if set to TRUE.
+#' originate from AIF raw files, if set to \code{TRUE}.
 #' @param saveRanked Option to save the ranked candidate table and 
-#' respective pseudo-MS/MS. The default option is "TRUE".
+#' respective pseudo-MS/MS. The default option is \code{TRUE}.
 #' @param savePseudoMSMS Option to save the pseudo-MS/MS for the features 
-#' from the targets table. The default option is "FALSE". If "TRUE",
-#' the pseudo-MS/MS will be saved as "png" images and .mgf files.
+#' from the targets table. The default option is code{FALSE}. If \code{TRUE},
+#' the pseudo-MS/MS will be saved as \code{.png} images and \code{.mgf} files.
 #' Note that EICs will only be saved in the png image if the annotations
 #' originate from AIF raw files.
-#' @param DirPath Path to the folder where the plots (as .png), 
-#' .csv tables and .mgf files will be saved.
+#' @param DirPath Path to the folder where the plots (as \code{.png}), 
+#' \code{.csv} tables and \code{.mgf} files will be saved.
 #' @return Global and candidate annotations as .csv files and pseudo-MS/MS 
-#' spectra as .png and/or .mgf files.
+#' spectra as \code{.png} and/or \code{.mgf} files.
 #' @examples
 #' #' # Read RAMClustR (RC) and XCMS processed example data:
 #' tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")

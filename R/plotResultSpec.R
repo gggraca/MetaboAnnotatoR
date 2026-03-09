@@ -1,7 +1,8 @@
-#' Plot pseudo-MS/MS composed of candidate matched ions
+#' @title Plot pseudo-MS/MS composed of candidate matched ions
 #' 
+#' @description
 #' Function to visualise the spectra containing the matched ions to each
-#' candidate annotation result
+#' candidate annotation result.
 #' 
 #' @author Goncalo Graca (Imperial College London)
 #'
