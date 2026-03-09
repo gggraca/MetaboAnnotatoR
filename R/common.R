@@ -1,4 +1,4 @@
-## Common helper functions to organize annotation results 
+## Common helper functions to organize annotation results----------------------
 ## Goncalo Graca (Imperial College London)
 ## These functions are not exported
 
