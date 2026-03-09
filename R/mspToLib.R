@@ -1,8 +1,8 @@
-#' @title Generate metabolite entries from MS/MS spectra in an .msp file
+#' @title Generate metabolite entries from MS/MS spectra (.msp files)
 #' 
 #' @description
 #' Function to generate metabolite database entries from MS/MS spectra 
-#' obtained from from an .msp file
+#' obtained from from an .msp file.
 #' 
 #' @author Goncalo Graca (Imperial College London)
 #' 

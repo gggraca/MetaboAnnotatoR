@@ -1,6 +1,9 @@
+#' @title Generate a fragment library entry
+#' 
+#' @description
 #' Function to generate metabolite database entries from MS/MS spectra 
 #' obtained from from public databases, stored as a .txt file containing
-#' m/z and intensity values, and read imported into R as matrix
+#' m/z and intensity values, and read imported into R as matrix.
 #' 
 #' @author Goncalo Graca (Imperial College London)
 #' 
@@ -12,18 +15,17 @@
 #' @param tmz m/z value of the parent ion.
 #' @param DirPath Path to the user-defined folder, where the library entry will
 #' be saved.
-#' @param filename The name of the .txt file containing the MS/MS spectrum used
-#' to generate the library entry.
+#' @param filename The name of file that will hold the the library entry.
 #' @param noise Noise intensity threshold expressed as a ratio to the peak with
 #' the highest intensity.
 #' @param mpeaksScore The occurrence score to be attributed to the most intense 
 #' peaks of the MS/MS spectrum which should correspond to the most 
 #' characteristic fragmentation ions from the metabolite (or 'marker' peaks). 
-#' These will be the peaks above 'mpeaksThres' value. This score is divided by 
-#' the number of peaks above 'mpeaksThres' threshold. By default this value is 
-#' defined at 0.9, which means that peaks below 'mpeaksThres' threshold will be
-#' given an occurrence score of 0.1, so that the sum of all fragment occurrence 
-#' scores is 1.
+#' These will be the peaks above \code{mpeaksThres} value. This score is 
+#' divided by the number of peaks above \code{mpeaksThres} threshold. 
+#' By default this value is defined at 0.9, which means that peaks below 
+#' \code{mpeaksThres} threshold will be given an occurrence score of 0.1, so 
+#' that the sum of all fragment occurrence scores is 1.
 #' @param mpeaksThres Intensity threshold to select peaks of the MS/MS spectrum 
 #' considered to be highest intensity, expressed as a ratio to the peak with 
 #' the highest intensity.
