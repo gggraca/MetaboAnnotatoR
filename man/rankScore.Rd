@@ -2,7 +2,7 @@
 % Please edit documentation in R/rankScore.R
 \name{rankScore}
 \alias{rankScore}
-\title{Ranks candidate metabolite annotations by score.}
+\title{Rank candidate metabolite annotations by score}
 \usage{
 rankScore(result, specMatch)
 }
@@ -15,7 +15,7 @@ rankScore(result, specMatch)
 Ranked results annotation table and ranked matched spectra as list.
 }
 \description{
-Ranks the annotation results by final score.
+Ranks the annotation results by final match score.
 }
 \examples{
 # Create a result object for 3 hypothetical metabolite matches

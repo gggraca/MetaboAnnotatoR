@@ -2,7 +2,7 @@
 % Please edit documentation in R/searchLib.R
 \name{searchLib}
 \alias{searchLib}
-\title{Searches candidate metabolites from the fragments libraries by m/z}
+\title{Search candidate metabolites from the fragments libraries}
 \usage{
 searchLib(libraries, libfiles, fmz, frt, tolerance = 25, RTs, inSourceSpec)
 }
@@ -38,14 +38,15 @@ same pseudo-MS spectrum (MS1).
 }
 \examples{
 # load default libraries for Metabolites in Positive mode
-libfiles <- MetabolitesPos$libfiles
-lib <- MetabolitesPos$lib
-# read feature mz and rt and in-source sepctrum
+libraries <- MetaboAnnotatoR::MetabolitesPos
+libfiles <- libraries$libfiles
+lib <- libraries$lib
+# read feature mz and rt and in-source spectrum
 fmz <- 152.0720
 frt <- 125
 inSourceSpec <- data.frame(mz = 152.0720, into = 1)
 # Search the library for candidates
-candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
+candidates <- searchLib(lib, libfiles, fmz, frt, tolerance=25, 
 RTs="none", inSourceSpec)
 }
 \author{

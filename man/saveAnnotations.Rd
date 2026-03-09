@@ -2,7 +2,7 @@
 % Please edit documentation in R/saveAnnotations.R
 \name{saveAnnotations}
 \alias{saveAnnotations}
-\title{Save results of annotations based on LC-MS AIF raw data or RAMClustR processed data.}
+\title{Save annotation results}
 \usage{
 saveAnnotations(
   annotations,
@@ -18,29 +18,31 @@ saveAnnotations(
 \item{annotations}{Annotation object created from running annotation
 \code{annotateAIF} or \code{annotateRC} functions.}
 
-\item{DirPath}{Path to the folder where the plots (as .png),
-.csv tables and .mgf files will be saved.}
+\item{DirPath}{Path to the folder where the plots (as \code{.png}),
+\code{.csv} tables and \code{.mgf} files will be saved.}
 
-\item{saveOptions}{If "TRUE", will save the annotation options as .csv file.}
+\item{saveOptions}{If \code{TRUE}, will save the annotation options as
+.csv file.}
 
 \item{saveXCMSoptions}{Saves the XCMS options if the annotations
-originate from AIF raw files, if set to TRUE.}
+originate from AIF raw files, if set to \code{TRUE}.}
 
 \item{saveRanked}{Option to save the ranked candidate table and
-respective pseudo-MS/MS. The default option is "TRUE".}
+respective pseudo-MS/MS. The default option is \code{TRUE}.}
 
 \item{savePseudoMSMS}{Option to save the pseudo-MS/MS for the features
-from the targets table. The default option is "FALSE". If "TRUE",
-the pseudo-MS/MS will be saved as "png" images and .mgf files.
+from the targets table. The default option is code{FALSE}. If \code{TRUE},
+the pseudo-MS/MS will be saved as \code{.png} images and \code{.mgf} files.
 Note that EICs will only be saved in the png image if the annotations
 originate from AIF raw files.}
 }
 \value{
 Global and candidate annotations as .csv files and pseudo-MS/MS
-spectra as .png and/or .mgf files.
+spectra as \code{.png} and/or \code{.mgf} files.
 }
 \description{
-Saves pseudo-MS/MS spectra of matched fragments and write annotation tables.
+Saves all annotation related data, such as annotation table, options,
+and optionally plots of pseudo-MS/MS and matched fragments spectra.
 }
 \examples{
 #' # Read RAMClustR (RC) and XCMS processed example data:
