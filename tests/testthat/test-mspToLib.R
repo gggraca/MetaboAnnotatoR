@@ -1,22 +1,21 @@
 # input test data
-# folders containing imported files will be created at:
-# ./Libraries/Custom/POS and ./Libraries/Custom/NEG
+# use tempdir as test target folder
 msp_path <- system.file("MassBank_example.msp", package = "MetaboAnnotatoR")
+
+testLib <- tempdir()
+
 mspToLib(msp_path,
-         library_name = "Custom",
+         LibDir = testLib,
          noise = 0.005,
          mpeaksScore = 0.9,
          mpeaksThres = 0.1)
 
-# list the files created under ./Libraries/Custom/POS
-files <- list.files("./Libraries/Custom/POS")
+# list the files created under testLib
+files <- list.files(testLib, pattern=".csv")
 
 # some file names to check
-someExpectedFiles <- c("Aflatoxin B1.csv","Isomarticin.csv","Penicillic Acid.csv")
+someExpectedFiles <- c("Aflatoxin B1_positive.csv", "Aflatoxin G2_positive.csv", "Aflatoxin M1_positive.csv", "Alternaric acid_positive.csv")
 
 test_that("msp records successfuly imported", {
   expect_contains(files, someExpectedFiles)
 })
-
-# remove ./Libraries and files
-unlink("Libraries", recursive=TRUE)

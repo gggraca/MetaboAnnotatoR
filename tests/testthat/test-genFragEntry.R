@@ -9,8 +9,9 @@ test_that("library entry correctly generated", {
 
   entry <- genFragEntry(specObject, 
                         "Pantothenic acid",
-                        "[M+H]+",220.1179,
-                        "Pantothenic_acid_pos", 
+                        "[M+H]+", 220.1179,
+                        filename="Pantothenic_acid_pos",
+                        DirPath = "./",
                         noise=0.005, 
                         mpeaksScore=0.9, 
                         mpeaksThres=0.1, 
