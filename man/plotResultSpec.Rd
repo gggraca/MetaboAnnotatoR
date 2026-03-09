@@ -21,7 +21,7 @@ A pseudo-MS/MS spectrum is plotted.
 }
 \description{
 Function to visualise the spectra containing the matched ions to each
-candidate annotation result
+candidate annotation result.
 }
 \examples{
 # Read RAMClustR (RC) and XCMS processed example data:

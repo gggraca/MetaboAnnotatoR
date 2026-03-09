@@ -2,7 +2,7 @@
 % Please edit documentation in R/getPseudoMSMS.R
 \name{getPseudoMSMS}
 \alias{getPseudoMSMS}
-\title{Obtain pseudo-MS/MS spectra for an LC-MS feature of interest.}
+\title{Obtain pseudo-MS/MS spectra for an LC-MS feature of interest}
 \usage{
 getPseudoMSMS(
   fmz,
@@ -26,11 +26,11 @@ getPseudoMSMS(
 Should be set to NULL to obtain only the in-source fragmentation (ISF)
 pseudo-MS/MS.}
 
-\item{peaksF1}{LC-MS picked peaks from xcmsF1 dataset using XCMS.}
+\item{peaksF1}{LC-MS picked peaks from \code{xcmsF1} dataset using XCMS.}
 
-\item{peaksF2}{LC-MS picked peaks from xcmsF2 dataset using XCMS.
-Should be set to NULL to obtain only the in-source fragmentation (ISF)
-pseudo-MS/MS.}
+\item{peaksF2}{LC-MS picked peaks from \code{xcmsF2} dataset using XCMS.
+Should be set to \code{NULL} to obtain only the in-source fragmentation
+(ISF) pseudo-MS/MS.}
 
 \item{cthres1}{Correlation threshold for the selection of in-source ions
 related to the feature of interest.}
@@ -39,20 +39,21 @@ related to the feature of interest.}
 ions related to the feature of interest.}
 }
 \value{
-A list containing several objects: insource, all MS1 peaks related
-to the feature of interest; aif, all MS2 peaks related to the feature;
-ms1_peaks, all MS1 peaks at the feature RT; ms2_peaks, all MS2 peaks at the
-feature RT; ms2_eic, all EICs for the AIF features in the  RT window of the
-feature of interest; mz_ms2, vector of m/z values for the MS2 ions in the
-RT window of the feature of interest; feic, EIC of the feature of interest;
-feic_aif, the EICs of all MS2 ions correlated with the feature of interest.
-If xcmsF2 is set to NULL the in-source pseudo-MS/MS spectrum will be saved
-instead of the AIF pseudo-MS/MS and similarly the EICs from the MS1 ions
-correlated with the feature of interest.
+A list containing several objects: \code{insource}, all MS1 peaks
+related to the feature of interest; \code{aif}, all MS2 peaks related to
+the feature; \code{ms1_peaks}, all MS1 peaks at the feature RT; ms2_peaks,
+all MS2 peaks at the feature RT; \code{ms2_eic}, all EICs for the AIF
+features in the  RT window of the feature of interest; \code{mz_ms2}, vector
+of m/z values for the MS2 ions in the RT window of the feature of interest;
+\code{feic}, EIC of the feature of interest; \code{feic_aif}, the EICs of
+all MS2 ions correlated with the feature of interest.
+If \code{xcmsF2} is set to \code{NULL} the in-source pseudo-MS/MS spectrum
+will be saved instead of the AIF pseudo-MS/MS and similarly the EICs from
+the MS1 ions correlated with the feature of interest.
 }
 \description{
 Function to obtain in-source MS and pseudo MS/MS spectra from a feature of
-interest from All-ion fragmentation experiments (e.g. MSe, bbCID, AIF)
+interest from All-ion fragmentation experiments (e.g. MSe, bbCID, AIF).
 }
 \examples{
 # obtain the pseudo-MS/MS of one feature from the 
@@ -69,8 +70,8 @@ peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
 fmz <- 304.1124
 frt <- 423.945
 # obtain the pseudo-MS/MS from MS1 scans (in-source fragments spectrum):
-getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, peaksF1, peaksF2=NULL, 
-cthres1=0.9, cthres2=0.8)
+pseudoMSMS <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, peaksF1, 
+peaksF2=NULL, cthres1=0.9, cthres2=0.8)
 }
 \author{
 Goncalo Graca (Imperial College London)

@@ -2,9 +2,7 @@
 % Please edit documentation in R/genFragEntry.R
 \name{genFragEntry}
 \alias{genFragEntry}
-\title{Function to generate metabolite database entries from MS/MS spectra
-obtained from from public databases, stored as a .txt file containing
-m/z and intensity values, and read imported into R as matrix}
+\title{Generate a fragment library entry}
 \usage{
 genFragEntry(
   specObject,
@@ -42,11 +40,11 @@ the highest intensity.}
 \item{mpeaksScore}{The occurrence score to be attributed to the most intense
 peaks of the MS/MS spectrum which should correspond to the most
 characteristic fragmentation ions from the metabolite (or 'marker' peaks).
-These will be the peaks above 'mpeaksThres' value. This score is divided by
-the number of peaks above 'mpeaksThres' threshold. By default this value is
-defined at 0.9, which means that peaks below 'mpeaksThres' threshold will be
-given an occurrence score of 0.1, so that the sum of all fragment occurrence
-scores is 1.}
+These will be the peaks above \code{mpeaksThres} value. This score is
+divided by the number of peaks above \code{mpeaksThres} threshold.
+By default this value is defined at 0.9, which means that peaks below
+\code{mpeaksThres} threshold will be given an occurrence score of 0.1, so
+that the sum of all fragment occurrence scores is 1.}
 
 \item{mpeaksThres}{Intensity threshold to select peaks of the MS/MS spectrum
 considered to be highest intensity, expressed as a ratio to the peak with
@@ -61,7 +59,7 @@ corresponding occurrence scores.
 \description{
 Function to generate metabolite database entries from MS/MS spectra
 obtained from from public databases, stored as a .txt file containing
-m/z and intensity values, and read imported into R as matrix
+m/z and intensity values, and read imported into R as matrix.
 }
 \examples{
 # create a specObject containing the MS/MS spectra to generate a fragment 

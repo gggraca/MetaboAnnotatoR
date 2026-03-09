@@ -2,7 +2,7 @@
 % Please edit documentation in R/mspToLib.R
 \name{mspToLib}
 \alias{mspToLib}
-\title{Generate metabolite entries from MS/MS spectra in an .msp file}
+\title{Generate metabolite entries from MS/MS spectra (.msp files)}
 \usage{
 mspToLib(
   msp_file,
@@ -42,7 +42,7 @@ corresponding occurrence scores.
 }
 \description{
 Function to generate metabolite database entries from MS/MS spectra
-obtained from from an .msp file
+obtained from from an .msp file.
 }
 \examples{
 # read example.msp file and import as "custom" library
