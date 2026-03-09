@@ -23,6 +23,8 @@ For a given feature, find out corresponding cluster (pseudo-MS/MS spectra)
 from RAMClustR object.
 }
 \examples{
+# read  RamclustR example data
+data("RC")
 # obtain pseudo-MS/MS from the RC example data
 spec <- RCspec(fmz=468.3094, frt=82.92, ramclustObj=RC)
 }

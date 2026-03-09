@@ -2,7 +2,7 @@
 % Please edit documentation in R/compFrag.R
 \name{compFrag}
 \alias{compFrag}
-\title{Spectral matching function.}
+\title{Match (pseudo-)MS/MS spectra ions to library fragments}
 \usage{
 compFrag(
   candidate,
@@ -58,8 +58,8 @@ matching of a pseudo-MS/MS and fragments of a candidate and a data frame
 with the pseudo-MS/MS spectrum of matched ion fragments.
 }
 \description{
-Function to compare pseudo-MS/MS and high-collision-energy spectra
-with fragment from a candidate metabolite from the database.
+This function compares pseudo-MS/MS and high-collision-energy spectra peaks
+with fragments from candidates of the metabolite/lipid fragment libraries.
 }
 \examples{
 # read a hypothetical pseudo-MS/MS spectrum of a feature 152.0720 m/z, 125s

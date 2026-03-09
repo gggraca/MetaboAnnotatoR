@@ -2,7 +2,7 @@
 % Please edit documentation in R/annotateAIF.R
 \name{annotateAIF}
 \alias{annotateAIF}
-\title{Function to annotate features using LC-MS AIF raw chromatograms.}
+\title{Annotate features from LC-MS AIF raw chromatograms}
 \usage{
 annotateAIF(
   targets,
@@ -57,9 +57,9 @@ respective EIC objects (\code{pseudoMSMS}, see also \code{getPseudoMSMS},
 documentation for details).
 }
 \description{
-Search possible matches of a feature in Lipid fragments and other small
-molecule libraries, using 'raw' LC-MS single chromatogram information
-already loaded and peak-picked.
+This function annotates features from raw LC-MS AIF chromatograms, by
+performing pseudo-MS/MS spectra deconvolution and then matching ions
+to metabolite/lipid fragment libraries.
 }
 \examples{
 # Get the example feature list and peak-picking parameters files:
