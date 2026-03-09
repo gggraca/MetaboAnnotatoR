@@ -1,18 +1,19 @@
-#' Extracts the low-collision-energy (MS1) or high-collision-energy (MS2)
-#' features (pseudo-spectra) for any feature from an XCMS output object.
+#' @title Extract the low- and high-collision-energy spectra from 
+#' XCMS object (from AIF data)
 #'
-#' Given a feature of interest (m/z RT pair), the function will extract the
+#' @description
+#' Given a feature of interest (m/z RT pair), this function will extract the
 #' low-collision-energy (MS1) or high-collision-energy features (MS2)
 #' at the same RT window of the feature of interest from an XCMS output object
-#' obtained by processing both functions together from a set of LC-MS
+#' obtained by processing both functions together from a set of LC-MS AIF
 #' chromatograms.
 #'
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'
 #' @param fmz The m/z for the feature of interest.
 #' @param frt Retention time in seconds for the feature of interest.
-#' @param xcmsObject An "xcmsSet" object resulting from the processing of one 
-#' or multiple samples in XCMS.
+#' @param xcmsObject An \code{xcmsSet} object resulting from the processing
+#'  of one or multiple samples in XCMS.
 #' @param mztol Absolute tolerance for feature m/z search in Da.
 #' @param rttol Tolerance for feature RT search in seconds.
 #' The default (5 s) only applies to UPLC/UHPLC data.
@@ -24,6 +25,8 @@
 #' @examples
 #' # Extract the MS1 spectrum of feature 585.2692 m/z 72.8s using the xset
 #' # test data
+#' data("xset")
+#' # obtain spectrum
 #' spec <- xcmsSpec(fmz=585.2692, frt=72.8, mztol=0.01, 
 #' xset, rttol=1, highCE=FALSE)
 #' @importFrom xcms peaks
