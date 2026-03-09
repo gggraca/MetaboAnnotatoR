@@ -1,8 +1,9 @@
-#' Function to annotate features using LC-MS AIF raw chromatograms.
+#' @title Annotate features from LC-MS AIF raw chromatograms
 #'
-#' Search possible matches of a feature in Lipid fragments and other small
-#' molecule libraries, using 'raw' LC-MS single chromatogram information
-#' already loaded and peak-picked.
+#' @description
+#' This function annotates features from raw LC-MS AIF chromatograms, by 
+#' performing pseudo-MS/MS spectra deconvolution and then matching ions 
+#' to metabolite/lipid fragment libraries.
 #'
 #' @author Goncalo Graca (Imperial College London)
 #'

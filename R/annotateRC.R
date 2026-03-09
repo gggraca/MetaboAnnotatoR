@@ -1,7 +1,10 @@
-#' Annotation of features using LC-MS AIF datasets processed using RAMClustR.
+#' @title Annotate features from LC-MS AIF datasets processed with 
+#' RAMClustR
 #'
-#' Search possible matches of a feature in Lipid fragments and other
-#' small molecule libraries.
+#' @description
+#' This function annotates features from LC-MS AIF using pseudo-MS/MS spectra 
+#' obtained using RAMClustR, by matching ions to metabolite/lipid fragment
+#' libraries.
 #'
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'
@@ -12,8 +15,8 @@
 #' (clusters). See RAMClustR paper for more details
 #' (https://pubs.acs.org/doi/10.1021/ac501530d).
 #' @param libs Fragment libraries to use. Either the built-in libraries can be
-#' specified ("LipidPos", "LipidNeg", "MetabolitesPos", "MetabolitesNeg") or
-#' the full path to user-defined libraries.
+#' specified (\code{LipidPos}, \code{LipidNeg}, \code{MetabolitesPos}, 
+#' \code{MetabolitesNeg}) or the full path to user-defined libraries.
 #' @param RTs Optional data.frame with Lipid/metabolites classes Retention
 #' Times in seconds.
 #' @param checkIsotope Whether or not to check the isotope type;
@@ -24,20 +27,23 @@
 #' @param matchWeight weight of the fragment matches to the final score;
 #' value between 0 and 1; the remaining fraction of the weight comes from the
 #' candidate m/z error.
-#' @return For each feature in the targets data frame the function will return a 
-#' list containing: a data frame with with rank 1 annotations (global), 
-#' the the date and time of annotation, a data frame with the annotation options.
-#' For each feature the following lists are returned: 
-#' ranked annotations for each feature (rankedResults), 
-#' the corresponding ranked matched spectra (rankedSpectra), 
-#' the pseudo-MS/MS spectra (pseudoMSMS), in-source spectra (inSourceSpectra) 
-#' and AIF spectrum (AIFspectra).
+#' @return For each feature in the targets data frame the function will return 
+#' a list containing: a data frame with with rank 1 annotations 
+#' (\code{global}), the the date and time of annotation, a data frame with the 
+#' annotation options. For each feature the following lists are returned: 
+#' ranked annotations for each feature (\code{rankedResults}), 
+#' the corresponding ranked matched spectra (\code{rankedSpectra}), 
+#' the pseudo-MS/MS spectra (\code{pseudoMSMS}), in-source spectra 
+#' (\code{inSourceSpectra}) and AIF spectrum (\code{AIFspectra}).
 #' @examples
-#' # Read RAMClustR (RC) and XCMS processed example data:
+#' # Read RAMClustR (RC) and XCMS processed example data lipid positive 
+#' # LC-MS data
+#' data("RC")
+#' data("xset")
+#' # read the table containing features to annotate
 #' tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
 #' targets <- read.csv(tfile)
-#' # Run annotation of lipid features for positive LC-MS 
-#' # processed with RAMClustR:
+#' # Run the annotation procedure
 #' annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
 #' libs="LipidPos", RTs="none", checkIsotope=TRUE)
 #' @export
