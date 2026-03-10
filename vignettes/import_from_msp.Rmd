@@ -39,7 +39,7 @@ For illustrative purposes, an .msp file containing some MS/MS spectra obtained
 from MassBank from both positive and negative ionisation modes was used:
 
 ```{r filepath, eval=TRUE}
-msp_path <- system.file("MassBank_example.msp", 
+msp_path <- system.file("extdata", "MassBank_example.msp", 
                         package="MetaboAnnotatoR")
 ```
 

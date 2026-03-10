@@ -77,7 +77,7 @@ genFragEntry(specObject,
             mzTol=0.01)
 ```
 
-A .csv file named "Pantothenic_acid_pos.csv" will be saved in the folder 
+A file named *Pantothenic_acid_pos.csv* will be saved in the folder 
 specified by the user.
 
 # Session Info

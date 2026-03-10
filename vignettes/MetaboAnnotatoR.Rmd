@@ -54,7 +54,7 @@ Firstly load library and dependencies:
 library(MetaboAnnotatoR)
 ```
 
-## Getting feature table and example data
+## Feature table and data
 
 As an input, MetaboAnnotatoR requires a data frame containing the features to
 be annotated and either a raw AIF LC-MS chromatogram (as .mzML or CDF) or a 
@@ -65,32 +65,35 @@ Additionally, the fragment libraries need to be specified.
 
 Firstly a data table (targets) containing one feature to annotate needs to be 
 loaded. There is an example feature table in MetaboAnnotatoR 
-("targetTable.csv") that it will be used in this example.
+(*targetTable.csv*) that it will be used in this example.
+
 ```{r features, eval=TRUE, echo=TRUE, message=FALSE}
-tfile <- system.file("targetTable.csv", package="MetaboAnnotatoR")
+tfile <- system.file("extdata", "targetTable.csv", package="MetaboAnnotatoR")
 targets <- read.csv(tfile)
 ```
+
 This table contains 6 features from a LC-MS Lipidomics (ESI+) chromatogram
 to be annotated.
 
 The example in this vignette will use of processed data, included in the 
 package. These consist of:
-1) an \code{xcmsSet} object (xset) containing the processed data from 100 
+1) an *xcmsSet* object (*xset*) containing the processed data from 100 
 AIF LC-MS chromatograms from human serum samples and 
 2) the respective pseudo-MS/Ms spectra obtained by processing the 
-\code{xcmsSet} data using RAMClustR (RC). 
+*xcmsSet* data using RAMClustR (*RC*). 
 The data can be loaded as followed:
+
 ```{r load_data, eval=TRUE}
 data("xset")
 data("RC")
 ```
 
-## Annotations using the Lipid ESI+ libraries
+## Annotations
 
 Since the features come from a ESI+ lipidomics experiment, annotation can be 
 performed using the default Lipid Positive mode libraries
-"LpidPos", using the \code{annotateRC}" function. 
-The annotations will be stored in an \code{annotations} object:
+"*LipidPos*", using the *annotateRC* function. 
+The annotations will be stored in an *annotations* object:
 
 ```{r lipid_pos_example, eval=TRUE}
 annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
@@ -98,7 +101,8 @@ annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC,
 ```
 
 The most significant annotations (rank 1 annotations) for each feature are 
-summarised in the global results object within the \code{annotations} object:
+summarised in the global results object within the *annotations* object:
+
 ```{r global, eval=TRUE}
 annotations$global
 ```
@@ -107,8 +111,9 @@ Three out of the six features were annotated with a lipid.
 
 It is also possible to inspect if there were other candidate annotations for
 a given feature, for instance feature 3: 468.3095 m/z,  82.92009 s.
-This information can be accessed from the \code{rankedResult} object stored
-in the \code{annotations}. For feature 3, it is accessed as follows:
+This information can be accessed from the *rankedResult* object stored
+in the *annotations*. For feature 3, it is accessed as follows:
+
 ```{r ranked, eval=TRUE}
 annotations$rankedResult[[3]]
 ```
@@ -121,6 +126,7 @@ chain.
 It is possible to visualise the spectra containing the matched ions to each
 candidate. The example code below will plot the rank 1 candidate for the
 annotation of the 3rd feature of the targets table:
+
 ```{r plot_result_spectrum, eval=TRUE}
 plotResultSpec(annotations, 3, 1)
 ```
