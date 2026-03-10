@@ -14,13 +14,16 @@
 #' originate from AIF raw files, if set to \code{TRUE}.
 #' @param saveRanked Option to save the ranked candidate table and 
 #' respective pseudo-MS/MS. The default option is \code{TRUE}.
+#' @param saveRankedSpec Option to save the ranked candidate matched fragment
+#' pseudo-MS/MS spectra as \code{.pdf} files. If the annotations are from
+#' an single AIF raw file, both the EICs for each fragment an pseudo-MS/MS
+#' spectra will be save. 
 #' @param savePseudoMSMS Option to save the pseudo-MS/MS for the features 
-#' from the targets table. The default option is code{FALSE}. If \code{TRUE},
-#' the pseudo-MS/MS will be saved as \code{.png} images and \code{.mgf} files.
-#' Note that EICs will only be saved in the png image if the annotations
-#' originate from AIF raw files.
-#' @param DirPath Path to the folder where the plots (as \code{.png}), 
-#' \code{.csv} tables and \code{.mgf} files will be saved.
+#' from the targets table. The default option is \code{FALSE}. If \code{TRUE},
+#' the pseudo-MS/MS will be saved as \code{.mgf} files.
+#' @param DirPath Path to the directory where the plots (as \code{.pdf}), 
+#' \code{.csv} tables and \code{.mgf} files will be saved. If no directory is 
+#' specified, the files will be saved to the working directory.
 #' @return Global and candidate annotations as .csv files and pseudo-MS/MS 
 #' spectra as \code{.png} and/or \code{.mgf} files.
 #' @examples
