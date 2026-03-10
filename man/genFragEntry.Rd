@@ -31,8 +31,7 @@ provided in absolute or relative scale.}
 \item{DirPath}{Path to the user-defined folder, where the library entry will
 be saved.}
 
-\item{filename}{The name of the .txt file containing the MS/MS spectrum used
-to generate the library entry.}
+\item{filename}{The name of file that will hold the the library entry.}
 
 \item{noise}{Noise intensity threshold expressed as a ratio to the peak with
 the highest intensity.}
@@ -68,7 +67,7 @@ specObject <- data.frame(V1=c(70.0298, 85.0652, 90.0556, 98.024, 116.0353,
 124.0766, 184.0981, 202.1085, 220.1185), V2=c(13.965907, 13.534607, 100.0, 
 26.165537, 15.383036, 25.231054, 28.578764, 43.017047, 64.962005))
 # Choose a folder to store the result
-userFir <- tempdir()
+userDir <- tempdir()
 # Generate fragment entry
 genFragEntry(specObject, "Pantothenic acid", "[M+H]+", 220.1179, 
 DirPath=userDir, "Pantothenic_acid_pos", noise=0.005, mpeaksScore=0.9, 

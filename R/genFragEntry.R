@@ -39,7 +39,7 @@
 #' 124.0766, 184.0981, 202.1085, 220.1185), V2=c(13.965907, 13.534607, 100.0, 
 #' 26.165537, 15.383036, 25.231054, 28.578764, 43.017047, 64.962005))
 #' # Choose a folder to store the result
-#' userFir <- tempdir()
+#' userDir <- tempdir()
 #' # Generate fragment entry
 #' genFragEntry(specObject, "Pantothenic acid", "[M+H]+", 220.1179, 
 #' DirPath=userDir, "Pantothenic_acid_pos", noise=0.005, mpeaksScore=0.9, 
