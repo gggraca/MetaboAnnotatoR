@@ -1,29 +1,16 @@
-## Common helper functions to organize annotation results 
+## Common helper functions to organize annotation results----------------------
 ## Goncalo Graca (Imperial College London)
-
-## Read RTs intervals from file------------------------------------------------
-RTsFromFile <- function(RTfile){
-    if(RTfile == "none") {
-        message("No RT information provided...")
-        RTs <- "none"
-    } else {
-        message("Reading RT information...")
-        RTs <- read.csv(RTfile,header=TRUE)
-    }
-    return(RTs)
-}
+## These functions are not exported
 
 ## Load libraries and get libraries filepaths----------------------------------
-loadLibs <- function(libs, ESImode){
-    message("Loading user-defined libraries...")
-    libfiles <- list.files(path=paste("./Libraries/",libs,"/",
-                                        ESImode, sep=""), 
-                                full.names=TRUE)
-    # check.names=FALSE to use the original header names in the annotations:
-    lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
-                    check.names=FALSE)
-    libraries <- list(lib=lib, libfiles=libfiles)
-    return(libraries)
+loadLibs <- function(libs){
+	message("Loading user-defined libraries...")
+	libfiles <- list.files(path=libs, full.names=TRUE)
+	# check.names=FALSE to use the original header names in the annotations:
+	lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
+				  check.names=FALSE)
+	libraries <- list(lib=lib, libfiles=libfiles)
+	return(libraries)
 }
 
 ## Store result for high rank candidate on global results table----------------

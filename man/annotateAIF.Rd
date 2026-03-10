@@ -2,37 +2,30 @@
 % Please edit documentation in R/annotateAIF.R
 \name{annotateAIF}
 \alias{annotateAIF}
-\title{Function to annotate features using LC-MS AIF raw chromatograms.}
+\title{Annotate features from LC-MS AIF raw chromatograms}
 \usage{
 annotateAIF(
-  targetTable = "targetTable.csv",
-  filetype = "mzML",
-  libs = "Lipids",
-  ESImode = "POS",
-  RTfile = "none",
+  targets,
+  xcmsOptions,
+  libs = "LipidPos",
+  RTs = "none",
   nCE = 1,
   corThresh = 0.8,
   checkIsotope = TRUE,
   tolerance = 25,
   maxMZdiff = 0.01,
-  matchWeight = 0.5,
-  ncandidates = 5
+  matchWeight = 0.5
 )
 }
 \arguments{
-\item{targetTable}{A .csv file containing the list of features to annotate
-and the name of the files containing the raw data.}
+\item{targets}{A data.frame containing the features to annotate
+and the file paths to the raw data.}
 
-\item{filetype}{LC-MS chromatogram file extension ("mzML" or "CDF").
-The default is "mzML".}
+\item{libs}{Fragment libraries to use. Either the built-in libraries can be
+specified ("LipidPOS", "LipidNEG", "MetabolitesPOS", "MetabolitesNEG") or
+the full path to user-defined libraries.}
 
-\item{libs}{Fragment libraries to use: 'Lipids' (default) or 'Metabolites'
-for other small molecules.}
-
-\item{ESImode}{Ionization mode: 'POS' for positive (default)
-or 'NEG' for negative ionisation modes}
-
-\item{RTfile}{Optional csv file with Lipid/metabolites classes Retention
+\item{RTs}{Optional data.frame with Lipid/metabolites classes Retention
 Times in seconds.}
 
 \item{nCE}{Number of Collision Energy levels depending on the MS system used
@@ -52,40 +45,41 @@ pseudo-MS/MS or AIF ions in Da.}
 \item{matchWeight}{weight of the fragment matches to the final score;
 value between 0 and 1; the remaining fraction of the weight comes from the
 candidate m/z error.}
-
-\item{ncandidates}{Maximum number of candidates to plot and store.}
 }
 \value{
-For each feature in the targetTable the will return a ranked list of
-annotations, a plot of EICs and pseudo-MS/MS spectrum for the matched ions,
-a plot of pseudo-MS/MS and pseudo-MS spectra for the each feature,
-a targetTable annotated with rank 1 annotations and a table with the options
-used for the function.
+For each feature in the targets data table the function will return
+a data frame with each feature rank 1 annotation and a table with the
+options used for the function, the data and time of annotation. In addition,
+lists with the ranked candidates matched to each feature
+(\code{rankedResult}), ranked matched spectra (\code{rankedSpectra}) and a
+list with pseudo-MS/MS spectra, in-source spectra, and AIF spectra and
+respective EIC objects (\code{pseudoMSMS}, see also \code{getPseudoMSMS},
+documentation for details).
 }
 \description{
-Search possible matches of a feature in Lipid fragments and other small
-molecule libraries, using 'raw' LC-MS single chromatogram information
-already loaded and peak-picked.
+This function annotates features from raw LC-MS AIF chromatograms, by
+performing pseudo-MS/MS spectra deconvolution and then matching ions
+to metabolite/lipid fragment libraries.
 }
 \examples{
 # Get the example feature list and peak-picking parameters files:
-getDemoData()
 # Download the example .mzML from zenodo website into the working directory:
 download.file(
 "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
 "Lipid_Positive_QC.mzML"
 )
 # create a new targetTable with one feature to annotate
-t <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
-Sample.name="Lipid_Positive_QC")
-write.csv(t, "targetTable.csv", row.names=FALSE)
-# modify xcms parameters on the XCMS_options.csv file
-p <- read.csv("XCMS_options.csv")
-p[2,2] <- 1000
-write.csv(p, "XCMS_options.csv", row.names=FALSE)
-# Run the annotation using the lipid libraries:
-annotateAIF(targetTable="targetTable.csv", filetype="mzML", 
-libs="Lipids", ESImode="POS", RTfile="none", nCE=1, corThresh=0.8,
+targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
+Sample.name="Lipid_Positive_QC.mzML")
+# read the default xcms parameters on the XCMS_options.csv file and modify
+# the noise threshold parameter
+xcmsOptionsPath <- system.file("XCMS_options.csv", 
+package="MetaboAnnotatoR")
+xcmsOptions <- read.csv(xcmsOptionsPath)
+xcmsOptions[2,2] <- 1000
+# Run the annotation using the built-in lipid POS library:
+annotations <- annotateAIF(targets, xcmsOptions, 
+libs="LipidPos", RTs="none", nCE=1, corThresh=0.8,
 checkIsotope=TRUE)
 }
 \author{

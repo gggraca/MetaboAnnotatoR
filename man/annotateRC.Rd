@@ -2,24 +2,24 @@
 % Please edit documentation in R/annotateRC.R
 \name{annotateRC}
 \alias{annotateRC}
-\title{Annotation of features using LC-MS AIF datasets processed using RAMClustR.}
+\title{Annotate features from LC-MS AIF datasets processed with
+RAMClustR}
 \usage{
 annotateRC(
-  targetTable,
+  targets,
   xcmsObject,
   ramclustObj,
-  libs = "Lipids",
-  ESImode = "POS",
-  RTfile = "none",
+  libs = "LipidPos",
+  RTs = "none",
   checkIsotope = TRUE,
   tolerance = 25,
   maxMZdiff = 0.01,
-  matchWeight = 0.5,
-  ncandidates = 5
+  matchWeight = 0.5
 )
 }
 \arguments{
-\item{targetTable}{A csv file containing the list of features to annotate.}
+\item{targets}{A data.frame containing the features to annotate
+and the file paths to the raw data.}
 
 \item{xcmsObject}{XCMS object containing the processed AIF datasets.}
 
@@ -27,14 +27,12 @@ annotateRC(
 (clusters). See RAMClustR paper for more details
 (https://pubs.acs.org/doi/10.1021/ac501530d).}
 
-\item{libs}{Fragment library to use: 'Lipids' (default) or 'Metabolites'
-for other small molecules.}
+\item{libs}{Fragment libraries to use. Either the built-in libraries can be
+specified (\code{LipidPos}, \code{LipidNeg}, \code{MetabolitesPos},
+\code{MetabolitesNeg}) or the full path to user-defined libraries.}
 
-\item{ESImode}{Ionization mode: 'POS' for positive (default) or 'NEG'
-for negative ionisation modes.}
-
-\item{RTfile}{optional csv file with Lipid/metabolite classes Retention
-Times in seconds}
+\item{RTs}{Optional data.frame with Lipid/metabolites classes Retention
+Times in seconds.}
 
 \item{checkIsotope}{Whether or not to check the isotope type;
 default is set to TRUE.}
@@ -47,26 +45,33 @@ pseudo-MS/MS or AIF ions in Da.}
 \item{matchWeight}{weight of the fragment matches to the final score;
 value between 0 and 1; the remaining fraction of the weight comes from the
 candidate m/z error.}
-
-\item{ncandidates}{Maximum number of candidates to plot and store.}
 }
 \value{
-For each feature in the targetTable the will return a ranked list of
-annotations, a plot pseudo-MS/MS spectrum for the matched ions,
-a targetTable annotated with rank 1 annotations and a table with the options
-used for the function.
+For each feature in the targets data frame the function will return
+a list containing: a data frame with with rank 1 annotations
+(\code{global}), the the date and time of annotation, a data frame with the
+annotation options. For each feature the following lists are returned:
+ranked annotations for each feature (\code{rankedResults}),
+the corresponding ranked matched spectra (\code{rankedSpectra}),
+the pseudo-MS/MS spectra (\code{pseudoMSMS}), in-source spectra
+(\code{inSourceSpectra}) and AIF spectrum (\code{AIFspectra}).
 }
 \description{
-Search possible matches of a feature in Lipid fragments and other
-small molecule libraries.
+This function annotates features from LC-MS AIF using pseudo-MS/MS spectra
+obtained using RAMClustR, by matching ions to metabolite/lipid fragment
+libraries.
 }
 \examples{
-# Read RAMClustR (RC) and XCMS processed example data:
+# Read RAMClustR (RC) and XCMS processed example data lipid positive 
+# LC-MS data
+data("RC")
+data("xset")
+# read the table containing features to annotate
 tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
-# Run annotation of lipid features for positive LC-MS 
-# processed with RAMClustR:
-annotateRC(targetTable=tfile, xcmsObject=xset, ramclustObj=RC, 
-libs="Lipids", ESImode="POS")
+targets <- read.csv(tfile)
+# Run the annotation procedure
+annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
+libs="LipidPos", RTs="none", checkIsotope=TRUE)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)

@@ -1,6 +1,7 @@
-#' Ranks candidate metabolite annotations by score.
+#' @title Rank candidate metabolite annotations by score
 #'
-#' Ranks the annotation results by final score.
+#' @description
+#' Ranks the annotation results by final match score.
 #'
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'

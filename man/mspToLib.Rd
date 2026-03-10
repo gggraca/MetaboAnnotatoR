@@ -2,12 +2,11 @@
 % Please edit documentation in R/mspToLib.R
 \name{mspToLib}
 \alias{mspToLib}
-\title{Function to generate metabolite database entries from MS/MS spectra
-obtained from from an .msp file}
+\title{Generate metabolite entries from MS/MS spectra (.msp files)}
 \usage{
 mspToLib(
   msp_file,
-  library_name = "Custom",
+  LibDir = "",
   noise = 0.005,
   mpeaksScore = 0.9,
   mpeaksThres = 0.1
@@ -17,7 +16,8 @@ mspToLib(
 \item{msp_file}{an MS/MS spectral library for spectra from one or both
 polarities.}
 
-\item{library_name}{Custom library name under which POS and NEG folders.
+\item{LibDir}{Custom library folder path under which library files will
+be saved.
 will be created and where the respective library entries will be stored.}
 
 \item{noise}{Noise intensity threshold expressed as a ratio to the peak with
@@ -26,11 +26,11 @@ the highest intensity.}
 \item{mpeaksScore}{The occurrence score to be attributed to the most intense
 peaks of the MS/MS spectrum which should correspond to the most
 characteristic fragmentation ions from the metabolite (or 'marker' peaks).
-These will be the peaks above 'mpeaksThres' value. This score is divided by
-the number of peaks above 'mpeaksThres' threshold. By default this value is
-defined at 0.9, which means that peaks below 'mpeaksThres' threshold will be
-given an occurrence score of 0.1, so that the sum of all fragment occurrence
-scores is 1.}
+These will be the peaks above \code{mpeaksThres} value. This score is
+divided by the number of peaks above \code{mpeaksThres} threshold.
+By default this value is defined at 0.9, which means that peaks below
+\code{mpeaksThres} threshold will be given an occurrence score of 0.1,
+so that the sum of all fragment occurrence scores is 1.}
 
 \item{mpeaksThres}{Intensity threshold to select peaks of the MS/MS spectrum
 considered to be highest intensity, expressed as a ratio to the peak
@@ -42,14 +42,16 @@ corresponding occurrence scores.
 }
 \description{
 Function to generate metabolite database entries from MS/MS spectra
-obtained from from an .msp file
+obtained from from an .msp file.
 }
 \examples{
 # read example.msp file and import as "custom" library
 msp_path <- system.file("/Data/MassBank_example.msp", 
 package="MetaboAnnotatoR")
-mspToLib(msp_path, library_name="Custom", noise=0.005, 
-mpeaksScore=0.9, mpeaksThres=0.1)
+# Set the library directory to store the library files
+userDir <- tempdir()
+mspToLib(msp_path, LibDir=userDir, noise=0.005, mpeaksScore=0.9, 
+mpeaksThres=0.1)
 }
 \author{
 Goncalo Graca (Imperial College London)

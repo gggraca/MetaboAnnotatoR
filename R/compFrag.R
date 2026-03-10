@@ -1,7 +1,8 @@
-#' Spectral matching function.
+#' @title Match (pseudo-)MS/MS spectra ions to library fragments
 #'
-#' Function to compare pseudo-MS/MS and high-collision-energy spectra
-#' with fragment from a candidate metabolite from the database.
+#' @description
+#' This function compares pseudo-MS/MS and high-collision-energy spectra peaks
+#' with fragments from candidates of the metabolite/lipid fragment libraries.
 #'
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'

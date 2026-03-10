@@ -26,15 +26,10 @@ This vignette illustrates how to convert MS/MS spectra libraries
 
 # Import .msp library
 
-**Load MetaboAnnotatoR library and dependencies:**
+**Load MetaboAnnotatoR library and dependencies**
 
 ```{r load_package, eval=TRUE, message=FALSE, warning=FALSE}
 library(MetaboAnnotatoR)
-```
-
-```{r setwd_to_run, eval=TRUE, echo=FALSE, message=FALSE}
-## silently set working directory to tempdir() for the vignette
-setwd(tempdir())
 ```
 
 **Get the path to the example .msp MS/MS spectra library file:**
@@ -44,25 +39,34 @@ For illustrative purposes, an .msp file containing some MS/MS spectra obtained
 from MassBank from both positive and negative ionisation modes was used:
 
 ```{r filepath, eval=TRUE}
-msp_path <- system.file("/Data/MassBank_example.msp", 
+msp_path <- system.file("MassBank_example.msp", 
                         package="MetaboAnnotatoR")
 ```
 
+**Set a directory to store
 
-**Generate library entry**
 
-Use function 'mspToLib' to read and convert the spectra records from the .msp
-into library entries (.csv files), which will be stored in the 'Libraries' 
-folder, with the name 'Custom'. Positive and Negative mode records will be 
-saved into the respective folders of the new 'Custom' library directory.
-Similarly to the function 'genFragEntry' this function will attribute 
-occurrence scores to the peaks above 'mpeaksThres' threshold ("marker peaks")
-and above the noise level. The peak-picking parameters 'noise' and 
-'mpeaksThres' and the occurrence scores used here are the default parameters.
+**Generate library entries imported from the .msp file**
 
-```{r run_function, eval=TRUE}
-mspToLib(msp_path, library_name="Custom", noise=0.005, mpeaksScore=0.9, 
-            mpeaksThres=0.1)
+For this example a temporary directory will be used, but the user is encouraged
+to use any other preferred directory.
+```{r setwd_to_run, eval=TRUE}
+LibDir <- tempdir()
+```
+
+Use function *mspToLib* to read and convert the spectra records from the 
+.msp files into library entries (.csv files), which will be stored in the 
+user-defined library directory (*LibDir*). A "positive" or "negative" mode
+suffix will be added to each file name to facilitate the organisation of the 
+custom libraries.
+Similarly to the function *genFragEntry* this function will attribute 
+occurrence scores to the peaks above *mpeaksThres* threshold 
+("marker peaks") and above the noise level. The peak-picking parameters 
+*noise* and *mpeaksThres* and the occurrence scores used here are the
+default parameters.
+
+```{r run_function, eval=TRUE, warning=FALSE}
+mspToLib(msp_path, LibDir, noise=0.005, mpeaksScore=0.9, mpeaksThres=0.1)
 ```
 
 # Session Info

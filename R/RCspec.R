@@ -1,5 +1,6 @@
-#' Get RAMClustR pseudo-MS/MS spectra (cluster).
+#' @title Get RAMClustR pseudo-MS/MS spectra (cluster).
 #'
+#' @description
 #' For a given feature, find out corresponding cluster (pseudo-MS/MS spectra) 
 #' from RAMClustR object.
 #'
@@ -12,6 +13,8 @@
 #' (https://pubs.acs.org/doi/10.1021/ac501530d).
 #' @return Pseudo-MS/MS spectrum for the feature of interest.
 #' @examples
+#' # read  RamclustR example data
+#' data("RC")
 #' # obtain pseudo-MS/MS from the RC example data
 #' spec <- RCspec(fmz=468.3094, frt=82.92, ramclustObj=RC)
 #' @export

@@ -1,5 +1,6 @@
-#' Searches candidate metabolites from the fragments libraries by m/z
-#'
+#' @title Search candidate metabolites from the fragments libraries
+#' 
+#' @description
 #' Search candidate metabolites from the fragments libraries
 #' for a given feature using m/z and RT (if metabolite RTs are known).
 #' If no match is found in the "parent" ions, for instance in the case of a
@@ -23,14 +24,15 @@
 #' libraries which will be used in the pseudo-MS/MS to fragment matching step.
 #' @examples
 #' # load default libraries for Metabolites in Positive mode
-#' libfiles <- MetabolitesPos$libfiles
-#' lib <- MetabolitesPos$lib
-#' # read feature mz and rt and in-source sepctrum
+#' libraries <- MetaboAnnotatoR::MetabolitesPos
+#' libfiles <- libraries$libfiles
+#' lib <- libraries$lib
+#' # read feature mz and rt and in-source spectrum
 #' fmz <- 152.0720
 #' frt <- 125
 #' inSourceSpec <- data.frame(mz = 152.0720, into = 1)
 #' # Search the library for candidates
-#' candidates <- searchLib(libraries, libfiles, fmz, frt, tolerance=25, 
+#' candidates <- searchLib(lib, libfiles, fmz, frt, tolerance=25, 
 #' RTs="none", inSourceSpec)
 #' @export
 searchLib <- function(libraries, libfiles, fmz, frt, 
