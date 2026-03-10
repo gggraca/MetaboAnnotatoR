@@ -1,0 +1,6 @@
+centWave_parameters,Option1,Option2
+ppm.tol,25,
+noise,100,
+snthresh,5,
+peakwidth(min;max),2,20
+prefilter(k.scans;min.intensity),3,100
