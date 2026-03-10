@@ -96,7 +96,8 @@ saveAnnotations <- function(annotations,
 			l <- lapply(l, 
 						function(x) plotCandidatesRC(
 							rankedResult[[x]], 
-							rankedSpectra[[x]], 
+							rankedSpectra[[x]],
+							pseudoMSMS[[x]],
 							DirPath)
 						)
 		}
@@ -170,7 +171,7 @@ saveAIFmgf <- function(global, pseudoMSMS, polarity, DirPath){
 }
 
 # plotCandidatesRC to plot annotation candidates matched spectra--------------
-plotCandidatesRC <- function(rankedResult, rankedSpectra, DirPath){
+plotCandidatesRC <- function(rankedResult, rankedSpectra, pseudoMSMS, DirPath){
 	if(!is.null(rankedResult)){
 		candidates <- nrow(rankedResult)
 		if(!is.null(candidates)) candidates <- seq_len(candidates)

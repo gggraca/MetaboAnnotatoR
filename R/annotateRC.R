@@ -90,7 +90,7 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 		inSourceSpec <- xcmsSpec(fmz, frt, xcmsObject, highCE = FALSE)
 		highCESpec <- xcmsSpec(fmz, frt, xcmsObject, highCE = TRUE)
 		# store spectra in the annotation results object
-		if(!is.null(pseudoMSMS)) {
+		if(!is.null(pseudoSpec)) {
 			results$pseudoMSMS[[i]] <- pseudoSpec
 			} else results$pseudoMSMS[[i]] <- NA
 		results$AIFspectra[[i]] <- highCESpec

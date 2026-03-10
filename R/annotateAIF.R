@@ -39,15 +39,19 @@
 #' respective EIC objects (\code{pseudoMSMS}, see also \code{getPseudoMSMS},
 #' documentation for details).
 #' @examples
-#' # Get the example feature list and peak-picking parameters files:
-#' # Download the example .mzML from zenodo website into the working directory:
+#' # Set a directory to save the example .mzML file
+#' userDir <- tempdir()
+#' # Download the example .mzML from zenodo website into the specified directory
+#' # as "Lipid_Positive_QC.mzML"...define file.path first:
+#' fpath <- file.path(userDir, "Lipid_Positive_QC.mzML")
 #' download.file(
 #' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
-#' "Lipid_Positive_QC.mzML"
+#' fpath
 #' )
 #' # create a new targetTable with one feature to annotate
+#' # the Sample.name is the path to the mzML file
 #' targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
-#' Sample.name="Lipid_Positive_QC.mzML")
+#' Sample.name=fpath)
 #' # read the default xcms parameters on the XCMS_options.csv file and modify
 #' # the noise threshold parameter
 #' xcmsOptionsPath <- system.file("XCMS_options.csv", 
