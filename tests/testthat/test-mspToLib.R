@@ -1,6 +1,6 @@
 # input test data
 # use tempdir as test target folder
-msp_path <- system.file("MassBank_example.msp", package = "MetaboAnnotatoR")
+msp_path <- system.file("extdata", "MassBank_example.msp", package = "MetaboAnnotatoR")
 
 testLib <- tempdir()
 
