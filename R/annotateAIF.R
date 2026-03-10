@@ -7,11 +7,15 @@
 #'
 #' @author Goncalo Graca (Imperial College London)
 #'
-#' @param targets A data.frame containing the features to annotate
+#' @param targets A data frame containing the features to annotate
 #' and the file paths to the raw data.
+#' @param xcmsOptions A data frame containing the XCMS \code{centWave} 
+#' peak-picking parameters. An example of such table can be found in the data
+#' provided with \code{MetaboAnnotatoR} as \code{XCMS_options.csv} 
+#' (see example for details).
 #' @param libs Fragment libraries to use. Either the built-in libraries can be
-#' specified ("LipidPOS", "LipidNEG", "MetabolitesPOS", "MetabolitesNEG") or
-#' the full path to user-defined libraries.
+#' specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS}, 
+#' \code{MetabolitesNEG}) or the full path to user-defined libraries.
 #' @param RTs Optional data.frame with Lipid/metabolites classes Retention
 #' Times in seconds.
 #' @param nCE Number of Collision Energy levels depending on the MS system used
