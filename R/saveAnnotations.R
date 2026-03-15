@@ -76,18 +76,18 @@ saveAnnotations <- function(annotations,
     # save global annotations result to file
     fpath <- file.path(DirPath, "annotation_global_results.csv")
     write.csv(global, fpath, row.names=FALSE)
-	
+
     # save ranked results
     if(saveRanked){
         for(i in seq_along(rankedResult)){
             if(!is.null(rankedResult[[i]])){
-			    fpath <- file.path(DirPath, "/", 
-								   round(global$feature.mz[i], 3),
-								   "mz_",
-								   round(global$feature.rt[i], 3),
-								   "s_", 
-								   "ranked_results.csv",
-								   fsep="")
+                fpath <- file.path(DirPath, "/", 
+                                    round(global$feature.mz[i], 3),
+                                    "mz_",
+                                    round(global$feature.rt[i], 3),
+                                    "s_", 
+                                    "ranked_results.csv",
+                                    fsep="")
                 write.csv(rankedResult[[i]], fpath, , row.names=FALSE)
             }
         }
@@ -110,7 +110,7 @@ saveAnnotations <- function(annotations,
                                 pseudoMSMS[[x]],
                                 DirPath))
     }
-	
+
     # save pseudoMSMS as .mgf and plot as .pdf
     if(savePseudoMSMS & dataType == "AIF"){
         l <- lapply(featIdx, function(x) 
@@ -125,8 +125,8 @@ saveAnnotations <- function(annotations,
                             dataType="AIF",
                             pseudo=pseudoMSMS[[x]], 
                             DirPath))
-	}
-	
+    }
+
     if(savePseudoMSMS & dataType == "RAMClustR"){
         l <- lapply(featIdx, function(x) 
                             saveMgf(fmz=global$feature.mz[x],
@@ -135,7 +135,7 @@ saveAnnotations <- function(annotations,
                             polarity, 
                             DirPath))
         l <- lapply(featIdx, function(x) 
-				            savePseudo(fmz=global$feature.mz[x], 
+                            savePseudo(fmz=global$feature.mz[x], 
                             frt=global$feature.rt[x],
                             dataType="RAMClustR",
                             pseudo=pseudoMSMS[[x]], 
@@ -156,11 +156,11 @@ saveMgf <- function(fmz, frt, pseudo, polarity, DirPath){
                     polarity=polarity,
                     centroided=TRUE)
         fpath <- file.path(DirPath, "/", 
-    					    round(fmz, 3),
-    					    "mz_",
-    					    round(frt, 3),
-    					    "s_", 
-    					    "pseudo-MSMS", ".mgf", 
+                            round(fmz, 3),
+                            "mz_",
+                            round(frt, 3),
+                            "s_", 
+                            "pseudo-MSMS", ".mgf", 
                             fsep="")
         MSnbase::writeMgfData(spec, fpath)
     }
@@ -227,7 +227,7 @@ savePseudo <- function(fmz, frt, dataType, pseudo, DirPath){
                 ggplot2::xlim(min(df$mz)-50, max(df$mz)+50) +
                 ggplot2::labs(x="m/z", y="Intensity (a.u.)")
             fpath <- file.path(round(fmz,3), "mz_", round(frt,3), "s",
-							    "_pseudoMSMS.pdf", fsep="")
+                                "_pseudoMSMS.pdf", fsep="")
             ggplot2::ggsave(fpath, plot=plt, path=DirPath, width=10, height=5)
         }
     }
@@ -236,7 +236,7 @@ savePseudo <- function(fmz, frt, dataType, pseudo, DirPath){
 # plotCandidatesRC to plot annotation candidates matched spectra--------------
 plotCandidatesRC <- function(rankedResult, rankedSpectra, pseudoMSMS, DirPath){
     if(!is.null(rankedResult)){
-         candidates <- nrow(rankedResult)
+        candidates <- nrow(rankedResult)
         if(!is.null(candidates)) candidates <- seq_len(candidates)
         l <- lapply(candidates, function(x) plotSingleCandidateRC(rankedResult, 
                                                         rankedSpectra, 
@@ -248,7 +248,7 @@ plotCandidatesRC <- function(rankedResult, rankedSpectra, pseudoMSMS, DirPath){
 
 # plot one RC candidate and save to DirPath
 plotSingleCandidateRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
-								  candidate, DirPath){
+                                    candidate, DirPath){
     # get relevant information from the rankedResult and rankedSpectra objects
     metabolite <- rankedResult[candidate,"metabolite"]
     ionType <- rankedResult[candidate,"ion.type"]
@@ -269,19 +269,19 @@ plotSingleCandidateRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
     plt <- ggplot2::ggplot(df,
         ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
         ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
-							  color="red", lwd=0.5) +
+                                color="red", lwd=0.5) +
         ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
         ggplot2::ggtitle(paste("Feature ", round(fmz, 4), "m/z", "_", 
-							   round(frt, 4), "s ", ", Rank ", rnk, 
-							   " result: ", adductName, ", mz.error = ", 
-							   MZerror, " ppm, ", "score = ", 
-                               round(score, 2), sep="")) +
+                                round(frt, 4), "s ", ", Rank ", rnk, 
+                                " result: ", adductName, ", mz.error = ", 
+                                MZerror, " ppm, ", "score = ", 
+                                round(score, 2), sep="")) +
         ggplot2::theme_minimal() +
         ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
         ggplot2::ylim(0, max(df$into) + 0.1*max(df$into)) +
         ggplot2::xlim(min(df$mz)-50, max(df$mz)+50) +
         ggplot2::labs(x="m/z", y="Intensity (a.u.)")
-	
+
     fpath <- file.path(round(fmz,3), "mz_", 
                         round(frt,3), "s", "_candidate_", 
                         candidate,".pdf", fsep="")
@@ -290,25 +290,24 @@ plotSingleCandidateRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
 
 # plotCandidatesAIF to plot annotation candidates matched spectra--------------
 plotCandidatesAIF <- function(rankedResult, 
-							  rankedSpectra, 
-							  pseudoMSMS,
-							  DirPath){
+                                rankedSpectra, 
+                                pseudoMSMS,
+                                DirPath){
     candidates <- nrow(rankedResult)
     if(!is.null(candidates)) candidates <- seq_len(candidates)
 	
     l <- lapply(candidates, function(x) plotSingleCandidateAIF(rankedResult, 
                                                                 rankedSpectra,
-												                pseudoMSMS,
-												                x,
-												                DirPath))
+                                                                pseudoMSMS, x,
+                                                                DirPath))
 }
 
 # plot one AIF candidate and save to DirPath
 plotSingleCandidateAIF <- function(rankedResult, 
-								   rankedSpectra, 
-								   pseudoMSMS,
-								   candidate,
-								   DirPath){
+                                        rankedSpectra, 
+                                        pseudoMSMS,
+                                        candidate,
+                                        DirPath){
     # get relevant information from the rankedCResult and rankedSpectra objects
     metabolite <- rankedResult[candidate,"metabolite"]
     ionType <- rankedResult[candidate,"ion.type"]
@@ -359,6 +358,6 @@ plotSingleCandidateAIF <- function(rankedResult,
                             candidate, ".pdf", fsep="")
         plt <- gridExtra::grid.arrange(p1, p2, nrow=2)
         ggplot2::ggsave(fpath, plot=plt, device="pdf", path=DirPath, 
-                        width=10, height=10)
+                                width=10, height=10)
     } else NULL
 }

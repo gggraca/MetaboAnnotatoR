@@ -109,8 +109,8 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
             candidates <- searchLib(lib, libfiles, fmz - iso * 1.0034, frt,
                                     tolerance=tolerance, RTs, inSourceSpec)
         }
-        # Compare fragments between Library candidates and high-collision-energy /
-        # pseudo-MS/MS spectra --------------------
+        #Compare fragments between Library candidates and high-collision-energy
+        #pseudo-MS/MS spectra --------------------
         if(is.null(pseudoSpec) & 
             is.null(highCESpec) | 
             length(unlist(candidates)) == 0){
@@ -121,22 +121,22 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
                                 lapply(as.numeric(names(candidates)),
                                 function(x) lib[[x]]),
                                 MoreArgs=list(fmz, frt, iso, highCESpec, 
-                                              pseudoSpec,
-                                              maxMZdiff=maxMZdiff,
-                                              matchWeight=matchWeight), 
+                                                pseudoSpec,
+                                                maxMZdiff=maxMZdiff,
+                                                matchWeight=matchWeight), 
                                 SIMPLIFY=FALSE)
             result <- do.call(rbind, lapply(output, "[[", 1))
             specMatch <- unlist(lapply(output, "[[", 2), recursive = FALSE)
             specMatch <- specMatch[!(specMatch) == "NULL"]
         }
-		# Score ranking --------------------
+        # Score ranking --------------------
         if(is.null(result)) {
             rankedResult <- targets[i,c(1,2)]
             rankedResult[c("metabolite", "feature.type", "ion.type", "isotope",
                             "mz.metabolite", "matched.mz", "mz.error", 
                             "pseudoMSMS", "fraction", "score")] <- NA
             rankedSpec <- NULL
-            
+
             # type of ion isotope
             rankedResult$isotope <- paste("M+", iso, sep="")
 

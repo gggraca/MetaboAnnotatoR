@@ -4,13 +4,13 @@
 
 ## Load libraries and get libraries filepaths----------------------------------
 loadLibs <- function(libs){
-	message("Loading user-defined libraries...")
-	libfiles <- list.files(path=libs, full.names=TRUE)
-	# check.names=FALSE to use the original header names in the annotations:
-	lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
-				  check.names=FALSE)
-	libraries <- list(lib=lib, libfiles=libfiles)
-	return(libraries)
+    message("Loading user-defined libraries...")
+    libfiles <- list.files(path=libs, full.names=TRUE)
+    # check.names=FALSE to use the original header names in the annotations:
+    lib <- lapply(libfiles, read.csv, header=TRUE, sep=",",
+                    check.names=FALSE)
+    libraries <- list(lib=lib, libfiles=libfiles)
+    return(libraries)
 }
 
 ## Store result for high rank candidate on global results table----------------

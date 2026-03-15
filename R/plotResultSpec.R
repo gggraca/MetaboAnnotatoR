@@ -31,7 +31,7 @@ plotResultSpec <- function(annotations, feature, candidate){
         message("No annotation result found for this feature.")
     } else {
         rankedSpectra <- annotations$rankedSpectra[[feature]]
-        # get relevant information from the rankedResult and rankedSpectra objects
+        # get information from the rankedResult and rankedSpectra objects
         metabolite <- rankedResult[candidate,"metabolite"]
         ionType <- rankedResult[candidate,"ion.type"]
         score <- rankedResult[candidate,"score"]
