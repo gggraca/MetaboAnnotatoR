@@ -38,11 +38,12 @@ spectra will be save.}
 
 \item{savePseudoMSMS}{Option to save the pseudo-MS/MS for the features
 from the targets table. The default option is \code{FALSE}. If \code{TRUE},
-the pseudo-MS/MS will be saved as \code{.mgf} files.}
+the pseudo-MS/MS will be saved as \code{.mgf} file and the corresponding
+plots as \code{.pdf}.}
 }
 \value{
 Global and candidate annotations as .csv files and pseudo-MS/MS
-spectra as \code{.png} and/or \code{.mgf} files.
+spectra as \code{.pdf} and/or \code{.mgf} files.
 }
 \description{
 Saves all annotation related data, such as annotation table, options,

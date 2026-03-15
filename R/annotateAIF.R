@@ -54,7 +54,7 @@
 #' Sample.name=fpath)
 #' # read the default xcms parameters on the XCMS_options.csv file and modify
 #' # the noise threshold parameter
-#' xcmsOptionsPath <- system.file("XCMS_options.csv", 
+#' xcmsOptionsPath <- system.file("extdata", "XCMS_options.csv", 
 #' package="MetaboAnnotatoR")
 #' xcmsOptions <- read.csv(xcmsOptionsPath)
 #' xcmsOptions[2,2] <- 1000
@@ -64,7 +64,7 @@
 #' checkIsotope=TRUE)
 #' @export
 annotateAIF <- function(targets,
-						xcmsOptions,
+                        xcmsOptions,
                         libs="LipidPos",
                         RTs="none",
                         nCE=1,
@@ -86,13 +86,13 @@ annotateAIF <- function(targets,
     
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
-    	libraries <- MetaboAnnotatoR::LipidPos
+        libraries <- MetaboAnnotatoR::LipidPos
     } else if(libs == "LipidNeg") {
-    	libraries <- MetaboAnnotatoR::LipidNeg
+        libraries <- MetaboAnnotatoR::LipidNeg
     } else if(libs == "MetabolitesPos") {
-    	libraries <- MetaboAnnotatoR::MetabolitesPos
+        libraries <- MetaboAnnotatoR::MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
-    	libraries <- MetaboAnnotatoR::MetabolitesNeg
+        libraries <- MetaboAnnotatoR::MetabolitesNeg
     } else libraries <- loadLibs(libs)
     
     libfiles <- libraries$libfiles
@@ -248,12 +248,12 @@ initializeResultsAIF <- function(targets){
                 "fraction", "score")] <- NA
     # return global results table and results path as list
     results <- list(global=global,
-    				Date=Date, 
-    				Time=Time,
-    				options=options,
-    				rankedResult=rankedResult, 
-    				rankedSpectra=rankedSpectra, 
-    				pseudoMSMS=pseudoMSMS)
+                    Date=Date, 
+                    Time=Time,
+                    options=options,
+                    rankedResult=rankedResult, 
+                    rankedSpectra=rankedSpectra, 
+                    pseudoMSMS=pseudoMSMS)
     return(results)
 }
 
@@ -271,8 +271,8 @@ readData <- function(filePath, xcmsOptions, nCE){
             xcmsF2@featureData@data <- xcmsF2@featureData@data[highCEscans,]
         }
     }
-	# 2 CDF files have been used in Waters data, 
-	# converted from raw using data bridge 
+    # 2 CDF files have been used in Waters data, 
+    # converted from raw using data bridge 
     if(length(grep(".CDF", filePath)) == 1){
         filePath2 <- grep("01.CDF", "02.CDF", filePath)
         # read the two MS functions

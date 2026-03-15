@@ -82,7 +82,7 @@ targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759,
 Sample.name=fpath)
 # read the default xcms parameters on the XCMS_options.csv file and modify
 # the noise threshold parameter
-xcmsOptionsPath <- system.file("XCMS_options.csv", 
+xcmsOptionsPath <- system.file("extdata", "XCMS_options.csv", 
 package="MetaboAnnotatoR")
 xcmsOptions <- read.csv(xcmsOptionsPath)
 xcmsOptions[2,2] <- 1000

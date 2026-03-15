@@ -67,7 +67,8 @@ libraries.
 data("RC")
 data("xset")
 # read the table containing features to annotate
-tfile <- system.file("targetTable.csv", package = "MetaboAnnotatoR")
+tfile <- system.file("extdata", "targetTable.csv", 
+package="MetaboAnnotatoR")
 targets <- read.csv(tfile)
 # Run the annotation procedure
 annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
