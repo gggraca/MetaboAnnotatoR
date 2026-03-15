@@ -28,6 +28,6 @@ Suggests:
     testthat (>= 3.0.0),
     BiocStyle,
     msdata
-LazyData: true
+LazyData: false
 VignetteBuilder: knitr
 Config/testthat/edition: 3
