@@ -53,7 +53,7 @@
 #' @importFrom ProtGenerics intensity rtime polarity
 #' @export
 getPseudoMSMS <- function(fmz, frt, xcmsF1, xcmsF2, peaksF1, peaksF2, 
-						  cthres1=0.9, cthres2=0.8){
+                                                cthres1=0.9, cthres2=0.8){
     ## create objects to store results from EIC correlations and peak-picking--
     # improves object handling in other functions
     insource <- NULL

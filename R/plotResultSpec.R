@@ -42,12 +42,12 @@ plotResultSpec <- function(annotations, feature, candidate){
         specMatch <- rankedSpectra[[candidate]]
         fmz <- rankedResult[candidate,"feature.mz"]
         frt <- rankedResult[candidate,"feature.rt"]
-		
+
         # plotting part
         if(is.null(nrow(specMatch))) {
             df <- as.data.frame(specMatch[c("mz", "into")])
         } else df <- as.data.frame(specMatch[,c("mz", "into")])
-		
+
         plt <- ggplot2::ggplot(df,
             ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
             ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 

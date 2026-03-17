@@ -188,7 +188,7 @@ savePseudo <- function(fmz, frt, dataType, pseudo, DirPath){
                 ggplot2::labs(x="RT (s)", y="Intensity (a.u.)", 
                                 colour="fragments") +
                 ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),
-                                        "s", "fragment EICs")) +
+                                        "s", "correlated EICs")) +
                 ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
             # Spectrum
             df2 <- aif[,c("mz", "into")]
@@ -207,7 +207,7 @@ savePseudo <- function(fmz, frt, dataType, pseudo, DirPath){
             fpath <- file.path(round(fmz,3),"mz_", round(frt,3), "s", 
                                 "_pseudoMSMS.pdf", fsep="")
             ggplot2::ggsave(fpath, plot=plt, device="pdf", 
-                             path=DirPath, width=10, height=10)
+                                path=DirPath, width=10, height=10)
         }
     }
     if(dataType == "RAMClustR"){
@@ -217,10 +217,10 @@ savePseudo <- function(fmz, frt, dataType, pseudo, DirPath){
             plt <- ggplot2::ggplot(df, 
                 ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
                 ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
-                                      color="red", lwd=0.5) +
+                                        color="red", lwd=0.5) +
                 ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
                 ggplot2::ggtitle(paste("Feature ", round(fmz, 4), "m/z", "_", 
-									   round(frt, 4), "s ", "pseudo-MS/MS")) +
+                                        round(frt, 4), "s ", "pseudo-MS/MS")) +
                 ggplot2::theme_minimal() +
                 ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
                 ggplot2::ylim(0, max(df$into) + 0.1*max(df$into)) +
@@ -265,7 +265,7 @@ plotSingleCandidateRC <- function(rankedResult, rankedSpectra, pseudoMSMS,
     if(is.null(nrow(specMatch))) {
         df <- as.data.frame(specMatch[c("mz", "into")])
     } else df <- as.data.frame(specMatch[,c("mz", "into")])
-	
+
     plt <- ggplot2::ggplot(df,
         ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
         ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0), 
@@ -295,7 +295,7 @@ plotCandidatesAIF <- function(rankedResult,
                                 DirPath){
     candidates <- nrow(rankedResult)
     if(!is.null(candidates)) candidates <- seq_len(candidates)
-	
+
     l <- lapply(candidates, function(x) plotSingleCandidateAIF(rankedResult, 
                                                                 rankedSpectra,
                                                                 pseudoMSMS, x,
