@@ -14,9 +14,10 @@
 #' @param ramclustObj \code{RAMClustR} object with parent-fragment 
 #' reconstructions (clusters). See \code{RAMClustR} paper for more details
 #' (https://pubs.acs.org/doi/10.1021/ac501530d).
-#' @param libs Fragment libraries to use. Either the built-in libraries can be
-#' specified (\code{LipidPos}, \code{LipidNeg}, \code{MetabolitesPos}, 
-#' \code{MetabolitesNeg}) or the full path to user-defined libraries.
+#' @param libraries Fragment libraries to use. Specify one of default libraries
+#' provided as data object with the package (\code{LipidPos}, \code{LipidNeg}, 
+#' \code{MetabolitesPos} and \code{MetabolitesNeg}) or the full path to 
+#' user-defined libraries.
 #' @param RTs Optional data.frame with Lipid/metabolites classes Retention
 #' Times in seconds.
 #' @param checkIsotope Whether or not to check the isotope type;
@@ -44,12 +45,14 @@
 #' tfile <- system.file("extdata", "targetTable.csv", 
 #' package="MetaboAnnotatoR")
 #' targets <- read.csv(tfile)
+#' # Read the default lipid positive libraries
+#' data("LipidPos")
 #' # Run the annotation procedure
 #' annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
-#' libs="LipidPos", RTs="none", checkIsotope=TRUE)
+#' libs=LipidPos, RTs="none", checkIsotope=TRUE)
 #' @export
 annotateRC <- function(targets, xcmsObject, ramclustObj,
-                        libs="LipidPos", RTs="none",
+                        libs=LipidPos, RTs="none",
                         checkIsotope=TRUE, tolerance=25,
                         maxMZdiff=0.01, matchWeight=0.5){
 
@@ -65,19 +68,24 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
-        data("LipidPos")
-        libraries <- LipidPos
+        if(!exists("LipidPos")) {
+        	stop("LipidPos not found, please use data(LipidPos)")
+        } else libraries <- LipidPos
     } else if(libs == "LipidNeg") {
-        data("LipidNeg")
-        libraries <- LipidNeg
+        if(!exists("LipidNeg")) {
+        	stop("LipidNeg not found, please use data(LipidNeg)")
+        } else libraries <- LipidNeg
     } else if(libs == "MetabolitesPos") {
-        data("MetabolitesPos")
+        if(!exists("MetabolitesPos")) {
+        	stop("MetabolitesPos not found, please use data(MetabolitesPos)")
+        } else libraries <- MetabolitesPos
         libraries <- MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
-        data("MetabolitesNeg")
-        libraries <- MetabolitesNeg
+        if(!exists("MetabolitesNeg")) {
+        	stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
+        } else libraries <- MetabolitesPos
     } else libraries <- loadLibs(libs)
-
+    
     libfiles <- libraries$libfiles
     lib <- libraries$lib
 
@@ -110,7 +118,7 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
         if(is.null(pseudoSpec) & is.null(highCESpec)) { next
         } else {
             message("Searching candidates...")
-            candidates <- searchLib(lib, libfiles, fmz - iso * 1.0034, frt,
+        	candidates <- searchLib(lib, libfiles, fmz-iso*1.0034, frt,
                                     tolerance=tolerance, RTs, inSourceSpec)
         }
         #Compare fragments between Library candidates and high-collision-energy

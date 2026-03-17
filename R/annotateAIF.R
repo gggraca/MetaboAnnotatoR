@@ -13,8 +13,8 @@
 #' peak-picking parameters. An example of such table can be found in the data
 #' provided with \code{MetaboAnnotatoR} as \code{XCMS_options.csv} 
 #' (see example for details).
-#' @param libs Fragment libraries to use. Either the built-in libraries can be
-#' specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS}, 
+#' @param libraries Fragment libraries to use. Either the built-in libraries 
+#' can be specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS}, 
 #' \code{MetabolitesNEG}) or the full path to user-defined libraries.
 #' @param RTs Optional data.frame with Lipid/metabolites classes Retention
 #' Times in seconds.
@@ -41,11 +41,13 @@
 #' @examples
 #' # Set a directory to save the example .mzML file
 #' userDir <- tempdir()
-#' # Download the example .mzML from zenodo website into the specified directory
-#' # as "Lipid_Positive_QC.mzML"...define file.path first:
+#' # Download the example .mzML from zenodo website into the specified 
+#' #directory as "Lipid_Positive_QC.mzML"...define file.path first:
 #' fpath <- file.path(userDir, "Lipid_Positive_QC.mzML")
 #' download.file(
-#' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+#' "
+#' https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1
+#' ", 
 #' fpath
 #' )
 #' # create a new targetTable with one feature to annotate
@@ -58,14 +60,16 @@
 #' package="MetaboAnnotatoR")
 #' xcmsOptions <- read.csv(xcmsOptionsPath)
 #' xcmsOptions[2,2] <- 1000
+#' # Read the default lipid positive libraries
+#' data("LipidPos")
 #' # Run the annotation using the built-in lipid POS library:
 #' annotations <- annotateAIF(targets, xcmsOptions, 
-#' libs="LipidPos", RTs="none", nCE=1, corThresh=0.8,
+#' libs=LipidPos, RTs="none", nCE=1, corThresh=0.8,
 #' checkIsotope=TRUE)
 #' @export
 annotateAIF <- function(targets,
                         xcmsOptions,
-                        libs="LipidPos",
+                        libs=LipidPos,
                         RTs="none",
                         nCE=1,
                         corThresh=0.8,
@@ -86,17 +90,22 @@ annotateAIF <- function(targets,
     
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
-        data("LipidPos")
-        libraries <- LipidPos
+        if(!exists("LipidPos")) {
+        	stop("LipidPos not found, please use data(LipidPos)")
+        } else libraries <- LipidPos
     } else if(libs == "LipidNeg") {
-        data("LipidNeg")
-        libraries <- LipidNeg
+        if(!exists("LipidNeg")) {
+        	stop("LipidNeg not found, please use data(LipidNeg)")
+        } else libraries <- LipidNeg
     } else if(libs == "MetabolitesPos") {
-    	data("MetabolitesPos")
+        if(!exists("MetabolitesPos")) {
+        	stop("MetabolitesPos not found, please use data(MetabolitesPos)")
+        } else libraries <- MetabolitesPos
         libraries <- MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
-        data("MetabolitesNeg")
-        libraries <- MetabolitesNeg
+        if(!exists("MetabolitesNeg")) {
+        	stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
+        } else libraries <- MetabolitesPos
     } else libraries <- loadLibs(libs)
     
     libfiles <- libraries$libfiles
