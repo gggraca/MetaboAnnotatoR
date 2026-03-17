@@ -23,8 +23,8 @@ and the file paths to the raw data.}
 
 \item{xcmsObject}{XCMS object containing the processed AIF datasets.}
 
-\item{ramclustObj}{RAMClustR object with parent-fragment reconstructions
-(clusters). See RAMClustR paper for more details
+\item{ramclustObj}{\code{RAMClustR} object with parent-fragment
+reconstructions (clusters). See \code{RAMClustR} paper for more details
 (https://pubs.acs.org/doi/10.1021/ac501530d).}
 
 \item{libs}{Fragment libraries to use. Either the built-in libraries can be
