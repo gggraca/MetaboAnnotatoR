@@ -11,8 +11,8 @@
 #' @param targets A data.frame containing the features to annotate
 #' and the file paths to the raw data.
 #' @param xcmsObject XCMS object containing the processed AIF datasets.
-#' @param ramclustObj RAMClustR object with parent-fragment reconstructions
-#' (clusters). See RAMClustR paper for more details
+#' @param ramclustObj \code{RAMClustR} object with parent-fragment 
+#' reconstructions (clusters). See \code{RAMClustR} paper for more details
 #' (https://pubs.acs.org/doi/10.1021/ac501530d).
 #' @param libs Fragment libraries to use. Either the built-in libraries can be
 #' specified (\code{LipidPos}, \code{LipidNeg}, \code{MetabolitesPos}, 
@@ -65,13 +65,17 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
 
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
-        libraries <- MetaboAnnotatoR::LipidPos
+        data("LipidPos")
+        libraries <- LipidPos
     } else if(libs == "LipidNeg") {
-        libraries <- MetaboAnnotatoR::LipidNeg
+        data("LipidNeg")
+        libraries <- LipidNeg
     } else if(libs == "MetabolitesPos") {
-        libraries <- MetaboAnnotatoR::MetabolitesPos
+        data("MetabolitesPos")
+        libraries <- MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
-        libraries <- MetaboAnnotatoR::MetabolitesNeg
+        data("MetabolitesNeg")
+        libraries <- MetabolitesNeg
     } else libraries <- loadLibs(libs)
 
     libfiles <- libraries$libfiles
