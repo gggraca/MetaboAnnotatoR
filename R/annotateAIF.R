@@ -86,13 +86,17 @@ annotateAIF <- function(targets,
     
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
-        libraries <- MetaboAnnotatoR::LipidPos
+        data("LipidPos")
+        libraries <- LipidPos
     } else if(libs == "LipidNeg") {
-        libraries <- MetaboAnnotatoR::LipidNeg
+        data("LipidNeg")
+        libraries <- LipidNeg
     } else if(libs == "MetabolitesPos") {
-        libraries <- MetaboAnnotatoR::MetabolitesPos
+    	data("MetabolitesPos")
+        libraries <- MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
-        libraries <- MetaboAnnotatoR::MetabolitesNeg
+        data("MetabolitesNeg")
+        libraries <- MetabolitesNeg
     } else libraries <- loadLibs(libs)
     
     libfiles <- libraries$libfiles
