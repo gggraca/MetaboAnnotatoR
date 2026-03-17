@@ -49,7 +49,7 @@
 #' data("LipidPos")
 #' # Run the annotation procedure
 #' annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
-#' libs=LipidPos, RTs="none", checkIsotope=TRUE)
+#' libs="LipidPos", RTs="none", checkIsotope=TRUE)
 #' @export
 annotateRC <- function(targets, xcmsObject, ramclustObj,
                         libs=LipidPos, RTs="none",

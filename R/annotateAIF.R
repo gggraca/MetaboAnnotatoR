@@ -64,7 +64,7 @@
 #' data("LipidPos")
 #' # Run the annotation using the built-in lipid POS library:
 #' annotations <- annotateAIF(targets, xcmsOptions, 
-#' libs=LipidPos, RTs="none", nCE=1, corThresh=0.8,
+#' libs="LipidPos", RTs="none", nCE=1, corThresh=0.8,
 #' checkIsotope=TRUE)
 #' @export
 annotateAIF <- function(targets,
