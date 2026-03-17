@@ -19,7 +19,7 @@ libraries .csv files.
 }
 
 \format{A list containing two large lists: 1) one library (data frame) per lipid class; 2) A vector with the original libraries filenames.}
-\usage{LipidNeg}
+\usage{data("LipidNeg")}
 \references{
 Graca G., Cai Y., Lau C-H. E., Vorkas P.A., Lewis M.R., Want E.J., Herrington D., Ebbels, T.M.D.
 Automated Annotation of Untargeted All-Ion Fragmentation LC-MS Metabolomics Data with MetaboAnnotatoR. \emph{Analytical Chemistry}, 

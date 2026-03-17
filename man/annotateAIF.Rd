@@ -7,7 +7,7 @@
 annotateAIF(
   targets,
   xcmsOptions,
-  libs = "LipidPos",
+  libs = LipidPos,
   RTs = "none",
   nCE = 1,
   corThresh = 0.8,
@@ -25,10 +25,6 @@ and the file paths to the raw data.}
 peak-picking parameters. An example of such table can be found in the data
 provided with \code{MetaboAnnotatoR} as \code{XCMS_options.csv}
 (see example for details).}
-
-\item{libs}{Fragment libraries to use. Either the built-in libraries can be
-specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS},
-\code{MetabolitesNEG}) or the full path to user-defined libraries.}
 
 \item{RTs}{Optional data.frame with Lipid/metabolites classes Retention
 Times in seconds.}
@@ -50,6 +46,10 @@ pseudo-MS/MS or AIF ions in Da.}
 \item{matchWeight}{weight of the fragment matches to the final score;
 value between 0 and 1; the remaining fraction of the weight comes from the
 candidate m/z error.}
+
+\item{libraries}{Fragment libraries to use. Either the built-in libraries
+can be specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS},
+\code{MetabolitesNEG}) or the full path to user-defined libraries.}
 }
 \value{
 For each feature in the targets data table the function will return
@@ -69,11 +69,13 @@ to metabolite/lipid fragment libraries.
 \examples{
 # Set a directory to save the example .mzML file
 userDir <- tempdir()
-# Download the example .mzML from zenodo website into the specified directory
-# as "Lipid_Positive_QC.mzML"...define file.path first:
+# Download the example .mzML from zenodo website into the specified 
+#directory as "Lipid_Positive_QC.mzML"...define file.path first:
 fpath <- file.path(userDir, "Lipid_Positive_QC.mzML")
 download.file(
-"https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+"
+https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1
+", 
 fpath
 )
 # create a new targetTable with one feature to annotate
@@ -86,9 +88,11 @@ xcmsOptionsPath <- system.file("extdata", "XCMS_options.csv",
 package="MetaboAnnotatoR")
 xcmsOptions <- read.csv(xcmsOptionsPath)
 xcmsOptions[2,2] <- 1000
+# Read the default lipid positive libraries
+data("LipidPos")
 # Run the annotation using the built-in lipid POS library:
 annotations <- annotateAIF(targets, xcmsOptions, 
-libs="LipidPos", RTs="none", nCE=1, corThresh=0.8,
+libs=LipidPos, RTs="none", nCE=1, corThresh=0.8,
 checkIsotope=TRUE)
 }
 \author{

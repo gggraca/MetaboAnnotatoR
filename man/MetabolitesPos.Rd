@@ -18,7 +18,7 @@ The full details on the libraries are described in the
 This object contains both the libraries for the different metabolite classes/adducts and the filepaths of the original
 libraries .csv files.
 }
-\usage{MetabolitesPos}
+\usage{data("MetabolitesPos")}
 \format{A list containing two large lists: 1) one library (data frame) per metabolite/adduct combination; 
 2) A vector with the original libraries filenames.}
 

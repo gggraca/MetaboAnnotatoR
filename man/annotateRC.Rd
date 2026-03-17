@@ -9,7 +9,7 @@ annotateRC(
   targets,
   xcmsObject,
   ramclustObj,
-  libs = "LipidPos",
+  libs = LipidPos,
   RTs = "none",
   checkIsotope = TRUE,
   tolerance = 25,
@@ -27,10 +27,6 @@ and the file paths to the raw data.}
 reconstructions (clusters). See \code{RAMClustR} paper for more details
 (https://pubs.acs.org/doi/10.1021/ac501530d).}
 
-\item{libs}{Fragment libraries to use. Either the built-in libraries can be
-specified (\code{LipidPos}, \code{LipidNeg}, \code{MetabolitesPos},
-\code{MetabolitesNeg}) or the full path to user-defined libraries.}
-
 \item{RTs}{Optional data.frame with Lipid/metabolites classes Retention
 Times in seconds.}
 
@@ -45,6 +41,11 @@ pseudo-MS/MS or AIF ions in Da.}
 \item{matchWeight}{weight of the fragment matches to the final score;
 value between 0 and 1; the remaining fraction of the weight comes from the
 candidate m/z error.}
+
+\item{libraries}{Fragment libraries to use. Specify one of default libraries
+provided as data object with the package (\code{LipidPos}, \code{LipidNeg},
+\code{MetabolitesPos} and \code{MetabolitesNeg}) or the full path to
+user-defined libraries.}
 }
 \value{
 For each feature in the targets data frame the function will return
@@ -70,9 +71,11 @@ data("xset")
 tfile <- system.file("extdata", "targetTable.csv", 
 package="MetaboAnnotatoR")
 targets <- read.csv(tfile)
+# Read the default lipid positive libraries
+data("LipidPos")
 # Run the annotation procedure
 annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
-libs="LipidPos", RTs="none", checkIsotope=TRUE)
+libs=LipidPos, RTs="none", checkIsotope=TRUE)
 }
 \author{
 Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
