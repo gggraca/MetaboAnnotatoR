@@ -1,3 +1,8 @@
+## test genFragEntry
+
+# read library data
+data("MetabolitesPos")
+
 # read expected table
 expected <- MetabolitesPos$lib[[69]]
 
@@ -10,7 +15,7 @@ testDir <- tempdir()
 
 test_that("library entry correctly generated", {
 
-  entry <- genFragEntry(specObject, 
+    entry <- genFragEntry(specObject, 
                         "Pantothenic acid",
                         "[M+H]+", 220.1179,
                         filename="Pantothenic_acid_pos",
@@ -19,13 +24,10 @@ test_that("library entry correctly generated", {
                         mpeaksScore=0.9, 
                         mpeaksThres=0.1, 
                         mzTol=0.01)
-  
-  # file path
-  fpath <- file.path(testDir, "Pantothenic_acid_pos.csv")
-  
-  expect_true(file.exists(fpath))
-  
-  entry <- read.csv(fpath, check.names=FALSE)
-  
-  expect_equal(entry, expected)
+
+    # file path
+    fpath <- file.path(testDir, "Pantothenic_acid_pos.csv")
+    expect_true(file.exists(fpath))
+    entry <- read.csv(fpath, check.names=FALSE)
+    expect_equal(entry, expected)
 })

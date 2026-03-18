@@ -1,3 +1,5 @@
+## test rankScore
+
 # input test data
 result <- data.frame(metabolite=c("Met A", "Met B", "Met C"), 
                  feature.type=rep("parent",3), 

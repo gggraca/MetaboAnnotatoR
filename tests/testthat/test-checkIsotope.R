@@ -1,3 +1,5 @@
+## test checkIsotope
+
 # read test data
 spObject <- data.frame(
   mz=c(703.5769, 704.5799, 705.5812, 706.5721),

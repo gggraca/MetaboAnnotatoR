@@ -4,6 +4,9 @@
 data("RC")
 data("xset")
 
+## load library
+data("LipidPos")
+
 targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759)
 
 expected <- data.frame(feature.mz=520.3408533,

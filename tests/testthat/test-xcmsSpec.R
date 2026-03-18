@@ -4,6 +4,9 @@
 fmz <- 585.2692
 frt <- 72.8
 
+# read xcms data xset
+data("xset")
+
 # input expected result from xset data
 
 expected <- xset@peaks[which(xset@peaks[,"sample"] == 7),]

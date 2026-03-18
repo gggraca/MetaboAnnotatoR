@@ -1,7 +1,12 @@
+## test function compfrag
+
 # load test data
 fmz <- 152.0720
 frt <- 125
 iso <- 0
+
+# load library data
+data("MetabolitesPos")
 
 lib <- MetabolitesPos$lib
 
@@ -45,5 +50,5 @@ test_that("matching is correct", {
 
 
 test_that("matched fragments correct", {
-  expect_equal(result$specMatch,expected$specMatch)
+    expect_equal(result$specMatch,expected$specMatch)
 })
