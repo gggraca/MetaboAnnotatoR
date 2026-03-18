@@ -14,7 +14,7 @@
 #' @param ramclustObj \code{RAMClustR} object with parent-fragment 
 #' reconstructions (clusters). See \code{RAMClustR} paper for more details
 #' (https://pubs.acs.org/doi/10.1021/ac501530d).
-#' @param libraries Fragment libraries to use. Specify one of default libraries
+#' @param libs Fragment libraries to use. Specify one of default libraries
 #' provided as data object with the package (\code{LipidPos}, \code{LipidNeg}, 
 #' \code{MetabolitesPos} and \code{MetabolitesNeg}) or the full path to 
 #' user-defined libraries.
@@ -69,20 +69,20 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
         if(!exists("LipidPos")) {
-        	stop("LipidPos not found, please use data(LipidPos)")
+            stop("LipidPos not found, please use data(LipidPos)")
         } else libraries <- LipidPos
     } else if(libs == "LipidNeg") {
         if(!exists("LipidNeg")) {
-        	stop("LipidNeg not found, please use data(LipidNeg)")
+            stop("LipidNeg not found, please use data(LipidNeg)")
         } else libraries <- LipidNeg
     } else if(libs == "MetabolitesPos") {
         if(!exists("MetabolitesPos")) {
-        	stop("MetabolitesPos not found, please use data(MetabolitesPos)")
+            stop("MetabolitesPos not found, please use data(MetabolitesPos)")
         } else libraries <- MetabolitesPos
         libraries <- MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
         if(!exists("MetabolitesNeg")) {
-        	stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
+            stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
         } else libraries <- MetabolitesPos
     } else libraries <- loadLibs(libs)
     
@@ -118,7 +118,7 @@ annotateRC <- function(targets, xcmsObject, ramclustObj,
         if(is.null(pseudoSpec) & is.null(highCESpec)) { next
         } else {
             message("Searching candidates...")
-        	candidates <- searchLib(lib, libfiles, fmz-iso*1.0034, frt,
+            candidates <- searchLib(lib, libfiles, fmz-iso*1.0034, frt,
                                     tolerance=tolerance, RTs, inSourceSpec)
         }
         #Compare fragments between Library candidates and high-collision-energy

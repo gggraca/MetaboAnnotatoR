@@ -15,9 +15,14 @@
 #' @return A pseudo-MS/MS spectrum is plotted.
 #' @examples
 #' # Read RAMClustR (RC) and XCMS processed example data:
+#' data("RC")
+#' data("xset")
+#' # read table with features to annotate:
 #' tfile <- system.file("extdata", "targetTable.csv", 
 #' package="MetaboAnnotatoR")
 #' targets <- read.csv(tfile)
+#' # read default lipid positive library
+#' data("LipidPos")
 #' # Run annotation of lipid features for positive LC-MS 
 #' # processed with RAMClustR:
 #' annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 

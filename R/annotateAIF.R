@@ -13,7 +13,7 @@
 #' peak-picking parameters. An example of such table can be found in the data
 #' provided with \code{MetaboAnnotatoR} as \code{XCMS_options.csv} 
 #' (see example for details).
-#' @param libraries Fragment libraries to use. Either the built-in libraries 
+#' @param libs Fragment libraries to use. Either the built-in libraries 
 #' can be specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS}, 
 #' \code{MetabolitesNEG}) or the full path to user-defined libraries.
 #' @param RTs Optional data.frame with Lipid/metabolites classes Retention
@@ -45,11 +45,8 @@
 #' #directory as "Lipid_Positive_QC.mzML"...define file.path first:
 #' fpath <- file.path(userDir, "Lipid_Positive_QC.mzML")
 #' download.file(
-#' "
-#' https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1
-#' ", 
-#' fpath
-#' )
+#' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+#' fpath)
 #' # create a new targetTable with one feature to annotate
 #' # the Sample.name is the path to the mzML file
 #' targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
@@ -91,20 +88,20 @@ annotateAIF <- function(targets,
     ## load libraries ---------------------------------------------------------
     if(libs == "LipidPos") {
         if(!exists("LipidPos")) {
-        	stop("LipidPos not found, please use data(LipidPos)")
+            stop("LipidPos not found, please use data(LipidPos)")
         } else libraries <- LipidPos
     } else if(libs == "LipidNeg") {
         if(!exists("LipidNeg")) {
-        	stop("LipidNeg not found, please use data(LipidNeg)")
+            stop("LipidNeg not found, please use data(LipidNeg)")
         } else libraries <- LipidNeg
     } else if(libs == "MetabolitesPos") {
         if(!exists("MetabolitesPos")) {
-        	stop("MetabolitesPos not found, please use data(MetabolitesPos)")
+            stop("MetabolitesPos not found, please use data(MetabolitesPos)")
         } else libraries <- MetabolitesPos
         libraries <- MetabolitesPos
     } else if(libs == "MetabolitesNeg") {
         if(!exists("MetabolitesNeg")) {
-        	stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
+            stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
         } else libraries <- MetabolitesPos
     } else libraries <- loadLibs(libs)
     
