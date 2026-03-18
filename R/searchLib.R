@@ -24,9 +24,9 @@
 #' libraries which will be used in the pseudo-MS/MS to fragment matching step.
 #' @examples
 #' # load default libraries for Metabolites in Positive mode
-#' libraries <- MetaboAnnotatoR::MetabolitesPos
-#' libfiles <- libraries$libfiles
-#' lib <- libraries$lib
+#' data("MetabolitesPos")
+#' libfiles <- MetabolitesPos$libfiles
+#' lib <- MetabolitesPos$lib
 #' # read feature mz and rt and in-source spectrum
 #' fmz <- 152.0720
 #' frt <- 125
