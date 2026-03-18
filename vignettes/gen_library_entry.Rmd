@@ -57,11 +57,11 @@ LibDir <- tempdir()
 **Generate library entry:**
 
 We can then convert the spectra into a library entry by using the function 
-'genFragEntry'. This function will attribute occurrence scores to the peaks
-above 'mpeaksThres' threshold ("marker peaks") and above the noise level.
+*genFragEntry*. This function will attribute occurrence scores to the peaks
+above *mpeaksThres* threshold ("marker peaks") and above the noise level.
 Note that metabolite name, adduct name, accurate adduct m/z and output filename
 need to be explicitly defined.
-The peak-picking parameters 'noise' and 'mpeaksThres' and the occurrence scores
+The peak-picking parameters *noise* and *mpeaksThres* and the occurrence scores
 used here are the default parameters.
 
 ```{r run_function, eval=TRUE}

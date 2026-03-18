@@ -92,8 +92,14 @@ data("RC")
 
 Since the features come from a ESI+ lipidomics experiment, annotation can be 
 performed using the default Lipid Positive mode libraries
-"*LipidPos*", using the *annotateRC* function. 
-The annotations will be stored in an *annotations* object:
+"*LipidPos*". For this, the default Lipid Positive libraries must be first 
+loaded into the workspace:
+```{r libraries, eval=TRUE}
+data("LipidPos")
+```
+
+Then annotations can be performed using the *annotateRC* function.
+The results will be stored in an object (*annotations* ):
 
 ```{r lipid_pos_example, eval=TRUE}
 annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
@@ -107,7 +113,7 @@ summarised in the global results object within the *annotations* object:
 annotations$global
 ```
 
-Three out of the six features were annotated with a lipid.
+Three out of the six features were annotated with to a lipid.
 
 It is also possible to inspect if there were other candidate annotations for
 a given feature, for instance feature 3: 468.3095 m/z,  82.92009 s.
