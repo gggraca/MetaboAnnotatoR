@@ -12,7 +12,7 @@ operated in the MSE mode (all-ion fragmentation mode).
 The raw mzML file from which the data was extracted can be downloaded from zenodo:
 \href{https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML}{Lipid_Positive_QC.mzML}.
 }
-\usage{pseudoMSMS}
+\usage{data("pseudoMSMS")}
 \format{
 A list of 7 elements related to the feature of interest: 
 1) in-source fragment pseudo-MS/MS spectrum from MS1 scans (data frame);

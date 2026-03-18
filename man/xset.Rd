@@ -14,7 +14,7 @@ operated in the MSE mode (all-ion fragmentation mode).
 The full experimental details and xcms parameter sets used for processing are described in the  
 \href{https://pubs.acs.org/doi/10.1021/acs.analchem.1c03032}{MetaboAnnotatoR paper}.
 }
-\usage{xset}
+\usage{data("xset")}
 \format{An xcmsSet object containing the xcms processed data.}
 \references{
 Graca G., Cai Y., Lau C-H. E., Vorkas P.A., Lewis M.R., Want E.J., Herrington D., Ebbels, T.M.D.
