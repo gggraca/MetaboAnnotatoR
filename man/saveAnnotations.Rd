@@ -50,15 +50,20 @@ Saves all annotation related data, such as annotation table, options,
 and optionally plots of pseudo-MS/MS and matched fragments spectra.
 }
 \examples{
-#' # Read RAMClustR (RC) and XCMS processed example data:
+# Read RAMClustR (RC) and XCMS processed example data:
+data("RC")
+data("xset")
+# Read the table of features to annotate:  
 tfile <- system.file("extdata", "targetTable.csv", 
 package="MetaboAnnotatoR")
 targets <- read.csv(tfile)
+# Read the default lipid positive libraries:
+data("LipidPos") 
 # Run annotation of lipid features for positive LC-MS 
 # processed with RAMClustR:
 annotations <- annotateRC(targets, xcmsObject=xset, ramclustObj=RC, 
 libs="LipidPos", RTs="none", checkIsotope=TRUE)
-# Finally, save the results to a user-defined directory
+# Finally, save the results to a user-defined directory:
 userDir <- tempdir()
 saveAnnotations(annotations, DirPath=userDir, saveOptions=TRUE, 
 saveXCMSoptions=FALSE, saveRanked=TRUE,

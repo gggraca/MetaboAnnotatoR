@@ -26,6 +26,10 @@ peak-picking parameters. An example of such table can be found in the data
 provided with \code{MetaboAnnotatoR} as \code{XCMS_options.csv}
 (see example for details).}
 
+\item{libs}{Fragment libraries to use. Either the built-in libraries
+can be specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS},
+\code{MetabolitesNEG}) or the full path to user-defined libraries.}
+
 \item{RTs}{Optional data.frame with Lipid/metabolites classes Retention
 Times in seconds.}
 
@@ -46,10 +50,6 @@ pseudo-MS/MS or AIF ions in Da.}
 \item{matchWeight}{weight of the fragment matches to the final score;
 value between 0 and 1; the remaining fraction of the weight comes from the
 candidate m/z error.}
-
-\item{libraries}{Fragment libraries to use. Either the built-in libraries
-can be specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS},
-\code{MetabolitesNEG}) or the full path to user-defined libraries.}
 }
 \value{
 For each feature in the targets data table the function will return
@@ -73,11 +73,8 @@ userDir <- tempdir()
 #directory as "Lipid_Positive_QC.mzML"...define file.path first:
 fpath <- file.path(userDir, "Lipid_Positive_QC.mzML")
 download.file(
-"
-https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1
-", 
-fpath
-)
+"https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+fpath)
 # create a new targetTable with one feature to annotate
 # the Sample.name is the path to the mzML file
 targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
