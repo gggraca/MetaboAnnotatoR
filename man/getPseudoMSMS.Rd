@@ -58,10 +58,9 @@ interest from All-ion fragmentation experiments (e.g. MSe, bbCID, AIF).
 \examples{
 # obtain the pseudo-MS/MS of one feature from the 
 # MS1 scans (in-source fragments)
-# read the example LC-MS data from the msdata package
-library(msdata)
-filePath <- system.file("TripleTOF-SWATH", "PestMix1_SWATH.mzML", 
-package="msdata")
+# read the example LC-MS data from the MsDataHub package
+library(MsDataHub)
+filePath <- filePath <- PestMix1_SWATH.mzML()
 xcmsF1 <- MSnbase::readMSData(filePath, msLevel.=1, mode="onDisk")
 # perform peak-picking
 cwp <- CentWaveParam(snthresh=5, noise=100, ppm=10, peakwidth=c(3, 30))
