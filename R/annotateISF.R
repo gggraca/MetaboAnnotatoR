@@ -1,0 +1,281 @@
+#' @title Annotate features from LC-MS (MS1 only) raw chromatograms
+#'
+#' @description
+#' This function annotates features from raw LC-MS (MS1 only) chromatograms, by 
+#' performing pseudo-MS/MS spectra deconvolution and then matching ions 
+#' to metabolite/lipid fragment libraries.
+#'
+#' @author Goncalo Graca (Imperial College London)
+#'
+#' @param targets A data frame containing the features to annotate
+#' and the file paths to the raw data.
+#' @param xcmsOptions A data frame containing the XCMS \code{centWave} 
+#' peak-picking parameters. An example of such table can be found in the data
+#' provided with \code{MetaboAnnotatoR} as \code{XCMS_options.csv} 
+#' (see example for details).
+#' @param libs Fragment libraries to use. Either the built-in libraries 
+#' can be specified (\code{LipidPOS}, \code{LipidNEG}, \code{MetabolitesPOS}, 
+#' \code{MetabolitesNEG}) or the full path to user-defined libraries.
+#' @param RTs Optional data.frame with Lipid/metabolites classes Retention
+#' Times in seconds.
+#' @param corThresh Pearson correlation coefficient for EIC correlation.
+#' @param checkIsotope Whether or not to check the isotope type;
+#' default is set to TRUE
+#' @param tolerance Tolerance in ppm for the candidate search.
+#' @param maxMZdiff Maximum m/z difference between candidate fragments and
+#' pseudo-MS/MS or AIF ions in Da.
+#' @param matchWeight weight of the fragment matches to the final score;
+#' value between 0 and 1; the remaining fraction of the weight comes from the
+#' candidate m/z error.
+#' @return For each feature in the targets data table the function will return 
+#' a data frame with each feature rank 1 annotation and a table with the 
+#' options used for the function, the data and time of annotation. In addition, 
+#' lists with the ranked candidates matched to each feature
+#' (\code{rankedResult}), ranked matched spectra (\code{rankedSpectra}) and a 
+#' list with pseudo-MS/MS spectra, in-source spectra, and AIF spectra and 
+#' respective EIC objects (\code{pseudoMSMS}, see also \code{getPseudoMSMS},
+#' documentation for details).
+#' @examples
+#' # Set a directory to save the example .mzML file
+#' userDir <- tempdir()
+#' # Download the example .mzML from zenodo website into the specified 
+#' #directory as "Lipid_Positive_QC.mzML"...define file.path first:
+#' fpath <- file.path(userDir, "Lipid_Positive_QC.mzML")
+#' download.file(
+#' "https://zenodo.org/records/17408169/files/Lipid_Positive_QC.mzML?download=1", 
+#' fpath)
+#' # create a new targetTable with one feature to annotate
+#' # the Sample.name is the path to the mzML file
+#' targets <- data.frame(feature.mz=520.3408533, feature.rt=100.6238759, 
+#' Sample.name=fpath)
+#' # read the default xcms parameters on the XCMS_options.csv file and modify
+#' # the noise threshold parameter
+#' xcmsOptionsPath <- system.file("extdata", "XCMS_options.csv", 
+#' package="MetaboAnnotatoR")
+#' xcmsOptions <- read.csv(xcmsOptionsPath)
+#' xcmsOptions[2,2] <- 1000
+#' # Read the default lipid positive libraries
+#' data("LipidPos")
+#' # Run the annotation using the built-in lipid POS library:
+#' annotations <- annotateISF(targets, xcmsOptions, 
+#' libs="LipidPos", RTs="none", corThresh=0.8,
+#' checkIsotope=TRUE)
+#' @export
+annotateISF <- function(targets,
+                        xcmsOptions,
+                        libs=LipidPos,
+                        RTs="none",
+                        corThresh=0.8,
+                        checkIsotope=TRUE,
+                        tolerance=25,
+                        maxMZdiff=0.01,
+                        matchWeight=0.5){
+    
+    ## Initialize results object-----------------------------------------------
+    results <- initializeResultsISF(targets)
+    
+    ## RTs intervals specified? --------------------------------------------
+    if(RTs == "none") {
+        message("No RT information provided...")
+    } else if(is.data.frame(RTs)){
+        message("Using user provided RT information...")
+    } else stop("RTs must be a data.frame")
+    
+    ## load libraries ---------------------------------------------------------
+    if(libs == "LipidPos") {
+        if(!exists("LipidPos")) {
+            stop("LipidPos not found, please use data(LipidPos)")
+        } else libraries <- LipidPos
+    } else if(libs == "LipidNeg") {
+        if(!exists("LipidNeg")) {
+            stop("LipidNeg not found, please use data(LipidNeg)")
+        } else libraries <- LipidNeg
+    } else if(libs == "MetabolitesPos") {
+        if(!exists("MetabolitesPos")) {
+            stop("MetabolitesPos not found, please use data(MetabolitesPos)")
+        } else libraries <- MetabolitesPos
+        libraries <- MetabolitesPos
+    } else if(libs == "MetabolitesNeg") {
+        if(!exists("MetabolitesNeg")) {
+            stop("MetabolitesNeg not found, please use data(MetabolitesNeg)")
+        } else libraries <- MetabolitesPos
+    } else libraries <- loadLibs(libs)
+    
+    libfiles <- libraries$libfiles
+    lib <- libraries$lib
+    
+    # evaluate if one or more samples are to be read---------------------------
+    if(length(unique(targets[,3])) == 1){
+        message("Reading and peak-picking data...")
+        MSData <- readMS1(filePath=targets[1,3], 
+                            xcmsOptions=xcmsOptions)
+        xcmsF1 <- MSData$xcmsF1
+        peaksF1 <- MSData$peaksF1
+    } else NULL
+
+    ## process each feature from the targets table-----------------------------
+    for(i in seq_len(nrow(targets))){
+        progNote <- paste("... Processing feature", i, "of", nrow(targets),
+                            "...")
+        message(progNote)
+        if(length(unique(targets[,3]))>1){
+            message("Reading and peak-picking data...")
+            MSData <- readMS1(filePath=targets[i,3], 
+                            xcmsOptions=xcmsOptions)
+            xcmsF1 <- MSData$xcmsF1
+            peaksF1 <- MSData$peaksF1
+        } else NULL
+    
+        fmz <- targets[i,1]
+        frt <- targets[i,2]
+    
+        ## get sample name to save files into --------------------------------
+        SpName <- targets[i,3]
+    
+        ## get MS spectra at feature RT --------------------------------------
+        message("Obtaining ISF spectrum...")
+        try(
+            specs <- getPseudoMSMS(fmz, frt, xcmsF1, xcmsF2=NULL, 
+                            peaksF1, peaksF2=NULL,
+                            cthres1=corThresh, cthres2=corThresh)
+        )
+    
+        if(exists("specs")){
+            highCESpec <- specs$ms1
+            pseudoSpec <- specs$insource
+            inSourceSpec <- specs$insource
+            results$pseudoMSMS[[i]] <- specs
+        } else results$pseudoMSMS[[i]] <- NA
+    
+        ## Isotope check ------------------------------------------------------
+        if(!checkIsotope) iso <- 0 else {
+            #message("Checking isotope type...")
+            if(is.null(inSourceSpec)) {
+                iso <- NA
+        } else if(length(inSourceSpec) <= 12) {
+                iso <- 0
+        } else {
+                iso <- checkIsotope(fmz, frt, inSourceSpec)
+            }
+        }
+    
+        ## Search Libraries ---------------------------------------------------
+        if(is.null(pseudoSpec) & is.null(highCESpec)) { next
+            } else {
+            message("Searching candidates...")
+            candidates <- searchLib(lib, libfiles, fmz - iso * 1.0034,
+                                frt, tolerance = tolerance, RTs, inSourceSpec)
+        }
+    
+        # Compare fragments between Library candidates and
+        # high-collision-energy / pseudo-MS/MS spectra ------------------------
+        if(is.null(pseudoSpec) & is.null(highCESpec) |
+            length(unlist(candidates)) == 0) {
+            result <- NULL
+        } else {
+        message("Matching candidate(s) fragments to ISF spectra...")
+        output <- mapply(
+            compFrag, candidates, lapply(as.numeric(names(candidates)), 
+            function(x) lib[[x]]), 
+            MoreArgs=list(fmz, frt, iso, highCESpec, pseudoSpec, 
+                            maxMZdiff=maxMZdiff, matchWeight=matchWeight), 
+            SIMPLIFY = FALSE)
+        result <- do.call(rbind,lapply(output, "[[", 1))
+        specMatch <- unlist(lapply(output, "[[",2), recursive=FALSE)
+        specMatch <- specMatch[!(specMatch) == "NULL"]
+        }
+        ## Score ranking ------------------------------------------------------
+        if(is.null(result)) {
+        rankedResult <- targets[i, c(1,2)]
+        rankedResult[c("metabolite", "feature.type", "ion.type", "isotope",
+                    "mz.metabolite", "matched.mz", "mz.error", "pseudoMSMS",
+                    "fraction", "score")] <- NA
+        # type of ion isotope
+        rankedResult$isotope <- paste("M+", iso, sep="")
+    
+        # pseudoMSMS flag
+        if(is.null(pseudoSpec)) {
+                rankedResult$pseudoMSMS <- "FALSE"
+                results$rankedResult[[i]] <- NA
+                results$rankedSpectra[[i]] <- NA
+            } else { rankedResult$pseudoMSMS <- "TRUE"
+            }
+        } else {
+            output <- rankScore(result,specMatch)
+            rankedResult <- output$rankedResult
+            rankedSpec <- output$rankedSpecMatch
+            results$rankedResult[[i]] <- rankedResult
+            results$rankedSpectra[[i]] <- rankedSpec
+        }
+
+        ## Store highest rank annotation in global results---------------------
+        if(!exists("rankedResult")) rankedResult <- NULL
+        results$global[i,] <- storeAnnotations(global=results$global[i,], 
+                                                rankedResult[1,])
+    }
+    # check ESI polarity
+    polarity <- unique(polarity(xcmsF1))
+    if(polarity == 1) polarity <- "positive"
+    if(polarity == 0) polarity <- "negative"
+    
+    # store general options
+    df <- data.frame(dataType="ISF", 
+                        polarity=polarity, libraries=libs,
+                        RTs=RTs, corThresh=corThresh,
+                        checkIsotope=checkIsotope, matchWeight=matchWeight,
+                        tolerance=paste(tolerance, "ppm"),
+                        maxMZdiff=paste(maxMZdiff, "Da"), row.names="parameter")
+    results$options <- as.data.frame(t(df))
+
+    message("Job done!")
+    return(results)
+}
+
+## Helper functions------------------------------------------------------------
+
+## Initialization of results folder and global results table-------------------
+initializeResultsISF <- function(targets){
+    # create objects to store results and metadata
+    Date <- Sys.Date()
+    Time <- format(Sys.time(), "%X")
+    rankedResult <- list()
+    rankedSpectra <- list()
+    pseudoMSMS <- list()
+    options <- NULL
+    # create table to store global results
+    global <- targets
+    global[,c("metabolite", "feature.type", "ion.type", "isotope", 
+                "mz.metabolite","matched.mz", "mz.error", "pseudoMSMS", 
+                "fraction", "score")] <- NA
+    # return global results table and results path as list
+    results <- list(global=global,
+                    Date=Date, 
+                    Time=Time,
+                    options=options,
+                    rankedResult=rankedResult, 
+                    rankedSpectra=rankedSpectra, 
+                    pseudoMSMS=pseudoMSMS)
+    return(results)
+}
+
+## read and peak-pick data from mzML or CDF files------------------------------
+readMS1 <- function(filePath, xcmsOptions, nCE){
+	# mzML files
+    if(length(grep(".mzML", filePath)) == 1){
+        xcmsF1 <- MSnbase::readMSData(filePath, msLevel. = 1, mode = "onDisk")
+    }
+	# CDF files 
+    if(length(grep(".CDF", filePath)) == 1){
+        xcmsF1 <- MSnbase::readMSData(filePath, mode = "onDisk")
+    }
+    # use same centwave parameters for both no- and high-collision scans
+    cwp <- xcms::CentWaveParam(snthresh = xcmsOptions[3,2],
+                                noise = xcmsOptions[2,2],
+                                ppm = xcmsOptions[1,2],
+                                peakwidth = as.numeric(xcmsOptions[4,2:3]),
+                                prefilter = as.numeric(xcmsOptions[5,2:3]))
+    peaksF1 <- xcms::findChromPeaks(xcmsF1, msLevel = 1L, param = cwp)
+    # gather all data objects into a list
+    MSData <- list(xcmsF1=xcmsF1, peaksF1=peaksF1)
+    return(MSData)
+}
