@@ -1,7 +1,7 @@
 Package: MetaboAnnotatoR
 Title: Automated Annotation of All-Ion Fragmentation LC-MS Metabolomic Features
-Version: 0.99.21
-Date: 2026-01-30
+Version: 1.1.1
+Date: 2026-05-26
 Authors@R: c(person(given = "Goncalo", family = "Graca", role = c("aut", "cre"),
            email = "ggraca22@gmail.com", comment = c(ORCID = "0000-0002-0876-3876")),
       person(given = "Yuheng (Rene)", family = "Cai", role = c("aut"), email = "rene.cai@unc.edu"),
@@ -21,7 +21,6 @@ BugReports: https://github.com/gggraca/MetaboAnnotatoR/issues
 URL: https://github.com/gggraca/MetaboAnnotatoR
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests:
     rmarkdown,
     knitr,
@@ -31,3 +30,4 @@ Suggests:
 LazyData: false
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
