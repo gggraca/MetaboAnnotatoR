@@ -2,6 +2,7 @@
 
 export(RCspec)
 export(annotateAIF)
+export(annotateISF)
 export(annotateRC)
 export(checkIsotope)
 export(compFrag)
