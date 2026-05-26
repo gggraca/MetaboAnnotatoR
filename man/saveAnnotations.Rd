@@ -16,7 +16,7 @@ saveAnnotations(
 }
 \arguments{
 \item{annotations}{Annotation object created from running annotation
-\code{annotateAIF} or \code{annotateRC} functions.}
+\code{annotateAIF}, \code{annotateISF} or \code{annotateRC} functions.}
 
 \item{DirPath}{Path to the directory where the plots (as \code{.pdf}),
 \code{.csv} tables and \code{.mgf} files will be saved. If no directory is

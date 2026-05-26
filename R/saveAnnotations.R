@@ -7,7 +7,7 @@
 #' @author Goncalo Graca & Yuheng (Rene) Cai (Imperial College London)
 #'
 #' @param annotations Annotation object created from running annotation
-#' \code{annotateAIF} or \code{annotateRC} functions.
+#' \code{annotateAIF}, \code{annotateISF} or \code{annotateRC} functions.
 #' @param saveOptions If \code{TRUE}, will save the annotation options as 
 #' .csv file.
 #' @param saveXCMSoptions Saves the XCMS options if the annotations
@@ -115,6 +115,14 @@ saveAnnotations <- function(annotations,
                                 pseudoMSMS[[x]],
                                 DirPath))
     }
+    if(saveRankedSpec & dataType == "ISF") {
+        l <- lapply(featIdx, 
+                    function(x) plotCandidatesISF(
+                                rankedResult[[x]], 
+                                rankedSpectra[[x]],
+                                pseudoMSMS[[x]],
+                                DirPath))
+    }
 
     # save pseudoMSMS as .mgf and plot as .pdf
     if(savePseudoMSMS & dataType == "AIF"){
@@ -122,12 +130,29 @@ saveAnnotations <- function(annotations,
                             saveMgf(fmz=global$feature.mz[x], 
                             frt=global$feature.rt[x], 
                             pseudo=pseudoMSMS[[x]]$aif, 
-                            polarity, 
+                            polarity,
+                            dataType,
                             DirPath))
         l <- lapply(featIdx, function(x) 
                             savePseudo(fmz=global$feature.mz[x],
                             frt=global$feature.rt[x],
                             dataType="AIF",
+                            pseudo=pseudoMSMS[[x]], 
+                            DirPath))
+    }
+    
+    if(savePseudoMSMS & dataType == "ISF"){
+        l <- lapply(featIdx, function(x) 
+                            saveMgf(fmz=global$feature.mz[x], 
+                            frt=global$feature.rt[x], 
+                            pseudo=pseudoMSMS[[x]]$insource, 
+                            polarity,
+                            dataType,
+                            DirPath))
+        l <- lapply(featIdx, function(x) 
+                            savePseudo(fmz=global$feature.mz[x],
+                            frt=global$feature.rt[x],
+                            dataType="ISF",
                             pseudo=pseudoMSMS[[x]], 
                             DirPath))
     }
@@ -137,7 +162,8 @@ saveAnnotations <- function(annotations,
                             saveMgf(fmz=global$feature.mz[x],
                             frt=global$feature.rt[x], 
                             pseudo=pseudoMSMS[[x]], 
-                            polarity, 
+                            polarity,
+                            dataType,
                             DirPath))
         l <- lapply(featIdx, function(x) 
                             savePseudo(fmz=global$feature.mz[x], 
@@ -150,23 +176,39 @@ saveAnnotations <- function(annotations,
 
 ## helper functions------------------------------------------------------------
 # save pseudo-MS/MS spectrum as .mgf format------------------------------------
-saveMgf <- function(fmz, frt, pseudo, polarity, DirPath){
+saveMgf <- function(fmz, frt, pseudo, polarity, dataType, DirPath){
     if(is.data.frame(pseudo) | is.matrix(pseudo)){
-        # save .mgf file 
-        spec <- new("Spectrum2", 
+        # save .mgf file
+    	if(dataType == "ISF"){
+            spec <- new("Spectrum1", 
+                    mz=pseudo[,"mz"], 
+                    intensity=pseudo[,"into"],
+                    rt=frt,
+                    polarity=polarity,
+                    centroided=TRUE)
+            fpath <- file.path(DirPath, "/", 
+                            round(fmz, 3),
+                            "mz_",
+                            round(frt, 3),
+                            "s_", 
+                            "insource", ".mgf", 
+                            fsep="")
+    	} else {
+            spec <- new("Spectrum2", 
                     mz=pseudo[,"mz"], 
                     intensity=pseudo[,"into"],
                     precursorMz=fmz,
                     rt=frt,
                     polarity=polarity,
                     centroided=TRUE)
-        fpath <- file.path(DirPath, "/", 
+            fpath <- file.path(DirPath, "/", 
                             round(fmz, 3),
                             "mz_",
                             round(frt, 3),
                             "s_", 
                             "pseudo-MSMS", ".mgf", 
                             fsep="")
+    	}
         MSnbase::writeMgfData(spec, fpath)
     }
 }
@@ -211,6 +253,49 @@ savePseudo <- function(fmz, frt, dataType, pseudo, DirPath){
             plt <- gridExtra::grid.arrange(p1, p2, nrow=2)
             fpath <- file.path(round(fmz,3),"mz_", round(frt,3), "s", 
                                 "_pseudoMSMS.pdf", fsep="")
+            ggplot2::ggsave(fpath, plot=plt, device="pdf", 
+                                path=DirPath, width=10, height=10)
+        }
+    }
+	    if(dataType == "ISF"){
+        isf <- pseudo$ms1
+        mz_ms1 <- pseudo$ms1[,"mz"]
+        ms1 <- pseudo$ms1
+        ms1_eic <- pseudo$ms2_eic
+        if(is.data.frame(isf) | is.matrix(isf)){
+        # EICs
+            mz_idx <- match(isf[,"mz"], mz_ms1)
+            df1 <- lapply(mz_idx, function(x) data.frame(
+                intensity=intensity(ms1_eic[x,1]), 
+                rt=rtime(ms1_eic[x,1]),
+                mz=as.character(rep(paste(round(mz_ms1[x],3)
+                                    ,"m/z")))))
+            df1 <- do.call("rbind", df1)
+            p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
+                ggplot2::aes(x=rt, y=intensity, colour=mz)) +
+                ggplot2::geom_point() +
+                ggplot2::geom_line() +
+                ggplot2::labs(x="RT (s)", y="Intensity (a.u.)", 
+                                colour="fragments") +
+                ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),
+                                        "s", "correlated EICs")) +
+                ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
+            # Spectrum
+            df2 <- ms1[,c("mz", "into")]
+            p2 <- ggplot2::ggplot(df2,
+                ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+                ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0),
+                color="red", lwd=0.5) +
+                ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+                ggplot2::ggtitle("ISF pseudo-MS/MS") +
+                ggplot2::theme_minimal() +
+                ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5)) +
+                ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
+                ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
+                ggplot2::labs(x="m/z", y="Intensity (a.u.)")
+            plt <- gridExtra::grid.arrange(p1, p2, nrow=2)
+            fpath <- file.path(round(fmz,3),"mz_", round(frt,3), "s", 
+                                "_ISF.pdf", fsep="")
             ggplot2::ggsave(fpath, plot=plt, device="pdf", 
                                 path=DirPath, width=10, height=10)
         }
@@ -333,6 +418,80 @@ plotSingleCandidateAIF <- function(rankedResult,
         mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
         df1 <- lapply(mz_idx, function(x) data.frame(
         intensity=intensity(ms2eic[x,1]), rt=rtime(ms2eic[x,1]),
+        mz=as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
+        df1 <- do.call("rbind", df1)
+        p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
+            ggplot2::aes(x=rt, y=intensity, colour=mz)) +
+            ggplot2::geom_point() +
+            ggplot2::geom_line() +
+            ggplot2::labs(x="RT (s)", y = "Intensity (a.u.)", 
+                            colour="fragments") +
+            ggplot2::ggtitle(paste("Feature",round(fmz,3),"m/z",round(frt),
+                                    "s,","Rank", rnk, "result:", adductName,
+                                    ", mz.error =", MZerror, "ppm", ", 
+                                    score =", round(score, 2))) +
+            ggplot2::theme(plot.title=ggplot2::element_text(hjust=0.5))
+        # Spectrum
+        df2 <- as.data.frame(specMatch[,c("mz", "into")])
+        p2 <- ggplot2::ggplot(df2,
+            ggplot2::aes(x=mz, y=into, label=round(mz, 3))) +
+            ggplot2::geom_segment(ggplot2::aes(xend=mz, yend=0),
+                                    color="red", lwd=0.5) +
+            ggplot2::geom_text(size=3, angle=45, hjust=0, vjust=0) +
+            ggplot2::ggtitle(paste("ions matched to", adductName)) +
+            ggplot2::theme_minimal() +
+            ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
+            ggplot2::ylim(0, max(df2[,2]) + 0.1*max(df2[,2])) +
+            ggplot2::xlim(min(df2[,1])-50, max(df2[,1])+50) +
+            ggplot2::labs(x = "m/z", y = "Intensity (a.u.)")
+        fpath <- file.path(round(fmz,3),"mz_", round(frt,3), "s", "_candidate_",
+                            candidate, ".pdf", fsep="")
+        plt <- gridExtra::grid.arrange(p1, p2, nrow=2)
+        ggplot2::ggsave(fpath, plot=plt, device="pdf", path=DirPath, 
+                                width=10, height=10)
+    } else NULL
+}
+
+# plotCandidatesISF to plot annotation candidates matched spectra--------------
+plotCandidatesISF <- function(rankedResult, 
+                                rankedSpectra, 
+                                pseudoMSMS,
+                                DirPath){
+    candidates <- nrow(rankedResult)
+    if(!is.null(candidates)) candidates <- seq_len(candidates)
+
+    l <- lapply(candidates, function(x) plotSingleCandidateISF(rankedResult, 
+                                                                rankedSpectra,
+                                                                pseudoMSMS, x,
+                                                                DirPath))
+}
+
+# plot one ISF candidate and save to DirPath
+plotSingleCandidateISF <- function(rankedResult, 
+                                        rankedSpectra, 
+                                        pseudoMSMS,
+                                        candidate,
+                                        DirPath){
+    # get relevant information from the rankedCResult and rankedSpectra objects
+    metabolite <- rankedResult[candidate,"metabolite"]
+    ionType <- rankedResult[candidate,"ion.type"]
+    score <- rankedResult[candidate,"score"]
+    adductName <- paste(metabolite,ionType)
+    candidateMZ <- round(rankedResult[candidate, "mz.metabolite"],3)
+    MZerror <- round(rankedResult[candidate,"mz.error"],1)
+    specMatch <- rankedSpectra[[candidate]]
+    highCESpec <- pseudoMSMS$ms1
+    ms1eic <- pseudoMSMS$ms2_eic
+    rnk <- rankedResult[candidate,"rank"]
+    fmz <- rankedResult[candidate,"feature.mz"]
+    frt <- rankedResult[candidate,"feature.rt"]
+
+    if(nrow(specMatch) >= 1){
+        # plotting part
+        # EICs
+        mz_idx <- match(specMatch[,1], highCESpec[,"mz"])
+        df1 <- lapply(mz_idx, function(x) data.frame(
+        intensity=intensity(ms1eic[x,1]), rt=rtime(ms1eic[x,1]),
         mz=as.character(rep(paste(round(highCESpec[x,"mz"],3),"m/z")))))
         df1 <- do.call("rbind", df1)
         p1 <- ggplot2::ggplot(df1[!is.na(df1$intensity),],
