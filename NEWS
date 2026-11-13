@@ -1,3 +1,15 @@
+CHANGES IN VERSION 1.1.4
+--------------------------
+
+ADDITIONS
+    o New function to re-annotate AIF and ISF pseudo-MS/MS spectra.
+    
+CHANGES IN VERSION 1.1.3
+--------------------------
+
+ADDITIONS
+    o New function to annotate spectra loaded as MSnExp objects.
+
 CHANGES IN VERSION 1.1.1
 --------------------------
 
