@@ -130,12 +130,19 @@ reannotate <- function(AnnotationObj,
             highCESpec <- results$pseudoMSMS[[i]]$ms1
         }
         
-        # Isotope check --------------------
+        # Isotope check -------------------------------------------------------
         if(!checkIsotope) iso <- 0 else {
-            iso <- checkIsotope(fmz, frt, pseudoSpec)
+            #message("Checking isotope type...")
+            if(is.null(inSourceSpec)) {
+                iso <- NA
+        } else if(length(inSourceSpec) <= 12) {
+                iso <- 0
+        } else {
+                iso <- checkIsotope(fmz, frt, inSourceSpec)
+            }
         }
 
-        # Search Libraries --------------------
+        # Search Libraries ----------------------------------------------------
         if(is.null(pseudoSpec)) { next
         } else {
             message("Searching candidates...")
